@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>apina.app</title>
+    <title>apina | API Access</title>
     <meta
       name="description"
       content="API access to Llama Guard 3, background removal, image generation and OCR."
@@ -16,7 +16,7 @@
         --line: #232323;
         --text: #f5f5f5;
         --muted: #8f8f8f;
-        --glow: #ffb84d;
+        --glow: #ff0000;
         box-sizing: border-box;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -150,7 +150,7 @@
         position: absolute;
         inset: -40px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(255, 184, 77, 0.55) 0%, rgba(255, 184, 77, 0.18) 40%, transparent 70%);
+        background: radial-gradient(circle, rgba(255, 0, 0, 0.55) 0%, rgba(255, 0, 0, 0.18) 40%, transparent 70%);
         animation: pulse 3.2s ease-in-out infinite;
       }
 
@@ -184,11 +184,11 @@
       @keyframes glow {
         0%,
         100% {
-          filter: drop-shadow(0 0 4px rgba(255, 184, 77, 0.35));
+          filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.35));
         }
 
         50% {
-          filter: drop-shadow(0 0 22px rgba(255, 184, 77, 0.95));
+          filter: drop-shadow(0 0 22px rgba(255, 0, 0, 0.95));
         }
       }
 
@@ -579,8 +579,8 @@
     <nav>
       <div class="wrap">
         <a class="logo" href="#top">
-          <img src="logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
-          <svg style="display: none"><use href="#monkey" /></svg>
+          <img src="logo-b.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <!--<svg style="display: none"><use href="#monkey" /></svg>-->
           apina
         </a>
 
@@ -597,18 +597,18 @@
       <div class="wrap hero">
         <div class="mkw">
           <img
-            src="logo.png"
+            src="logo-transparent.png"
             alt="apina logo"
             onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
           />
           <svg role="img" aria-label="apina logo"><use href="#monkey" /></svg>
         </div>
 
-        <h1>Get up and running with AI APIs</h1>
+        <h1>Easy AI tool access with APIs</h1>
         <p>Llama Guard 3, background removal, image generation and OCR. One key, simple requests.</p>
 
         <div class="cmd">
-          <code id="c">curl api.apina.app/v1/moderate -H "Authorization: ******" -d '{"input":"hi"}'</code>
+          <code id="c">coming soon...</code>
           <button id="cp" type="button">Copy</button>
         </div>
 
