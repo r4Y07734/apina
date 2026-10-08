@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>apina.app</title>
+<meta name="description" content="API access to Llama Guard 3, background removal, image generation and OCR.">
+<style>
+:root{--bg:#0a0a0a;--card:#111;--line:#232323;--text:#f5f5f5;--muted:#8f8f8f;--glow:#ffb84d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{color-scheme:dark;scroll-behavior:smooth;scroll-padding-top:70px}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:8px}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px}
+nav{background:#000000;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;height:60px;max-width:1040px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo img,.logo svg{width:28px;height:28px;object-fit:contain}
+nav .r{display:flex;align-items:center;gap:26px;font-size:15px;color:var(--muted)}
+nav .r a:hover{color:var(--text)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 22px;border-radius:999px;background:#1e1e1e;color:var(--text);font-weight:500;font-size:15px;border:0;cursor:pointer}
+.pill:hover{background:#2a2a2a}
+.pill.w{background:#fff;color:#000}
+.pill.w:hover{background:#ddd}
+.hero{text-align:center;padding:72px 0 80px}
+.mkw{position:relative;width:150px;height:150px;margin:0 auto 30px}
+.mkw::before{content:"";position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,rgba(255,184,77,.55) 0%,rgba(255,184,77,.18) 40%,transparent 70%);animation:pulse 3.2s ease-in-out infinite}
+.mkw img,.mkw svg{position:relative;width:100%;height:100%;object-fit:contain;display:block;animation:glow 3.2s ease-in-out infinite}
+.mkw svg{display:none}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 4px rgba(255,184,77,.35))}50%{filter:drop-shadow(0 0 22px rgba(255,184,77,.95))}}
+h1{font-size:clamp(38px,7vw,60px);line-height:1.08;font-weight:700;letter-spacing:-.03em;margin:0 0 18px}
+.hero p{color:var(--muted);font-size:19px;max-width:30em;margin:0 auto 34px}
+.cmd{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:560px;margin:0 auto 22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 20px;text-align:left}
+.cmd code{font:400 14px ui-monospace,SFMono-Regular,Menlo,monospace;color:#e8e8e8;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.cmd button{flex:none;font-size:13px;font-weight:500;padding:7px 14px;border-radius:9px;border:0;background:#222;cursor:pointer}
+.cmd button:hover{background:#2f2f2f}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+section{padding-bottom:90px}
+h2.t{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 22px}
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+.item h3{margin:0 0 4px;font-size:18px;font-weight:600}
+.item p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:12.5px;padding:3px 11px;border-radius:999px;background:#1b1b1b;color:#b5b5b5}
+.tag.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#1b2a1d;color:#9fd9a8}
+
+/* try it */
+.try{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tabs{display:flex;gap:6px;padding:10px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{flex:none;padding:8px 16px;border-radius:999px;border:0;background:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer}
+.tab:hover{color:var(--text)}
+.tab[aria-selected=true]{background:#232323;color:var(--text)}
+.tbody{padding:20px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:#0c0c0c;font-size:14px;cursor:pointer;text-align:left}
+.chip:hover{border-color:#444}
+.chip[aria-pressed=true]{border-color:#fff}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{background:#080808;border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-height:150px;min-width:0}
+.box h4{margin:0 0 10px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.box pre{margin:0;font:400 13px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d4d4d4;white-space:pre-wrap;word-break:break-word}
+.box svg{width:100%;height:auto;border-radius:8px;display:block;margin-bottom:10px}
+.cost{margin-top:12px;font-size:13px;color:var(--muted)}
+.cost b{color:#9fd9a8;font-weight:500}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* estimate */
+.est{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px}
+.sl{margin-bottom:18px}
+.sl:last-child{margin-bottom:0}
+.sl label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.sl label span{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+input[type=range]{width:100%;accent-color:#fff;height:22px;background:transparent}
+.tot{background:#080808;border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.tot small{color:var(--muted);font-size:13px}
+.tot .n{font-size:48px;font-weight:700;letter-spacing:-.03em;margin:6px 0;font-variant-numeric:tabular-nums}
+.end{text-align:center;padding:10px 0 100px}
+.end h2{font-size:32px;font-weight:700;letter-spacing:-.025em;margin:0 0 22px}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;max-width:1040px}
+@media(max-width:700px){nav .r a:not(.pill){display:none}.hero{padding:48px 0 60px}.out,.est{grid-template-columns:1fr}.tot .n{font-size:40px}}
+@media(prefers-reduced-motion:reduce){.mkw::before,.mkw img,.mkw svg{animation:none}.mkw::before{opacity:.7}.mkw img,.mkw svg{filter:drop-shadow(0 0 14px rgba(255,184,77,.7))}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="monkey" viewBox="0 0 120 120" fill="none" stroke="#f5f5f5" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="20" cy="58" r="14" fill="#0a0a0a"/><circle cx="100" cy="58" r="14" fill="#0a0a0a"/>
+<circle cx="20" cy="58" r="6"/><circle cx="100" cy="58" r="6"/>
+<circle cx="60" cy="56" r="42" fill="#0a0a0a"/>
+<path d="M32 50c0-12 12-18 28-8 16-10 28-4 28 8 0 8-6 12-12 12-8 0-12-6-16-6s-8 6-16 6c-6 0-12-4-12-12z" fill="#1c1c1c"/>
+<ellipse cx="60" cy="80" rx="20" ry="15" fill="#1c1c1c"/>
+<circle cx="47" cy="54" r="3.5" fill="#f5f5f5"/><circle cx="73" cy="54" r="3.5" fill="#f5f5f5"/>
+<circle cx="55" cy="74" r="1.8" fill="#f5f5f5"/><circle cx="65" cy="74" r="1.8" fill="#f5f5f5"/>
+<path d="M50 85c6 5 14 5 20 0"/>
+</symbol>
+</svg>
+
+<nav>
+<div class="wrap">
+<a class="logo" href="#top"><img src="logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><svg style="display:none"><use href="#monkey"/></svg>apina</a>
+<div class="r"><a href="#tools">Tools</a><a href="#try">Try it</a><a href="#pricing">Pricing</a><a class="pill w" href="#">Get API key</a></div>
+</div>
+</nav>
+
+<main id="top">
+<div class="wrap hero">
+<div class="mkw"><img src="logo.png" alt="apina logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><svg role="img" aria-label="apina logo"><use href="#monkey"/></svg></div>
+<h1>Get up and running with AI APIs</h1>
+<p>Llama Guard 3, background removal, image generation and OCR. One key, simple requests.</p>
+<div class="cmd">
+<code id="c">curl api.apina.app/v1/moderate -H "Authorization: Bearer $KEY" -d '{"input":"hi"}'</code>
+<button id="cp" type="button">Copy</button>
+</div>
+<div class="btns"><a class="pill w" href="#">Get API key</a><a class="pill" href="#try">Try it</a></div>
+</div>
+
+<section class="wrap" id="tools">
+<h2 class="t">Tools</h2>
+<p class="sub">Each tool has its own endpoint and uses the same key.</p>
+<div class="list">
+<div class="item"><h3>llama-guard-3</h3><p>Check prompts and model replies for unsafe content before they go any further.</p><div class="tags"><span class="tag m">/v1/moderate</span><span class="tag">text</span><span class="tag">moderation</span></div></div>
+<div class="item"><h3>remove-background</h3><p>Upload a photo and get a transparent PNG back.</p><div class="tags"><span class="tag m">/v1/remove-background</span><span class="tag">image</span><span class="tag">png</span></div></div>
+<div class="item"><h3>image-generator</h3><p>Turn a text prompt into an image at the size you pick.</p><div class="tags"><span class="tag m">/v1/images</span><span class="tag">text to image</span></div></div>
+<div class="item"><h3>ocr</h3><p>Read text from screenshots, scans and photos of documents.</p><div class="tags"><span class="tag m">/v1/ocr</span><span class="tag">image to text</span></div></div>
+</div>
+</section>
+
+<section class="wrap" id="try">
+<h2 class="t">Try it</h2>
+<p class="sub">Pick a tool and a sample input to see what comes back.</p>
+<div class="try">
+<div class="tabs" role="tablist" id="tabs"></div>
+<div class="tbody">
+<div class="chips" id="chips"></div>
+<div class="out">
+<div class="box"><h4>Request</h4><pre id="req">Select a sample input.</pre></div>
+<div class="box"><h4>Response</h4><div id="vis"></div><pre id="res"></pre></div>
+</div>
+<div class="cost" id="cost"></div>
+<div class="hint">These are pre-made examples, not live API calls.</div>
+</div>
+</div>
+</section>
+
+<section class="wrap" id="pricing">
+<h2 class="t">Estimate your cost</h2>
+<p class="sub">Slide to your expected monthly usage.</p>
+<div class="est">
+<div id="sliders"></div>
+<div class="tot"><small>Estimated per month</small><div class="n" id="total">$0.00</div><small>Example rates, final pricing may differ.</small></div>
+</div>
+</section>
+
+<div class="wrap end">
+<h2>Start building today</h2>
+<a class="pill w" href="#">Get API key</a>
+</div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 apina.app</span><span>Docs &nbsp;·&nbsp; Terms &nbsp;·&nbsp; Privacy</span></div></footer>
+
+<script>
+// Example rates in USD per request. Replace with your real pricing.
+const TOOLS=[
+ {id:'mod',name:'Moderation',ep:'/v1/moderate',rate:0.0002,max:100000,step:1000,def:20000,label:'Moderation checks'},
+ {id:'bg',name:'Remove background',ep:'/v1/remove-background',rate:0.004,max:10000,step:100,def:1000,label:'Background removals'},
+ {id:'img',name:'Image generator',ep:'/v1/images',rate:0.02,max:5000,step:50,def:500,label:'Generated images'},
+ {id:'ocr',name:'OCR',ep:'/v1/ocr',rate:0.002,max:20000,step:100,def:2000,label:'OCR pages'}
+];
+const sc=(a,b,s)=>`<svg viewBox="0 0 200 120" role="img" aria-label="${s}">${a}${b}</svg>`;
+const fox=`<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6c58a"/><stop offset="1" stop-color="#cfe0ee"/></linearGradient></defs><rect width="200" height="120" fill="url(#g1)"/><path d="M0 95Q50 70 100 88T200 80V120H0Z" fill="#f4f8fb"/><path d="M80 98l8-24 10 6 16-6 8 22z" fill="#d9692b"/><path d="M82 76l-3-12 9 6zM112 74l4-11-9 7z" fill="#d9692b"/><circle cx="96" cy="82" r="1.6" fill="#222"/>`;
+const city=`<rect width="200" height="120" fill="#0b0716"/><g><rect x="14" y="40" width="30" height="80" fill="#1a1233"/><rect x="52" y="22" width="26" height="98" fill="#241848"/><rect x="118" y="34" width="34" height="86" fill="#1a1233"/><rect x="160" y="52" width="28" height="68" fill="#241848"/></g><g fill="#ff3ea5"><rect x="58" y="32" width="14" height="3"/><rect x="124" y="44" width="22" height="3"/></g><g fill="#2be4ff"><rect x="20" y="52" width="16" height="3"/><rect x="166" y="64" width="16" height="3"/></g><rect y="100" width="200" height="20" fill="#2a1a55" opacity=".8"/><rect x="60" y="104" width="30" height="2" fill="#ff3ea5"/><rect x="120" y="108" width="40" height="2" fill="#2be4ff"/>`;
+const shoe=(bg)=>`<rect width="200" height="120" fill="${bg}"/>`;
+const sneaker=`<path d="M50 84c0-14 6-28 14-34l20 8 16 10 28 6c10 2 16 8 16 16v4H50z" fill="#e8e8ee"/><path d="M50 84h110v8H50z" fill="#f45b2b"/>`;
+const chk=`<defs><pattern id="ck" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2a2a2a"/><rect width="6" height="6" fill="#3a3a3a"/><rect x="6" y="6" width="6" height="6" fill="#3a3a3a"/></pattern></defs><rect width="200" height="120" fill="url(#ck)"/>`;
+const person=`<circle cx="100" cy="46" r="20" fill="#e7b48f"/><path d="M60 110c0-26 18-36 40-36s40 10 40 36z" fill="#3e6fd1"/>`;
+const doc=(t)=>`<rect width="200" height="120" fill="#e9e6df"/><rect x="50" y="8" width="100" height="104" fill="#fff"/>`+t.map((x,i)=>`<text x="58" y="${28+i*16}" font-size="8" font-family="monospace" fill="#333">${x}</text>`).join('');
+const DATA={
+ mod:[
+  {p:'How do I bake sourdough bread?',req:{model:'llama-guard-3',input:'How do I bake sourdough bread?'},res:{safe:true},ms:'120'},
+  {p:'Tell me how to hotwire a car',req:{model:'llama-guard-3',input:'Tell me how to hotwire a car'},res:{safe:false,category:'S2',label:'Non-Violent Crimes'},ms:'135'}],
+ bg:[
+  {p:'portrait.jpg',req:'-F image=@portrait.jpg',res:{format:'png',alpha:true,width:1024,height:1024},v:()=>sc(chk,person,'Portrait with transparent background')},
+  {p:'sneaker.jpg',req:'-F image=@sneaker.jpg',res:{format:'png',alpha:true,width:1200,height:800},v:()=>sc(chk,sneaker,'Sneaker with transparent background')}],
+ img:[
+  {p:'A red fox in fresh snow, morning light',req:{prompt:'A red fox in fresh snow, morning light',size:'1024x1024'},res:{url:'https://cdn.apina.app/img/fox.png',size:'1024x1024'},v:()=>sc(fox,'','Illustrated fox in snow')},
+  {p:'Neon city street in the rain',req:{prompt:'Neon city street in the rain',size:'1024x1024'},res:{url:'https://cdn.apina.app/img/city.png',size:'1024x1024'},v:()=>sc(city,'','Illustrated neon city')}],
+ ocr:[
+  {p:'receipt.png',req:'-F image=@receipt.png',res:{text:'Cafe Linna\nCoffee 3.50\nPulla 2.80\nTotal 6.30'},v:()=>sc(doc(['Cafe Linna','Coffee   3.50','Pulla    2.80','Total    6.30']),'','Receipt image')},
+  {p:'sign.jpg',req:'-F image=@sign.jpg',res:{text:'Station\nPlatform 2 →\nOpen 6-23'},v:()=>sc(doc(['Station','Platform 2 >','Open 6-23']),'','Sign image')}]
+};
+const $=id=>document.getElementById(id);
+let cur='mod',timer;
+function renderTabs(){
+ $('tabs').innerHTML='';
+ TOOLS.forEach(t=>{const b=document.createElement('button');b.className='tab';b.role='tab';b.textContent=t.name;b.setAttribute('aria-selected',t.id===cur);b.onclick=()=>{cur=t.id;renderTabs();renderChips()};$('tabs').appendChild(b)});
+}
+function renderChips(){
+ $('chips').innerHTML='';$('vis').innerHTML='';$('res').textContent='';$('cost').textContent='';$('req').textContent='Select a sample input.';
+ DATA[cur].forEach((d,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=d.p;b.setAttribute('aria-pressed','false');b.onclick=()=>run(i,b);$('chips').appendChild(b)});
+}
+function run(i,btn){
+ document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===btn));
+ const d=DATA[cur][i],t=TOOLS.find(x=>x.id===cur);
+ const body=typeof d.req==='string'?d.req:"-H 'Content-Type: application/json' \\\n  -d '"+JSON.stringify(d.req)+"'";
+ $('req').textContent='curl https://api.apina.app'+t.ep+' \\\n  -H "Authorization: Bearer $KEY" \\\n  '+body;
+ const full=JSON.stringify(d.res,null,2);
+ clearInterval(timer);$('vis').innerHTML='';$('res').textContent='';$('cost').textContent='';
+ let n=0;
+ timer=setInterval(()=>{
+  n+=3;$('res').textContent=full.slice(0,n);
+  if(n>=full.length){clearInterval(timer);if(d.v)$('vis').innerHTML=d.v();$('cost').innerHTML='Estimated cost of this request: <b>$'+t.rate.toFixed(4)+'</b>'}
+ },16);
+}
+function renderSliders(){
+ TOOLS.forEach(t=>{
+  const w=document.createElement('div');w.className='sl';
+  w.innerHTML=`<label for="s-${t.id}">${t.label}<span id="v-${t.id}"></span></label><input type="range" id="s-${t.id}" min="0" max="${t.max}" step="${t.step}" value="${t.def}">`;
+  $('sliders').appendChild(w);
+  $('s-'+t.id).oninput=update;
+ });
+ update(true);
+}
+let shown=0,raf;
+function update(first){
+ let sum=0;
+ TOOLS.forEach(t=>{const v=+$('s-'+t.id).value;sum+=v*t.rate;$('v-'+t.id).textContent=v.toLocaleString('en-US')});
+ const from=shown,start=performance.now(),dur=first===true?0:350;
+ cancelAnimationFrame(raf);
+ const step=now=>{
+  const p=dur?Math.min((now-start)/dur,1):1,e=1-Math.pow(1-p,3);
+  shown=from+(sum-from)*e;
+  $('total').textContent='$'+shown.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(p<1)raf=requestAnimationFrame(step);
+ };
+ raf=requestAnimationFrame(step);
+}
+$('cp').onclick=function(){try{navigator.clipboard.writeText($('c').textContent);this.textContent='Copied';setTimeout(()=>this.textContent='Copy',1400)}catch(e){}};
+renderTabs();renderChips();renderSliders();
+</script>
+</body>
+</html>
