@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111311">
+  <meta name="description" content="Browse free browser games on apina. Racing, puzzles, arcade games and more.">
+  <title>apina — Browser games</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="character.css"><link rel="stylesheet" href="legal.css">
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20 5c-2-2-5-1-8 2-3-3-6-4-8-2-5 5 4 12 8 15 4-3 13-10 8-15Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 3-9 11h7l-1 7 10-12h-7Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="8" cy="8" r=".6"/><circle cx="16" cy="8" r=".6"/><circle cx="12" cy="12" r=".6"/><circle cx="8" cy="16" r=".6"/><circle cx="16" cy="16" r=".6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-monkey" viewBox="0 0 40 40"><circle cx="8" cy="20" r="7"/><circle cx="32" cy="20" r="7"/><rect x="8" y="7" width="24" height="28" rx="12"/><path d="M13 19c0-5 7-5 7-1 0-4 7-4 7 1v6c0 8-14 8-14 0Z" fill="#111311"/><circle cx="17" cy="20" r="1.3"/><circle cx="23" cy="20" r="1.3"/><path d="M17 27q3 3 6 0" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></symbol>
+  </defs></svg>
+  <header class="header">
+    <button class="icon-button mobile-menu" aria-label="Open navigation" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <a href="#" class="brand" aria-label="apina home"><svg class="monkey"><use href="#i-monkey"/></svg><span>apina</span></a>
+    <nav class="top-nav" aria-label="Main navigation"><button class="nav-link active" data-view="discover">Discover</button><button class="nav-link" data-view="new">New games <span class="new-dot"></span></button><button class="nav-link" data-view="saved">Favorites</button></nav>
+    <label class="search"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search games" aria-label="Search games"><kbd>/</kbd></label>
+    <button class="surprise-button" id="surprise"><svg class="icon"><use href="#i-dice"/></svg><span>Random game</span></button>
+  </header>
+  <aside class="sidebar" aria-label="Game navigation">
+    <div class="side-heading">Browse</div>
+    <button class="side-link active" data-view="discover"><svg class="icon"><use href="#i-grid"/></svg>Discover<span class="side-indicator"></span></button>
+    <button class="side-link" data-view="new"><svg class="icon"><use href="#i-spark"/></svg>New games</button>
+    <button class="side-link" data-view="saved"><svg class="icon"><use href="#i-heart"/></svg>Favorites<span class="saved-count">0</span></button>
+    <div class="side-divider"></div><div class="side-heading">Categories</div>
+    <div class="side-categories" id="side-categories"></div>
+    <div class="side-bottom"><svg class="icon"><use href="#i-monkey"/></svg><span>Small collection.<br>More on the way.</span></div>
+  </aside>
+  <main>
+    <section class="intro"><h1>Featured games</h1><span class="edition-label">APINA / VOL. 001</span></section>
+    <section class="featured" aria-label="Featured games">
+      <article class="hero"><div class="hero-image"></div><div class="hero-shade"></div><div class="feature-topline"><span class="feature-stamp">RACING / ARCADE</span><span class="track-lines" aria-hidden="true">///</span></div><div class="hero-copy"><h2>Sunset<br><span>Drift</span></h2><div class="hero-description"><p>Three routes, traffic, nitro and drifting.</p><button class="feature-link" data-game="drift" aria-label="Play Sunset Drift">Play game <svg class="icon"><use href="#i-arrow"/></svg></button></div></div></article>
+      <article class="secondary-feature"><div class="secondary-art" id="orbit-art"></div><div class="secondary-content"><div class="orbit-heading"><span class="hero-genre">PUZZLE</span><span class="orbit-number">02</span></div><h2>Orbit</h2><button class="feature-link" data-game="orbit" aria-label="Play Orbit">Play game <svg class="icon"><use href="#i-arrow"/></svg></button></div></article>
+      <button class="quick-pick" data-random="true" aria-label="Pick a random game"><span class="dice-pair" aria-hidden="true"><svg class="icon dice-back"><use href="#i-dice"/></svg><svg class="icon dice-front"><use href="#i-dice"/></svg></span><span class="quick-pick-copy"><strong>Can't pick?</strong><span>Roll for a game</span></span><svg class="icon quick-arrow"><use href="#i-arrow"/></svg></button>
+    </section>
+    <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+      <div class="section-top"><div><span class="eyebrow" id="catalog-eyebrow" hidden></span><h2 id="catalog-title">All games</h2><span class="catalog-counter" id="catalog-counter">08</span></div><label class="sort-label">Sort by <select id="sort" aria-label="Sort games"><option value="featured">Featured</option><option value="name">Name A–Z</option><option value="new">Newest first</option></select></label></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter game categories"></div>
+      <div class="game-grid" id="game-grid"></div><div id="empty" class="empty-state" hidden><svg class="icon"><use href="#i-search"/></svg><h3>No matching games</h3><p>Try a different search or category.</p><button class="subtle-button" id="reset">Explore all games <span>↗</span></button></div>
+      <div class="catalog-bottom"><span id="result-count"></span><button id="all-games" class="text-button">Back to all games <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+    </section>
+    <footer><a class="brand footer-brand" href="#">apina</a><span>Browser games</span><nav class="home-legal-links" aria-label="Legal information"><a href="privacy.html">Privacy</a><a href="gdpr.html">GDPR &amp; cookies</a><a href="terms.html">Terms</a></nav><span class="footer-preview">8 original games</span><span>© <span id="year"></span> apina</span></footer>
+  </main>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body></html>
+
+
