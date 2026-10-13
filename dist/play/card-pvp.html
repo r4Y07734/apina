@@ -116,22 +116,17 @@
           <div class="health-heading"><span>Health</span><strong id="player-hp-1">40<span> / 40</span></strong></div>
           <div class="health-bar"><div class="health-fill" id="hp-fill-1" style="width:100%"></div></div>
           <div class="fighter-portrait"><div class="portrait-ring"></div><svg class="fighter-avatar" viewBox="0 0 240 260" aria-hidden="true"><use href="#duelist-art"/></svg><div class="poison-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span class="poison-status" id="poison-1" hidden>Poisoned · 3 turns</span></div>
+          <div id="opponent-card-reveal" class="card-reveal" role="status" aria-live="polite" aria-atomic="true" hidden></div>
           <div class="energy-row"><span class="energy-label"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m9 1-7 10h5l-1 8 8-11H9Z"/></svg>Energy</span><div class="energy-pips" id="energy-pips-1" aria-hidden="true"></div><strong id="player-energy-1">3 / 10</strong></div>
         </section>
       </div>
-      <section class="opponent-play-section" aria-labelledby="opponent-play-title">
-        <div class="opponent-play-heading"><h2 id="opponent-play-title">Opponent's last card</h2><span>Revealed when played</span></div>
-        <p id="opponent-play-empty" class="played-empty">Your opponent hasn't played a card yet. Their hand stays hidden.</p>
-        <div id="opponent-play-card" class="played-card" role="status" aria-live="polite" hidden></div>
-        <details id="opponent-play-history" hidden><summary>Earlier plays</summary><ol id="opponent-play-list"></ol></details>
-      </section>
       <p class="battle-message" id="battle-message" role="status" aria-live="polite">Choose a card to make your move.</p>
       <section class="hand-section" aria-labelledby="hand-title">
-        <div class="hand-heading"><h2 id="hand-title">Your hand<span id="hand-count">5 cards</span></h2><span class="deck-count"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="11" height="13" rx="2"/><path d="M12 5V2H2v12h3"/></svg><span id="deck-count">45 in deck</span></span></div>
+        <div class="hand-heading"><h2 id="hand-title">Your hand<span id="hand-count">5 cards</span></h2><span class="deck-count"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="11" height="13" rx="2"/><path d="M12 5V2H2v12h3"/></svg><span id="deck-count">45 in deck</span></span><button id="log-toggle" class="text-button log-toggle" type="button" aria-haspopup="dialog" aria-controls="activity-dialog">Activity</button></div>
         <div class="hand" id="hand" aria-label="Your cards"></div>
         <div class="hand-actions"><p id="selection-hint">Select a card to see your next move.</p><div class="action-buttons"><button class="primary-button" id="play-card" type="button" disabled>Play card<span aria-hidden="true">↑</span></button><button class="secondary-button" id="end-turn" type="button">End turn<span aria-hidden="true">→</span></button></div></div>
       </section>
-      <div class="activity-section"><button id="log-toggle" class="text-button log-toggle" type="button" aria-expanded="false" aria-controls="activity-log"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h10"/></svg>Match activity<span aria-hidden="true">⌄</span></button><ol id="activity-log" class="activity-log" hidden aria-label="Match activity"></ol></div>
+
     </section>
   </main>
 
@@ -148,6 +143,11 @@
       <li><span class="rule-number">04</span><div><strong>Take your next turn.</strong><p>Draw 1 card and gain 3 energy, up to 10. Poison deals damage at the start of the poisoned player's turn for its remaining turns.</p></div></li>
     </ol>
     <p class="rules-footnote">Online turns have a 3-minute limit. A disconnected player has 90 seconds to return. Each player sees only their own hand.</p>
+  </dialog>
+
+  <dialog class="game-dialog" id="activity-dialog" aria-labelledby="activity-title">
+    <div class="dialog-header"><span class="eyebrow" id="activity-title">MATCH ACTIVITY</span><button class="icon-button" id="activity-close" type="button" aria-label="Close match activity">×</button></div>
+    <ol id="activity-log" class="activity-log" aria-label="Match activity"></ol>
   </dialog>
 
   <dialog class="game-dialog result-dialog" id="result-dialog" aria-labelledby="result-title">

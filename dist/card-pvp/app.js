@@ -17,6 +17,8 @@ let cards = [], cardMap, state, view, selected = null, mode = null, botTimer;
 let socket, server = '', room = '', token = '', connected = false, pending = false;
 let reconnectTimer, reconnectAttempt = 0, intentionalClose = false, turnDeadline = null, roomRequestVersion = 0;
 const sessionKey = 'apina-card-pvp-session';
+let revealQueue = [], revealTimer, revealExitTimer, resultTimer, revealBusy = false;
+const shownReveals = new Set();
 
 function message(text, isError = false) {
   const element = mode && view ? $('battle-message') : $('lobby-message');
@@ -33,16 +35,17 @@ function rememberSession() {
 }
 function clearSession() { try { sessionStorage.removeItem(sessionKey); } catch {} }
 function closeConnection() {
+  resetCardReveals();
   intentionalClose = true; clearTimeout(reconnectTimer); clearTimeout(botTimer);
   if (socket) { socket.onclose = socket.onmessage = socket.onerror = socket.onopen = null; socket.close(); socket = null; }
   connected = false; pending = false;
 }
 function showLobby() {
   roomRequestVersion++; closeConnection(); clearSession(); mode = null; state = view = null; selected = null;
-  $('battle').hidden = true; $('lobby').hidden = false; $('waiting-panel').hidden = true;
+  $('battle').hidden = true; $('lobby').hidden = false; document.body.classList.remove('battle-active'); $('waiting-panel').hidden = true;
   $('friend-panel').hidden = true; $('friend-toggle').setAttribute('aria-expanded','false');
   $('lobby-message').textContent = ''; $('connection-status').textContent = 'Bot is ready · no account needed';
-  $('result-dialog').close();
+  $('result-dialog').close(); $('activity-dialog').close();
   $('play-bot').focus({preventScroll:true});
 }
 function iconFor(card) {
@@ -126,35 +129,56 @@ function animateChange(oldView, newView) {
     }
   }
 }
+function resetCardReveals() {
+  clearTimeout(revealTimer); clearTimeout(revealExitTimer); clearTimeout(resultTimer);
+  revealQueue = []; revealBusy = false; shownReveals.clear();
+  $('opponent-card-reveal').hidden = true;
+  $('opponent-card-reveal').replaceChildren();
+}
+function showNextCardReveal() {
+  if (revealBusy || !revealQueue.length) return;
+  revealBusy = true;
+  const entry = revealQueue.shift(), card = entry.card;
+  const display = $('opponent-card-reveal');
+  const panel = document.createElement('div'); panel.className = `reveal-card accent-${card.accent}`;
+  const label = document.createElement('span'); label.className = 'reveal-label'; label.textContent = 'OPPONENT PLAYED';
+  const cost = document.createElement('span'); cost.className = 'reveal-cost'; cost.textContent = card.cost; cost.setAttribute('aria-label', `${card.cost} energy`);
+  const icon = document.createElement('span'); icon.className = 'reveal-icon'; icon.append(iconFor(card));
+  const title = document.createElement('strong'); title.className = 'reveal-name'; title.textContent = card.name;
+  const description = document.createElement('p'); description.className = 'reveal-description'; description.textContent = card.description;
+  const effects = document.createElement('div'); effects.className = 'reveal-effects';
+  for (const effect of card.effects) { const line = document.createElement('span'); line.textContent = effectText(effect, false); effects.append(line); }
+  panel.append(label, cost, icon, title, description, effects);
+  display.replaceChildren(panel); display.hidden = false;
+  revealTimer = setTimeout(() => {
+    panel.classList.add('leaving');
+    revealExitTimer = setTimeout(() => {
+      display.hidden = true; display.replaceChildren(); revealBusy = false;
+      showNextCardReveal();
+    }, 240);
+  }, 2800);
+}
 function renderOpponentPlays(previous) {
   const plays = (view.playedCards || []).filter(entry => entry.actor !== view.you);
-  const latest = plays.at(-1);
-  const empty = $('opponent-play-empty'), display = $('opponent-play-card');
-  empty.hidden = Boolean(latest); display.hidden = !latest;
-  $('opponent-play-history').hidden = plays.length < 2;
-  if (!latest) { display.replaceChildren(); $('opponent-play-list').replaceChildren(); return; }
-  const card = latest.card;
-  const icon = document.createElement('span'); icon.className = 'played-icon'; icon.append(iconFor(card));
-  const copy = document.createElement('div'); copy.className = 'played-copy';
-  const title = document.createElement('strong'); title.textContent = card.name;
-  const description = document.createElement('p'); description.textContent = card.description;
-  const effects = document.createElement('p'); effects.className = 'played-effects'; effects.textContent = card.effects.map(effect => effectText(effect, false)).join(' · ');
-  copy.append(title, description, effects);
-  const cost = document.createElement('span'); cost.className = 'played-cost'; cost.textContent = `${card.cost} energy · round ${latest.round}`;
-  display.className = `played-card accent-${card.accent}`; display.replaceChildren(icon, copy, cost);
-  const oldLatest = (previous?.playedCards || []).filter(entry => entry.actor !== view.you).at(-1);
-  if (oldLatest?.id !== latest.id) { display.classList.add('revealed'); display.addEventListener('animationend',()=>display.classList.remove('revealed'),{once:true}); }
-  $('opponent-play-list').replaceChildren(...plays.slice(0,-1).reverse().map(entry => {
-    const li = document.createElement('li'); const label = document.createElement('strong'); label.textContent = entry.card.name;
-    const detail = document.createElement('span'); detail.textContent = `Round ${entry.round} · ${entry.card.effects.map(effect => effectText(effect, false)).join(' · ')}`;
-    li.append(label, detail); return li;
-  }));
+  const previousIds = new Set((previous?.playedCards || []).map(entry => entry.id));
+  let incoming = previous ? plays.filter(entry => !previousIds.has(entry.id)) : plays.slice(-1);
+  if (view.status === 'finished' && incoming.length) {
+    clearTimeout(revealTimer); clearTimeout(revealExitTimer);
+    revealQueue = []; revealBusy = false;
+    incoming = incoming.slice(-1);
+  }
+  for (const entry of incoming) {
+    if (shownReveals.has(entry.id)) continue;
+    shownReveals.add(entry.id); revealQueue.push(entry);
+  }
+  if (revealQueue.length > 20) revealQueue.splice(0, revealQueue.length - 20);
+  showNextCardReveal();
 }
 
 function render(next) {
   const previous = view; view = next;
   if (selected && !view.hand.includes(selected)) selected = null;
-  $('lobby').hidden = true; $('battle').hidden = false;
+  $('lobby').hidden = true; $('battle').hidden = false; document.body.classList.add('battle-active');
   const ownTurn = view.turn === view.you;
   $('turn-label').textContent = view.status === 'finished' ? 'Match complete' : ownTurn ? 'Your turn' : 'Opponent’s turn';
   $('turn-label').classList.toggle('your-turn',ownTurn && view.status === 'playing');
@@ -182,7 +206,10 @@ function render(next) {
     $('result-title').textContent=draw?'A draw':won?'You win':'Match lost';
     $('result-description').textContent=draw?'Both fighters fell in the same exchange.':won?'The arena is yours. Ready for another round?':'A good duel. Try a different hand next time.';
     $('rematch').textContent=mode==='bot'?'Play bot again':'New online match';
-    $('result-dialog').showModal(); clearTimeout(botTimer); if(mode==='online')clearSession();
+    const finalOpponentPlay = view.lastEvent?.kind === 'play' && view.lastEvent.actor !== view.you;
+    if (finalOpponentPlay) resultTimer = setTimeout(() => $('result-dialog').showModal(), 3100);
+    else $('result-dialog').showModal();
+    clearTimeout(botTimer); if(mode==='online')clearSession();
   }
 }
 function act(action) {
@@ -292,7 +319,8 @@ $('rules-button').addEventListener('click',()=>$('rules-dialog').showModal());
 $('rules-close').addEventListener('click',()=>$('rules-dialog').close());
 $('result-close').addEventListener('click',()=>$('result-dialog').close());
 $('rematch').addEventListener('click',()=>{$('result-dialog').close();mode==='bot'?startBot():showLobby();});
-$('log-toggle').addEventListener('click',()=>{const open=$('activity-log').hidden;$('activity-log').hidden=!open;$('log-toggle').setAttribute('aria-expanded',String(open));});
+$('log-toggle').addEventListener('click',()=>$('activity-dialog').showModal());
+$('activity-close').addEventListener('click',()=>$('activity-dialog').close());
 
 try {
   const response=await fetch(new URL('./cards.json',import.meta.url));if(!response.ok)throw Error('Card file could not be loaded.');
