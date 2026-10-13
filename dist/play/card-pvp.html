@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151c19">
+  <meta name="description" content="A turn-based card duel. Build your strategy, manage your energy, and play against a friend or the bot.">
+  <title>Card PvP — apina</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../card-pvp/style.css">
+</head>
+<body>
+  <svg class="svg-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="duelist-art" viewBox="0 0 240 260">
+        <path class="avatar-shadow" d="M32 241c0-10 39-18 87-18s88 8 88 18-40 16-88 16-87-6-87-16Z"/>
+        <path class="avatar-deep" d="m59 151-26 72 32 10 20-52 26 44 82 5-8-52-27-37Z"/>
+        <path class="avatar-primary" d="m82 124-27 24 22 66 27 12 51-6 27-52-26-43Z"/>
+        <path class="avatar-secondary" d="m68 139 13-16 47 26 37-26 10 16-46 38Z"/>
+        <path class="avatar-deep" d="m95 177 14-29 23 16 20-12-17 43Z"/>
+        <path class="avatar-secondary" d="m73 176 16 32 39 13 29-8 12-37-13 13-27 9-26-10-11-28Z"/>
+        <path class="avatar-primary" d="m58 143-17 18-15 43 18 14 17-21 18-33Zm111-4 27 24 16 27-17 21-31-28-10-23Z"/>
+        <path class="avatar-secondary" d="m44 207 13-16 19 14-14 26-22-5Zm146-29 18 9 14 27-15 19-29-11 4-17Z"/>
+        <path class="avatar-ink" d="m204 202 9 5-9 12-9-6Zm-155 3 12 7-6 10-14-4Z"/>
+        <path class="avatar-deep" d="m81 124 2-57 18-30 44-4 22 35-6 56-34 24Z"/>
+        <path class="avatar-primary" d="m91 73 17-27 29-2 24 28-2 29-29 25-33-17Z"/>
+        <path class="avatar-secondary" d="m94 69 17-23 28-1 19 27-28-9Z"/>
+        <path class="avatar-ink" d="m99 82 30-11 29 9-4 24-24 20-28-20Z"/>
+        <path class="avatar-eye" d="m111 84 17-4 19 5-3 7-16-4-14 3Z"/>
+        <path class="avatar-primary" d="m121 97 8-5 9 6-3 12-6 7-7-8Z"/>
+        <path class="avatar-line" d="m84 127 45 28 37-28M67 159l13 12m84-10 21 18m-77 27 21 7 20-6"/>
+        <path class="avatar-eye" d="m119 174 9-6 10 6-10 17Z"/>
+      </symbol>
+      <symbol id="card-back-art" viewBox="0 0 60 90">
+        <rect x="1" y="1" width="58" height="88" rx="7" fill="currentColor"/>
+        <rect x="6" y="6" width="48" height="78" rx="3" fill="none" stroke="var(--back-line)"/>
+        <path d="m30 24 14 21-14 21-14-21Z" fill="none" stroke="var(--back-line)" stroke-width="1.5"/>
+        <path d="m30 35 7 10-7 10-7-10Z" fill="var(--back-line)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header">
+    <a class="brand" href="../index.html" aria-label="apina home"><img src="../assets/favicon.svg" alt="">apina<span class="brand-divider" aria-hidden="true"></span><span class="brand-game">Card PvP</span></a>
+    <nav class="header-actions" aria-label="Game navigation">
+      <button class="text-button" id="rules-button" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3h5a3 3 0 0 1 3 3v11a4 4 0 0 0-3-1H4V3Zm12 0h-4v14a4 4 0 0 1 3-1h1V3Z"/></svg>Rules</button>
+      <button class="secondary-button compact" id="new-match" type="button">New match<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+    </nav>
+  </header>
+
+  <main class="game-main">
+    <section id="lobby" class="lobby" aria-labelledby="lobby-title">
+      <div class="lobby-copy">
+        <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>A turn-based card duel</span>
+        <h1 id="lobby-title">Make your<br>next move<span class="mint">.</span></h1>
+        <p class="lobby-description">A good hand is only the beginning. Spend your energy, stack your effects, and outlast your opponent.</p>
+        <div class="lobby-stats" aria-label="Game features">
+          <div><strong>40</strong><span>starting health</span></div>
+          <div><strong>50</strong><span>card slots</span></div>
+          <div><strong>1v1</strong><span>you vs. them</span></div>
+        </div>
+        <div class="lobby-choices">
+          <button class="primary-button" id="play-bot" type="button" disabled>Play the bot<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button>
+          <button class="secondary-button" id="friend-toggle" type="button" aria-expanded="false" aria-controls="friend-panel" disabled>Play with a friend</button>
+        </div>
+        <p class="lobby-note">No account needed. Your hand stays private.</p>
+        <div id="friend-panel" class="friend-panel" hidden>
+          <div class="form-heading"><h2>Bring a friend</h2><span class="connection-status" id="connection-status">Not connected</span></div>
+          <label class="field-label" for="player-name">Your name</label>
+          <input id="player-name" name="player-name" type="text" placeholder="Player" maxlength="24" autocomplete="nickname">
+          <div class="room-actions">
+            <button class="primary-button" id="create-room" type="button">Create room</button>
+            <span class="room-divider">or join one</span>
+            <div class="join-fields"><label class="sr-only" for="room-code">Room code</label><input id="room-code" type="text" placeholder="ROOM CODE" maxlength="6" autocapitalize="characters" spellcheck="false" autocomplete="off"><button id="join-room" class="secondary-button" type="button">Join<span aria-hidden="true">→</span></button></div>
+          </div>
+          <details class="connection-settings"><summary>Connection settings</summary><label class="field-label" for="server-url">Multiplayer server</label><input id="server-url" type="url" placeholder="https://your-server.workers.dev" spellcheck="false" autocomplete="url"><p>Use the server URL provided by the site owner.</p></details>
+        </div>
+        <p class="lobby-message" id="lobby-message" role="status" aria-live="polite"></p>
+        <div class="waiting-panel" id="waiting-panel" hidden>
+          <span class="eyebrow">Your room is ready</span>
+          <div class="waiting-code-row"><strong id="waiting-code">------</strong><button id="copy-invite" class="secondary-button compact" type="button">Copy invite<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 7V3H3v9h4"/></svg></button></div>
+          <p><span class="waiting-pulse" aria-hidden="true"></span>Waiting for your opponent to join…</p>
+          <button class="text-button" id="cancel-room" type="button">Cancel room</button>
+        </div>
+      </div>
+      <div class="lobby-art" aria-hidden="true">
+        <div class="art-caption">YOUR HAND. YOUR CALL.</div>
+        <div class="preview-card preview-card-back"><svg viewBox="0 0 60 90"><use href="#card-back-art"/></svg></div>
+        <div class="preview-card preview-card-front">
+          <div class="preview-cost">2<span>energy</span></div>
+          <svg class="preview-mark" viewBox="0 0 100 100"><path d="m50 12 26 18-8 23 16 12-18 22H35L17 65l16-12-9-23Z"/><path d="m32 38 18 10 18-10M35 64l15 12 15-12"/><path class="preview-eye" d="m34 43 12 7-3 9-10-6Zm32 0-12 7 3 9 10-6Z"/></svg>
+          <div class="preview-card-lines"><span></span><span></span><span></span></div>
+          <div class="preview-card-bottom"><span>01 / 50</span><span>✦</span></div>
+        </div>
+        <div class="art-footer"><span class="art-line"></span><span>Think ahead. Play your way.</span></div>
+      </div>
+    </section>
+
+    <section id="battle" class="battle" aria-label="Card duel" hidden>
+      <div class="battle-topbar">
+        <span class="round-label" id="round-label">ROUND 01</span>
+        <span class="turn-label" id="turn-label" role="status" aria-live="polite"><span class="live-dot" aria-hidden="true"></span>Your turn</span>
+        <div class="opponent-cards-meta"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="4" width="9" height="13" rx="2"/><path d="M5 14H3V2h9v2"/></svg><span>Opponent's hand</span></div>
+      </div>
+      <div class="arena">
+        <section class="fighter fighter-player" id="fighter-0" aria-label="Your character">
+          <div class="fighter-heading"><div><span class="fighter-role">YOU</span><h2 id="player-name-0">Player</h2></div><span class="fighter-emblem" aria-hidden="true">✦</span></div>
+          <div class="health-heading"><span>Health</span><strong id="player-hp-0">40<span> / 40</span></strong></div>
+          <div class="health-bar"><div class="health-fill" id="hp-fill-0" style="width:100%"></div></div>
+          <div class="fighter-portrait"><div class="portrait-ring"></div><svg class="fighter-avatar" viewBox="0 0 240 260" aria-hidden="true"><use href="#duelist-art"/></svg><div class="poison-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span class="poison-status" id="poison-0" hidden>Poisoned · 3 turns</span></div>
+          <div class="energy-row"><span class="energy-label"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m9 1-7 10h5l-1 8 8-11H9Z"/></svg>Energy</span><div class="energy-pips" id="energy-pips-0" aria-hidden="true"></div><strong id="player-energy-0">3 / 10</strong></div>
+        </section>
+        <div class="arena-center" aria-hidden="true"><div class="duel-seal"><svg viewBox="0 0 60 60"><path d="m19 14 29 31-4 4L14 19l-3-8Zm23 0L12 45l4 4 30-30 3-8ZM9 40l11 11m21-11L30 51"/></svg></div><span>THE DUEL</span><div class="center-line"></div></div>
+        <section class="fighter fighter-opponent" id="fighter-1" aria-label="Opponent's character">
+          <div class="fighter-heading"><div><span class="fighter-role">OPPONENT</span><h2 id="player-name-1">The bot</h2></div><div class="opponent-hand" id="opponent-hand" aria-label="Opponent's hidden cards"></div></div>
+          <div class="health-heading"><span>Health</span><strong id="player-hp-1">40<span> / 40</span></strong></div>
+          <div class="health-bar"><div class="health-fill" id="hp-fill-1" style="width:100%"></div></div>
+          <div class="fighter-portrait"><div class="portrait-ring"></div><svg class="fighter-avatar" viewBox="0 0 240 260" aria-hidden="true"><use href="#duelist-art"/></svg><div class="poison-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span class="poison-status" id="poison-1" hidden>Poisoned · 3 turns</span></div>
+          <div class="energy-row"><span class="energy-label"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m9 1-7 10h5l-1 8 8-11H9Z"/></svg>Energy</span><div class="energy-pips" id="energy-pips-1" aria-hidden="true"></div><strong id="player-energy-1">3 / 10</strong></div>
+        </section>
+      </div>
+      <p class="battle-message" id="battle-message" role="status" aria-live="polite">Choose a card to make your move.</p>
+      <section class="hand-section" aria-labelledby="hand-title">
+        <div class="hand-heading"><h2 id="hand-title">Your hand<span id="hand-count">5 cards</span></h2><span class="deck-count"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="11" height="13" rx="2"/><path d="M12 5V2H2v12h3"/></svg><span id="deck-count">45 in deck</span></span></div>
+        <div class="hand" id="hand" aria-label="Your cards"></div>
+        <div class="hand-actions"><p id="selection-hint">Select a card to see your next move.</p><div class="action-buttons"><button class="primary-button" id="play-card" type="button" disabled>Play card<span aria-hidden="true">↑</span></button><button class="secondary-button" id="end-turn" type="button">End turn<span aria-hidden="true">→</span></button></div></div>
+      </section>
+      <div class="activity-section"><button id="log-toggle" class="text-button log-toggle" type="button" aria-expanded="false" aria-controls="activity-log"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h10"/></svg>Match activity<span aria-hidden="true">⌄</span></button><ol id="activity-log" class="activity-log" hidden aria-label="Match activity"></ol></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a href="../index.html">← All games</a><span>Play a little. Think a little.</span><a href="../privacy.html">Privacy</a></footer>
+
+  <dialog class="game-dialog rules-dialog" id="rules-dialog" aria-labelledby="rules-title">
+    <div class="dialog-header"><span class="eyebrow">HOW TO PLAY</span><button class="icon-button" id="rules-close" type="button" aria-label="Close rules">×</button></div>
+    <h2 id="rules-title">Every move counts.</h2>
+    <p class="dialog-intro">Bring your opponent's health to zero before they do the same to you.</p>
+    <ol class="rules-list">
+      <li><span class="rule-number">01</span><div><strong>Start with a hand.</strong><p>You begin with 40 health, 3 energy, and 5 cards. You can hold up to 7 cards.</p></div></li>
+      <li><span class="rule-number">02</span><div><strong>Spend your energy.</strong><p>The number on a card is its energy cost. Play as many cards as you can afford, then end your turn.</p></div></li>
+      <li><span class="rule-number">03</span><div><strong>Build a strategy.</strong><p>Cards can damage, heal, move energy, or apply poison. Some combine several effects. Read the card before playing it.</p></div></li>
+      <li><span class="rule-number">04</span><div><strong>Take your next turn.</strong><p>Draw 1 card and gain 3 energy, up to 10. Poison deals damage at the start of the poisoned player's turn for its remaining turns.</p></div></li>
+    </ol>
+    <p class="rules-footnote">Online turns have a 3-minute limit. A disconnected player has 90 seconds to return. Each player sees only their own hand.</p>
+  </dialog>
+
+  <dialog class="game-dialog result-dialog" id="result-dialog" aria-labelledby="result-title">
+    <div class="result-mark" aria-hidden="true">✦</div><span class="eyebrow">MATCH COMPLETE</span><h2 id="result-title">Well played.</h2><p id="result-description">Every hand has another story.</p><div class="result-actions"><button id="rematch" class="primary-button" type="button">Play again<span aria-hidden="true">↗</span></button><button id="result-close" class="secondary-button" type="button">View board</button></div>
+  </dialog>
+  <script type="module" src="../card-pvp/app.js"></script>
+</body>
+</html>

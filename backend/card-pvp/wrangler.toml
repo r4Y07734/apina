@@ -1,0 +1,16 @@
+name = "apina-card-pvp"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+# Set exact production origins before deploying. Do not put a trailing slash here.
+ALLOWED_ORIGINS = "http://localhost:8000,http://127.0.0.1:8000,http://localhost:8080,http://127.0.0.1:8080"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "CardRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["CardRoom"]

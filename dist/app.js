@@ -1,4 +1,5 @@
 const games = [
+  {id:'cards',name:'Card PVP',category:'Strategy',mood:'Multiplayer',scene:'cards',badge:'NEW',order:9,description:"A turn-based card duel. Spend energy, combine effects and outplay a friend or the practice bot."},
   {id:'drift',name:'Sunset Drift',category:'Racing',mood:'Arcade',scene:'drift',badge:'',order:4,description:"Drive three routes with moving traffic, nitro, drift combos and timed checkpoints. Reach the 6 km finish with your car intact."},
   {id:'orbit',name:'Orbit',category:'Puzzle',mood:'Relaxing',scene:'orbit',badge:'',order:3,description:"Launch a probe through planetary gravity. Collect the beacons and reach the portal across five hand-built levels."},
   {id:'stack',name:'Stack Theory',category:'Puzzle',mood:'Quick play',scene:'stack',badge:'NEW',order:8,description:"Drop moving blocks onto the tower. Overhangs are cut away, and perfect placements build a streak."},
@@ -8,7 +9,7 @@ const games = [
   {id:'pool',name:'Eight Ball Club',category:'Sports',mood:'Skill',scene:'pool',badge:'',order:1,description:"Clear the colored balls before the eight ball. Aim carefully and avoid pocketing the eight too early."},
   {id:'island',name:'Little Islands',category:'Adventure',mood:'Creative',scene:'island',badge:'NEW',order:6,description:"Explore three archipelagos with different bridge networks. Return five relics to each lighthouse to unlock the next chapter."}
 ];
-const categories = [{name:'Action',symbol:'ϟ'},{name:'Adventure',symbol:'♧'},{name:'Racing',symbol:'↗'},{name:'Puzzle',symbol:'◇'},{name:'Sports',symbol:'◎'},{name:'Relaxing',symbol:'❋'}];
+const categories = [{name:'Strategy',symbol:'♠'},{name:'Action',symbol:'ϟ'},{name:'Adventure',symbol:'♧'},{name:'Racing',symbol:'↗'},{name:'Puzzle',symbol:'◇'},{name:'Sports',symbol:'◎'},{name:'Relaxing',symbol:'❋'}];
 let saved;
 try {saved = new Set(JSON.parse(localStorage.getItem('apina-favorites') || '[]'));} catch {saved = new Set();}
 let view = 'discover', category = 'All games', search = '', sorting = 'featured', openedGame = null;
@@ -20,6 +21,7 @@ function art(scene) {
   let body = '';
   const stars = Array.from({length:32},(_,i)=>`<circle cx="${(i*97+43)%600}" cy="${(i*53+19)%360}" r="${i%3===0?1.5:.7}" fill="#faf4e2" opacity="${.2+(i%5)/10}"/>`).join('');
   const defs = `<defs><linearGradient id="bg${n}" x2=".8" y2="1"><stop stop-color="#354563"/><stop offset="1" stop-color="#131e38"/></linearGradient><radialGradient id="planet${n}" cx=".3" cy=".25" r=".8"><stop stop-color="#f7edc4"/><stop offset=".45" stop-color="#dcb796"/><stop offset="1" stop-color="#63667b"/></radialGradient><linearGradient id="sand${n}" x2=".8" y2="1"><stop stop-color="#e8b47c"/><stop offset="1" stop-color="#8d4b3b"/></linearGradient><linearGradient id="green${n}" x2=".8" y2="1"><stop stop-color="#c4d6a7"/><stop offset="1" stop-color="#667b54"/></linearGradient></defs>`;
+  if(scene==='cards') body=`<rect width="600" height="380" fill="#192320"/><path d="M0 300h600M300 0v380" stroke="#b6c5b3" opacity=".07"/><g transform="translate(185 77) rotate(-14 70 115)"><rect width="140" height="218" rx="12" fill="#e3e6da"/><rect x="12" y="12" width="116" height="155" rx="7" fill="#33443b"/><path d="m69 45 6 33 33 6-33 6-6 33-6-33-33-6 33-6Z" fill="#b5e2c0"/><path d="M26 186h86m-86 11h48" stroke="#647265" stroke-width="4"/></g><g transform="translate(305 87) rotate(12 70 110)"><rect width="140" height="218" rx="12" fill="#dae1d8"/><rect x="12" y="12" width="116" height="155" rx="7" fill="#342d29"/><path d="m43 121 51-65 2-14-15 5-51 64m-1-16 28 22m-35 15 20-23" stroke="#dfa98a" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M26 186h86m-86 11h48" stroke="#647265" stroke-width="4"/></g><circle cx="102" cy="105" r="4" fill="#b5e2c0"/><circle cx="495" cy="274" r="4" fill="#dfa98a"/>`;
   if(scene==='orbit') body=`<rect width="600" height="380" fill="url(#bg${n})"/>${stars}<circle cx="410" cy="121" r="105" fill="url(#planet${n})"/><path d="M313 82q85 12 188-34M309 120q95 23 206-41M311 150q105 35 207-27M330 188q90 19 174-16" stroke="#858593" opacity=".32" stroke-width="8" fill="none"/><ellipse cx="409" cy="128" rx="172" ry="31" transform="rotate(-27 409 128)" fill="none" stroke="#f6dbba" stroke-width="13" opacity=".55"/><circle cx="129" cy="94" r="16" fill="#e6aa85"/><circle cx="540" cy="272" r="6" fill="#d1fa72"/><path d="M240 220q210-85 355 82" fill="none" stroke="#c4d1ed" stroke-width=".7" opacity=".25"/>`;
   if(scene==='drift') body=`<image href="assets/sunset-drift.png" width="600" height="380" preserveAspectRatio="xMidYMid slice"/>`;
   if(scene==='stack') {
@@ -48,7 +50,7 @@ function render(){
 }
 function changeView(next){view=next;category='All games';search='';$('#search').value='';render();$('#catalog').scrollIntoView({behavior:'smooth'});closeMenu();}
 function updateDialog(){if(!openedGame)return;$('#dialog-save span').textContent=saved.has(openedGame.id)?'Saved to favorites':'Save to favorites';$('#dialog-save').setAttribute('aria-pressed',String(saved.has(openedGame.id)));}
-function openGame(id){const slugs={"drift": "sunset-drift", "orbit": "orbit", "stack": "stack-theory", "neon": "neon-run", "garden": "pocket-garden", "rally": "dust-rally", "pool": "eight-ball-club", "island": "little-islands"};if(slugs[id])location.href=`play/${slugs[id]}.html`;}
+function openGame(id){const slugs={"cards":"card-pvp","drift": "sunset-drift", "orbit": "orbit", "stack": "stack-theory", "neon": "neon-run", "garden": "pocket-garden", "rally": "dust-rally", "pool": "eight-ball-club", "island": "little-islands"};if(slugs[id])location.href=`play/${slugs[id]}.html`;}
 function closeMenu(){$('.sidebar').classList.remove('open');$('.mobile-menu').setAttribute('aria-expanded','false');}
 $('#filters').innerHTML=['All games',...categories.map(c=>c.name)].map(c=>`<button class="filter ${c==='All games'?'active':''}" data-category="${c}">${c==='All games'?'All':c}</button>`).join('');
 $('#side-categories').innerHTML=categories.map(c=>`<button class="side-category" data-category="${c.name}"><span class="category-symbol" aria-hidden="true">${c.symbol}</span>${c.name}</button>`).join('');

@@ -1,0 +1,912 @@
+[
+  {
+    "id": "card-01",
+    "name": "Card 01",
+    "description": "Deal 6 damage to your opponent.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "id": "card-02",
+    "name": "Card 02",
+    "description": "Restore 7 of your health.",
+    "cost": 2,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-03",
+    "name": "Card 03",
+    "description": "Gain 2 energy.",
+    "cost": 0,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-04",
+    "name": "Card 04",
+    "description": "Steal up to 2 energy from your opponent.",
+    "cost": 1,
+    "icon": "arrows",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-05",
+    "name": "Card 05",
+    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "cost": 2,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-06",
+    "name": "Card 06",
+    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
+    "cost": 2,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-07",
+    "name": "Card 07",
+    "description": "Take 3 damage to gain 4 energy.",
+    "cost": 1,
+    "icon": "sword",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "id": "card-08",
+    "name": "Card 08",
+    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-09",
+    "name": "Card 09",
+    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-10",
+    "name": "Card 10",
+    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 1
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-11",
+    "name": "Card 11",
+    "description": "Deal 6 damage to your opponent.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "id": "card-12",
+    "name": "Card 12",
+    "description": "Restore 7 of your health.",
+    "cost": 2,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-13",
+    "name": "Card 13",
+    "description": "Gain 2 energy.",
+    "cost": 0,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-14",
+    "name": "Card 14",
+    "description": "Steal up to 2 energy from your opponent.",
+    "cost": 1,
+    "icon": "arrows",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-15",
+    "name": "Card 15",
+    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "cost": 2,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-16",
+    "name": "Card 16",
+    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
+    "cost": 2,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-17",
+    "name": "Card 17",
+    "description": "Take 3 damage to gain 4 energy.",
+    "cost": 1,
+    "icon": "sword",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "id": "card-18",
+    "name": "Card 18",
+    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-19",
+    "name": "Card 19",
+    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-20",
+    "name": "Card 20",
+    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 1
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-21",
+    "name": "Card 21",
+    "description": "Deal 6 damage to your opponent.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "id": "card-22",
+    "name": "Card 22",
+    "description": "Restore 7 of your health.",
+    "cost": 2,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-23",
+    "name": "Card 23",
+    "description": "Gain 2 energy.",
+    "cost": 0,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-24",
+    "name": "Card 24",
+    "description": "Steal up to 2 energy from your opponent.",
+    "cost": 1,
+    "icon": "arrows",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-25",
+    "name": "Card 25",
+    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "cost": 2,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-26",
+    "name": "Card 26",
+    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
+    "cost": 2,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-27",
+    "name": "Card 27",
+    "description": "Take 3 damage to gain 4 energy.",
+    "cost": 1,
+    "icon": "sword",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "id": "card-28",
+    "name": "Card 28",
+    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-29",
+    "name": "Card 29",
+    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-30",
+    "name": "Card 30",
+    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 1
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-31",
+    "name": "Card 31",
+    "description": "Deal 6 damage to your opponent.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "id": "card-32",
+    "name": "Card 32",
+    "description": "Restore 7 of your health.",
+    "cost": 2,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-33",
+    "name": "Card 33",
+    "description": "Gain 2 energy.",
+    "cost": 0,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-34",
+    "name": "Card 34",
+    "description": "Steal up to 2 energy from your opponent.",
+    "cost": 1,
+    "icon": "arrows",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-35",
+    "name": "Card 35",
+    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "cost": 2,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-36",
+    "name": "Card 36",
+    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
+    "cost": 2,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-37",
+    "name": "Card 37",
+    "description": "Take 3 damage to gain 4 energy.",
+    "cost": 1,
+    "icon": "sword",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "id": "card-38",
+    "name": "Card 38",
+    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-39",
+    "name": "Card 39",
+    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-40",
+    "name": "Card 40",
+    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 1
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-41",
+    "name": "Card 41",
+    "description": "Deal 6 damage to your opponent.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "id": "card-42",
+    "name": "Card 42",
+    "description": "Restore 7 of your health.",
+    "cost": 2,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-43",
+    "name": "Card 43",
+    "description": "Gain 2 energy.",
+    "cost": 0,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-44",
+    "name": "Card 44",
+    "description": "Steal up to 2 energy from your opponent.",
+    "cost": 1,
+    "icon": "arrows",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-45",
+    "name": "Card 45",
+    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "cost": 2,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-46",
+    "name": "Card 46",
+    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
+    "cost": 2,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-47",
+    "name": "Card 47",
+    "description": "Take 3 damage to gain 4 energy.",
+    "cost": 1,
+    "icon": "sword",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "id": "card-48",
+    "name": "Card 48",
+    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 3
+      }
+    ]
+  },
+  {
+    "id": "card-49",
+    "name": "Card 49",
+    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "steal",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-50",
+    "name": "Card 50",
+    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "cost": 3,
+    "icon": "spark",
+    "accent": "mixed",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "steal",
+        "target": "opponent",
+        "amount": 1
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 2
+      }
+    ]
+  }
+]

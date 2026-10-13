@@ -1,0 +1,18 @@
+{
+  "name": "apina-card-pvp-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node run-wrangler.mjs dev --local --port 8787",
+    "login": "node run-wrangler.mjs login",
+    "deploy": "node run-wrangler.mjs deploy",
+    "check": "node run-wrangler.mjs deploy --dry-run --outdir .build",
+    "test": "node --test test/worker.test.mjs",
+    "test:integration": "node test/integration.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0",
+    "ws": "8.22.0"
+  }
+}
