@@ -2,7 +2,7 @@
   {
     "id": "card-01",
     "name": "Basic Nigger",
-    "description": "Steal 5 energy from opponent",
+    "description": "The Nigger steals energy from the opponent.",
     "cost": 2,
     "icon": "arrows",
     "accent": "energy",
@@ -17,7 +17,7 @@
   {
     "id": "card-02",
     "name": "Indian Scammer",
-    "description": "Steal 10 energy from opponent",
+    "description": "A Indian scammer will scam your opponent.",
     "cost": 5,
     "icon": "arrows",
     "accent": "energy",
@@ -47,7 +47,7 @@
   {
     "id": "card-04",
     "name": "Israel",
-    "description": "Deal 20 damage and gain 10 energy",
+    "description": "Give billion energy to Israel in exchange for missiles.",
     "cost": 10,
     "icon": "sword",
     "accent": "damage",
@@ -67,7 +67,7 @@
   {
     "id": "card-05",
     "name": "Magic Mushrooms",
-    "description": "Heal 10 and gain 10 energy. You might experience side effects...",
+    "description": "You might experience side effects...",
     "cost": 3,
     "icon": "bolt",
     "accent": "heart",
@@ -93,7 +93,7 @@
   {
     "id": "card-06",
     "name": "Cumshot",
-    "description": "Deal 3 damage to opponent. Opponent will also gain 3 energy.",
+    "description": "Cum on your opponents face. He might eat it tho...",
     "cost": 2,
     "icon": "arrows",
     "accent": "damage",
@@ -128,7 +128,7 @@
   {
     "id": "card-08",
     "name": "Nuke",
-    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
+    "description": "Imagine your opponent is Japanese",
     "cost": 3,
     "icon": "spark",
     "accent": "mixed",
@@ -169,7 +169,7 @@
   {
     "id": "card-10",
     "name": "Slave Master",
-    "description": "Use your whip to deal 1 damage",
+    "description": "Whip your slave (opponent)",
     "cost": 0,
     "icon": "sword",
     "accent": "damage",
@@ -184,7 +184,7 @@
   {
     "id": "card-11",
     "name": "Indian Poop Festival",
-    "description": "Poison your opponent with 2 damage for 3 rounds.",
+    "description": "Your opponent will participate in a poop festival",
     "cost": 2,
     "icon": "flask",
     "accent": "poison",
@@ -200,7 +200,7 @@
   {
     "id": "card-12",
     "name": "Missile Strike",
-    "description": "Deal 7 damage",
+    "description": "Kill innocent children",
     "cost": 5,
     "icon": "arrows",
     "accent": "damage",
@@ -215,7 +215,7 @@
   {
     "id": "card-13",
     "name": "Suicide Bomber",
-    "description": "Deal 10 damage to your opponent and 20 to yourself.",
+    "description": "Boom...",
     "cost": 2,
     "icon": "sword",
     "accent": "attack",
@@ -285,7 +285,7 @@
   {
     "id": "card-17",
     "name": "Donate to Charity",
-    "description": "Give 3 energy to your opponent.",
+    "description": "Give 3 hp to your opponent.",
     "cost": 0,
     "icon": "heart",
     "accent": "mixed",
@@ -305,7 +305,7 @@
   {
     "id": "card-18",
     "name": "AI",
-    "description": "Deal 2 damage.",
+    "description": "Use insane amount of energy for small profits",
     "cost": 10,
     "icon": "spark",
     "accent": "damage",
@@ -314,12 +314,6 @@
         "type": "damage",
         "target": "opponent",
         "amount": 2
-      },
-      {
-        "type": "poison",
-        "target": "opponent",
-        "amount": 1,
-        "rounds": 3
       }
     ]
   },
@@ -362,39 +356,9 @@
   },
   {
     "id": "card-21",
-    "name": "Card 21",
-    "description": "Deal 6 damage to your opponent.",
-    "cost": 2,
-    "icon": "sword",
-    "accent": "damage",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 6
-      }
-    ]
-  },
-  {
-    "id": "card-22",
-    "name": "Card 22",
-    "description": "Restore 7 of your health.",
-    "cost": 2,
-    "icon": "heart",
-    "accent": "heal",
-    "effects": [
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 7
-      }
-    ]
-  },
-  {
-    "id": "card-23",
-    "name": "Card 23",
-    "description": "Gain 2 energy.",
-    "cost": 0,
+    "name": "Jew Party",
+    "description": "Take your time dancing.",
+    "cost": 1,
     "icon": "bolt",
     "accent": "energy",
     "effects": [
@@ -406,10 +370,75 @@
     ]
   },
   {
+    "id": "card-22",
+    "name": "Sand Nigger",
+    "description": "Throw sand in your opponents face.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "card-23",
+    "name": "Asian Woman Driver",
+    "description": "Accidentally drive over your opponent.",
+    "cost": 5,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10
+      }
+    ]
+  },
+  {
     "id": "card-24",
-    "name": "Card 24",
-    "description": "Steal up to 2 energy from your opponent.",
-    "cost": 1,
+    "name": "White Power",
+    "description": "Gain power and health",
+    "cost": 7,
+    "icon": "bolt",
+    "accent": "energy",
+    "effects": [
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 40
+      }
+    ]
+  },
+  {
+    "id": "card-25",
+    "name": "Pregnant Teen",
+    "description": "Shoot the fetus at your opponent",
+    "cost": 3,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "card-26",
+    "name": "Gypsy",
+    "description": "Steal 2 energy",
+    "cost": 0,
     "icon": "arrows",
     "accent": "energy",
     "effects": [
@@ -421,97 +450,45 @@
     ]
   },
   {
-    "id": "card-25",
-    "name": "Card 25",
-    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
-    "cost": 2,
-    "icon": "flask",
-    "accent": "poison",
-    "effects": [
-      {
-        "type": "poison",
-        "target": "opponent",
-        "amount": 2,
-        "rounds": 3
-      }
-    ]
-  },
-  {
-    "id": "card-26",
-    "name": "Card 26",
-    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
-    "cost": 2,
-    "icon": "spark",
-    "accent": "mixed",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 3
-      }
-    ]
-  },
-  {
     "id": "card-27",
-    "name": "Card 27",
-    "description": "Take 3 damage to gain 4 energy.",
-    "cost": 1,
-    "icon": "sword",
-    "accent": "mixed",
+    "name": "Down Syndrome Nigga",
+    "description": "Waste 5 energy",
+    "cost": 5,
+    "icon": "bolt",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
         "target": "self",
-        "amount": 3
-      },
-      {
-        "type": "energy",
-        "target": "self",
-        "amount": 4
+        "amount": 1
       }
     ]
   },
   {
     "id": "card-28",
-    "name": "Card 28",
-    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
-    "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
+    "name": "Gay Orgy",
+    "description": "Take backshots",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
-        "target": "opponent",
-        "amount": 5
-      },
-      {
-        "type": "poison",
-        "target": "opponent",
-        "amount": 1,
-        "rounds": 3
+        "target": "self",
+        "amount": 1
       }
     ]
   },
   {
     "id": "card-29",
-    "name": "Card 29",
-    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
-    "cost": 0,
-    "icon": "heart",
-    "accent": "mixed",
+    "name": "Furry Porn",
+    "description": "Watch some premium furry porn",
+    "cost": 3,
+    "icon": "bolt",
+    "accent": "energy",
     "effects": [
       {
-        "type": "steal",
-        "target": "self",
-        "amount": 2
-      },
-      {
-        "type": "heal",
+        "type": "energy",
         "target": "self",
         "amount": 5
       }
@@ -519,102 +496,103 @@
   },
   {
     "id": "card-30",
-    "name": "Card 30",
-    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
-    "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
+    "name": "Blind",
+    "description": "Walk on the road and get hit by a car",
+    "cost": 1,
+    "icon": "heart",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "steal",
-        "target": "opponent",
-        "amount": 1
-      },
-      {
-        "type": "heal",
         "target": "self",
-        "amount": 2
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-31",
-    "name": "Card 31",
-    "description": "Deal 6 damage to your opponent.",
+    "name": "Eat Uranium",
+    "description": "Yummy",
     "cost": 2,
+    "icon": "bolt",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 3,
+        "rounds": 5
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "card-32",
+    "name": "Dildo Cannon",
+    "description": "Shoot a dildo at your opponent",
+    "cost": 1,
     "icon": "sword",
     "accent": "damage",
     "effects": [
       {
         "type": "damage",
         "target": "opponent",
-        "amount": 6
-      }
-    ]
-  },
-  {
-    "id": "card-32",
-    "name": "Card 32",
-    "description": "Restore 7 of your health.",
-    "cost": 2,
-    "icon": "heart",
-    "accent": "heal",
-    "effects": [
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 7
+        "amount": 1
       }
     ]
   },
   {
     "id": "card-33",
-    "name": "Card 33",
-    "description": "Gain 2 energy.",
+    "name": "67",
+    "description": "...",
     "cost": 0,
-    "icon": "bolt",
-    "accent": "energy",
+    "icon": "heart",
+    "accent": "damage",
     "effects": [
       {
-        "type": "energy",
+        "type": "damage",
         "target": "self",
-        "amount": 2
+        "amount": 20
       }
     ]
   },
   {
     "id": "card-34",
-    "name": "Card 34",
-    "description": "Steal up to 2 energy from your opponent.",
-    "cost": 1,
-    "icon": "arrows",
-    "accent": "energy",
+    "name": "Condom Balloon",
+    "description": "Throw a condom filled with water",
+    "cost": 3,
+    "icon": "sword",
+    "accent": "damage",
     "effects": [
       {
-        "type": "steal",
+        "type": "damage",
         "target": "opponent",
-        "amount": 2
+        "amount": 1
       }
     ]
   },
   {
     "id": "card-35",
-    "name": "Card 35",
-    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
-    "cost": 2,
-    "icon": "flask",
-    "accent": "poison",
+    "name": "Pingpong Chingchong",
+    "description": "Eat dogs and cats",
+    "cost": 4,
+    "icon": "bolt",
+    "accent": "energy",
     "effects": [
       {
         "type": "poison",
-        "target": "opponent",
-        "amount": 2,
+        "target": "self",
+        "amount": 1,
         "rounds": 3
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 5
       }
     ]
   },
