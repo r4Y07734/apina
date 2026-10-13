@@ -598,114 +598,114 @@
   },
   {
     "id": "card-36",
-    "name": "Card 36",
-    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
-    "cost": 2,
-    "icon": "spark",
+    "name": "Israel #2",
+    "description": "Send gazillion dollars to Israel",
+    "cost": 10,
+    "icon": "arrow",
     "accent": "mixed",
     "effects": [
       {
         "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "heal",
         "target": "self",
-        "amount": 3
+        "amount": 20
       }
     ]
   },
   {
     "id": "card-37",
-    "name": "Card 37",
-    "description": "Take 3 damage to gain 4 energy.",
-    "cost": 1,
+    "name": "Hurricane",
+    "description": "Send a hurricane at your opponent",
+    "cost": 4,
     "icon": "sword",
-    "accent": "mixed",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
-        "target": "self",
-        "amount": 3
-      },
-      {
-        "type": "energy",
-        "target": "self",
-        "amount": 4
+        "target": "opponent",
+        "amount": 8
       }
     ]
   },
   {
     "id": "card-38",
-    "name": "Card 38",
-    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
-    "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
+    "name": "Communism",
+    "description": "Equal pain",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
-        "target": "opponent",
-        "amount": 5
+        "target": "self",
+        "amount": 10
       },
       {
-        "type": "poison",
+        "type": "damage",
         "target": "opponent",
-        "amount": 1,
-        "rounds": 3
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-39",
-    "name": "Card 39",
-    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
-    "cost": 0,
-    "icon": "heart",
+    "name": "Capitalism",
+    "description": "Use your opponent for your own good",
+    "cost": 2,
+    "icon": "arrows",
     "accent": "mixed",
     "effects": [
       {
         "type": "steal",
         "target": "self",
-        "amount": 2
+        "amount": 4
       },
       {
         "type": "heal",
         "target": "self",
-        "amount": 5
+        "amount": 4
       }
     ]
   },
   {
     "id": "card-40",
-    "name": "Card 40",
-    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "name": "Invest",
+    "description": "Give your opponent 5 hp to recieve 10 hp.",
     "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
+    "icon": "heart",
+    "accent": "heal",
     "effects": [
       {
-        "type": "damage",
+        "type": "heal",
         "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "steal",
-        "target": "opponent",
-        "amount": 1
+        "amount": 5
       },
       {
         "type": "heal",
         "target": "self",
-        "amount": 2
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-41",
-    "name": "Card 41",
-    "description": "Deal 6 damage to your opponent.",
+    "name": "Community Puh",
+    "description": "Have some fun time with the popular girl",
+    "cost": 1,
+    "icon": "flask",
+    "accent": "poison",
+    "effects": [
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 1,
+        "rounds": 2
+      }
+    ]
+  },
+  {
+    "id": "card-42",
+    "name": "George Floyd",
+    "description": "Your opponent can't breathe",
     "cost": 2,
     "icon": "sword",
     "accent": "damage",
@@ -713,127 +713,114 @@
       {
         "type": "damage",
         "target": "opponent",
-        "amount": 6
-      }
-    ]
-  },
-  {
-    "id": "card-42",
-    "name": "Card 42",
-    "description": "Restore 7 of your health.",
-    "cost": 2,
-    "icon": "heart",
-    "accent": "heal",
-    "effects": [
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 7
+        "amount": 5
       }
     ]
   },
   {
     "id": "card-43",
-    "name": "Card 43",
-    "description": "Gain 2 energy.",
-    "cost": 0,
+    "name": "Digital Crimes",
+    "description": "Send CP to your opponent",
+    "cost": 5,
     "icon": "bolt",
-    "accent": "energy",
+    "accent": "damage",
     "effects": [
       {
         "type": "energy",
-        "target": "self",
-        "amount": 2
+        "target": "opponent",
+        "amount": 5
       }
     ]
   },
   {
     "id": "card-44",
-    "name": "Card 44",
-    "description": "Steal up to 2 energy from your opponent.",
-    "cost": 1,
-    "icon": "arrows",
+    "name": "Gambling addiction",
+    "description": "Jackpot",
+    "cost": 10,
+    "icon": "bolt",
     "accent": "energy",
     "effects": [
       {
-        "type": "steal",
-        "target": "opponent",
-        "amount": 2
+        "type": "heal",
+        "target": "self",
+        "amount": 20
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-45",
-    "name": "Card 45",
-    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
-    "cost": 2,
+    "name": "Goblin Barrel",
+    "description": "Send 3 black midgets to attack your opponent.",
+    "cost": 3,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-46",
+    "name": "Redskin nightmare",
+    "description": "Columbus brings diseases to your opponent.",
+    "cost": 5,
     "icon": "flask",
     "accent": "poison",
     "effects": [
       {
         "type": "poison",
         "target": "opponent",
-        "amount": 2,
-        "rounds": 3
-      }
-    ]
-  },
-  {
-    "id": "card-46",
-    "name": "Card 46",
-    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
-    "cost": 2,
-    "icon": "spark",
-    "accent": "mixed",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 3
+        "amount": 5,
+        "rounds": 5
       }
     ]
   },
   {
     "id": "card-47",
-    "name": "Card 47",
-    "description": "Take 3 damage to gain 4 energy.",
+    "name": "Tom Pearl",
+    "description": "Today I'm gonna eat my diarhhea...",
     "cost": 1,
-    "icon": "sword",
-    "accent": "mixed",
+    "icon": "flask",
+    "accent": "poison",
     "effects": [
       {
-        "type": "damage",
+        "type": "poison",
         "target": "self",
-        "amount": 3
+        "amount": 2,
+        "rounds": 2
       },
       {
-        "type": "energy",
-        "target": "self",
-        "amount": 4
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 2
       }
     ]
   },
   {
     "id": "card-48",
-    "name": "Card 48",
-    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
-    "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
+    "name": "Bonnie Blue",
+    "description": "You are one of the lucky 1000 men to have sex with her.",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "poison",
     "effects": [
       {
-        "type": "damage",
-        "target": "opponent",
+        "type": "energy",
+        "target": "self",
         "amount": 5
       },
       {
         "type": "poison",
-        "target": "opponent",
+        "target": "self",
         "amount": 1,
         "rounds": 3
       }
@@ -841,30 +828,25 @@
   },
   {
     "id": "card-49",
-    "name": "Card 49",
-    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
+    "name": "Racial Slur",
+    "description": "Shout 'Nigger!' at your opponent",
     "cost": 0,
-    "icon": "heart",
-    "accent": "mixed",
+    "icon": "sword",
+    "accent": "damage",
     "effects": [
       {
-        "type": "steal",
-        "target": "self",
-        "amount": 2
-      },
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 5
+        "type": "damage",
+        "target": "opponent",
+        "amount": 1
       }
     ]
   },
   {
     "id": "card-50",
-    "name": "Card 50",
-    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
-    "cost": 3,
-    "icon": "spark",
+    "name": "Dance Battle",
+    "description": "You got better moves than your opponent",
+    "cost": 2,
+    "icon": "sword",
     "accent": "mixed",
     "effects": [
       {
@@ -875,7 +857,7 @@
       {
         "type": "steal",
         "target": "opponent",
-        "amount": 1
+        "amount": 4
       },
       {
         "type": "heal",
