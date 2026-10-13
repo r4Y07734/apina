@@ -4,7 +4,7 @@
     "name": "Basic Nigger",
     "description": "The Nigger steals energy from the opponent.",
     "cost": 2,
-    "icon": "arrows",
+    "icon": "icons/hand-coins.svg",
     "accent": "energy",
     "effects": [
       {
@@ -19,7 +19,7 @@
     "name": "Indian Scammer",
     "description": "A Indian scammer will scam your opponent.",
     "cost": 5,
-    "icon": "arrows",
+    "icon": "icons/credit-card.svg",
     "accent": "energy",
     "effects": [
       {
@@ -34,7 +34,7 @@
     "name": "Greedy Jew",
     "description": "Gain 2 energy.",
     "cost": 0,
-    "icon": "bolt",
+    "icon": "icons/battery-full.svg",
     "accent": "energy",
     "effects": [
       {
@@ -49,7 +49,7 @@
     "name": "Israel",
     "description": "Give billion energy to Israel in exchange for missiles.",
     "cost": 10,
-    "icon": "sword",
+    "icon": "icons/rocket.svg",
     "accent": "damage",
     "effects": [
       {
@@ -69,7 +69,7 @@
     "name": "Magic Mushrooms",
     "description": "You might experience side effects...",
     "cost": 3,
-    "icon": "bolt",
+    "icon": "icons/tabler-mushroom.svg",
     "accent": "heart",
     "effects": [
       {
@@ -95,7 +95,7 @@
     "name": "Cumshot",
     "description": "Cum on your opponents face. He might eat it tho...",
     "cost": 2,
-    "icon": "arrows",
+    "icon": "icons/droplets.svg",
     "accent": "damage",
     "effects": [
       {
@@ -115,7 +115,7 @@
     "name": "Suicide",
     "description": "KYS",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/skull.svg",
     "accent": "damage",
     "effects": [
       {
@@ -130,7 +130,7 @@
     "name": "Nuke",
     "description": "Imagine your opponent is Japanese",
     "cost": 3,
-    "icon": "spark",
+    "icon": "icons/radiation.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -151,7 +151,7 @@
     "name": "Equal Pay",
     "description": "You and your opponent will heal 10",
     "cost": 1,
-    "icon": "heart",
+    "icon": "icons/scale.svg",
     "accent": "heal",
     "effects": [
       {
@@ -171,7 +171,7 @@
     "name": "Slave Master",
     "description": "Whip your slave (opponent)",
     "cost": 0,
-    "icon": "sword",
+    "icon": "icons/swords.svg",
     "accent": "damage",
     "effects": [
       {
@@ -186,7 +186,7 @@
     "name": "Indian Poop Festival",
     "description": "Your opponent will participate in a poop festival",
     "cost": 2,
-    "icon": "flask",
+    "icon": "icons/biohazard.svg",
     "accent": "poison",
     "effects": [
       {
@@ -202,7 +202,7 @@
     "name": "Missile Strike",
     "description": "Kill innocent children",
     "cost": 5,
-    "icon": "arrows",
+    "icon": "icons/crosshair.svg",
     "accent": "damage",
     "effects": [
       {
@@ -217,7 +217,7 @@
     "name": "Suicide Bomber",
     "description": "Boom...",
     "cost": 2,
-    "icon": "sword",
+    "icon": "icons/bomb.svg",
     "accent": "attack",
     "effects": [
       {
@@ -237,7 +237,7 @@
     "name": "Water",
     "description": "Drink water. No effects.",
     "cost": 3,
-    "icon": "flask",
+    "icon": "icons/glass-water.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -257,7 +257,7 @@
     "name": "Hitman",
     "description": "Deal 25 damage.",
     "cost": 10,
-    "icon": "sword",
+    "icon": "icons/target.svg",
     "accent": "damage",
     "effects": [
       {
@@ -272,7 +272,7 @@
     "name": "Golden Apple",
     "description": "Heal 10.",
     "cost": 5,
-    "icon": "heart",
+    "icon": "icons/apple.svg",
     "accent": "heal",
     "effects": [
       {
@@ -287,7 +287,7 @@
     "name": "Donate to Charity",
     "description": "Give 3 hp to your opponent.",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/hand-heart.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -307,7 +307,7 @@
     "name": "AI",
     "description": "Use insane amount of energy for small profits",
     "cost": 10,
-    "icon": "spark",
+    "icon": "icons/brain-circuit.svg",
     "accent": "damage",
     "effects": [
       {
@@ -322,7 +322,7 @@
     "name": "Chernobyl",
     "description": "Poison yourself and your opponent.",
     "cost": 3,
-    "icon": "flask",
+    "icon": "icons/factory.svg",
     "accent": "poison",
     "effects": [
       {
@@ -344,7 +344,7 @@
     "name": "Eat Batteries",
     "description": "Gain 5 energy",
     "cost": 3,
-    "icon": "spark",
+    "icon": "icons/battery-charging.svg",
     "accent": "energy",
     "effects": [
       {
@@ -359,7 +359,7 @@
     "name": "Jew Party",
     "description": "Take your time dancing.",
     "cost": 1,
-    "icon": "bolt",
+    "icon": "icons/music.svg",
     "accent": "energy",
     "effects": [
       {
@@ -374,7 +374,7 @@
     "name": "Sand Nigger",
     "description": "Throw sand in your opponents face.",
     "cost": 2,
-    "icon": "sword",
+    "icon": "icons/wind.svg",
     "accent": "damage",
     "effects": [
       {
@@ -389,7 +389,7 @@
     "name": "Asian Woman Driver",
     "description": "Accidentally drive over your opponent.",
     "cost": 5,
-    "icon": "sword",
+    "icon": "icons/car-front.svg",
     "accent": "damage",
     "effects": [
       {
@@ -404,7 +404,7 @@
     "name": "White Power",
     "description": "Gain power and health",
     "cost": 7,
-    "icon": "bolt",
+    "icon": "icons/heart-pulse.svg",
     "accent": "energy",
     "effects": [
       {
@@ -424,7 +424,7 @@
     "name": "Pregnant Teen",
     "description": "Shoot the fetus at your opponent",
     "cost": 3,
-    "icon": "sword",
+    "icon": "icons/send.svg",
     "accent": "damage",
     "effects": [
       {
@@ -439,7 +439,7 @@
     "name": "Gypsy",
     "description": "Steal 2 energy",
     "cost": 0,
-    "icon": "arrows",
+    "icon": "icons/hand-coins.svg",
     "accent": "energy",
     "effects": [
       {
@@ -454,7 +454,7 @@
     "name": "Down Syndrome Nigga",
     "description": "Waste 5 energy",
     "cost": 5,
-    "icon": "bolt",
+    "icon": "icons/battery-low.svg",
     "accent": "damage",
     "effects": [
       {
@@ -469,7 +469,7 @@
     "name": "Gay Orgy",
     "description": "Take backshots",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/heart-crack.svg",
     "accent": "damage",
     "effects": [
       {
@@ -484,7 +484,7 @@
     "name": "Furry Porn",
     "description": "Watch some premium furry porn",
     "cost": 3,
-    "icon": "bolt",
+    "icon": "icons/battery-full.svg",
     "accent": "energy",
     "effects": [
       {
@@ -499,7 +499,7 @@
     "name": "Blind",
     "description": "Walk on the road and get hit by a car",
     "cost": 1,
-    "icon": "heart",
+    "icon": "icons/car.svg",
     "accent": "damage",
     "effects": [
       {
@@ -514,7 +514,7 @@
     "name": "Eat Uranium",
     "description": "Yummy",
     "cost": 2,
-    "icon": "bolt",
+    "icon": "icons/atom.svg",
     "accent": "poison",
     "effects": [
       {
@@ -535,7 +535,7 @@
     "name": "Dildo Cannon",
     "description": "Shoot a dildo at your opponent",
     "cost": 1,
-    "icon": "sword",
+    "icon": "icons/tabler-tank.svg",
     "accent": "damage",
     "effects": [
       {
@@ -550,7 +550,7 @@
     "name": "67",
     "description": "...",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/hash.svg",
     "accent": "damage",
     "effects": [
       {
@@ -565,7 +565,7 @@
     "name": "Condom Balloon",
     "description": "Throw a condom filled with water",
     "cost": 3,
-    "icon": "sword",
+    "icon": "icons/tabler-balloon.svg",
     "accent": "damage",
     "effects": [
       {
@@ -580,7 +580,7 @@
     "name": "Pingpong Chingchong",
     "description": "Eat dogs and cats",
     "cost": 4,
-    "icon": "bolt",
+    "icon": "icons/flask-conical.svg",
     "accent": "energy",
     "effects": [
       {
@@ -601,7 +601,7 @@
     "name": "Israel #2",
     "description": "Send gazillion dollars to Israel",
     "cost": 10,
-    "icon": "arrow",
+    "icon": "icons/banknote.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -616,7 +616,7 @@
     "name": "Hurricane",
     "description": "Send a hurricane at your opponent",
     "cost": 4,
-    "icon": "sword",
+    "icon": "icons/tornado.svg",
     "accent": "damage",
     "effects": [
       {
@@ -631,7 +631,7 @@
     "name": "Communism",
     "description": "Equal pain",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/scale.svg",
     "accent": "damage",
     "effects": [
       {
@@ -651,7 +651,7 @@
     "name": "Capitalism",
     "description": "Use your opponent for your own good",
     "cost": 2,
-    "icon": "arrows",
+    "icon": "icons/chart-no-axes-combined.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -671,7 +671,7 @@
     "name": "Invest",
     "description": "Give your opponent 5 hp to recieve 10 hp.",
     "cost": 3,
-    "icon": "heart",
+    "icon": "icons/trending-up.svg",
     "accent": "heal",
     "effects": [
       {
@@ -691,7 +691,7 @@
     "name": "Community Puh",
     "description": "Have some fun time with the popular girl",
     "cost": 1,
-    "icon": "flask",
+    "icon": "icons/flask-conical.svg",
     "accent": "poison",
     "effects": [
       {
@@ -707,7 +707,7 @@
     "name": "George Floyd",
     "description": "Your opponent can't breathe",
     "cost": 2,
-    "icon": "sword",
+    "icon": "icons/wind.svg",
     "accent": "damage",
     "effects": [
       {
@@ -722,7 +722,7 @@
     "name": "Digital Crimes",
     "description": "Send CP to your opponent",
     "cost": 5,
-    "icon": "bolt",
+    "icon": "icons/gift.svg",
     "accent": "damage",
     "effects": [
       {
@@ -737,7 +737,7 @@
     "name": "Gambling addiction",
     "description": "Jackpot",
     "cost": 10,
-    "icon": "bolt",
+    "icon": "icons/dices.svg",
     "accent": "energy",
     "effects": [
       {
@@ -757,7 +757,7 @@
     "name": "Goblin Barrel",
     "description": "Send 3 black midgets to attack your opponent.",
     "cost": 3,
-    "icon": "sword",
+    "icon": "icons/tabler-barrel.svg",
     "accent": "damage",
     "effects": [
       {
@@ -772,7 +772,7 @@
     "name": "Redskin nightmare",
     "description": "Columbus brings diseases to your opponent.",
     "cost": 5,
-    "icon": "flask",
+    "icon": "icons/biohazard.svg",
     "accent": "poison",
     "effects": [
       {
@@ -788,7 +788,7 @@
     "name": "Tom Pearl",
     "description": "Today I'm gonna eat my diarhhea...",
     "cost": 1,
-    "icon": "flask",
+    "icon": "icons/biohazard.svg",
     "accent": "poison",
     "effects": [
       {
@@ -810,7 +810,7 @@
     "name": "Bonnie Blue",
     "description": "You are one of the lucky 1000 men to have sex with her.",
     "cost": 0,
-    "icon": "heart",
+    "icon": "icons/flask-round.svg",
     "accent": "poison",
     "effects": [
       {
@@ -831,7 +831,7 @@
     "name": "Racial Slur",
     "description": "Shout 'Nigger!' at your opponent",
     "cost": 0,
-    "icon": "sword",
+    "icon": "icons/megaphone.svg",
     "accent": "damage",
     "effects": [
       {
@@ -846,7 +846,7 @@
     "name": "Dance Battle",
     "description": "You got better moves than your opponent",
     "cost": 2,
-    "icon": "sword",
+    "icon": "icons/footprints.svg",
     "accent": "mixed",
     "effects": [
       {
