@@ -16,6 +16,7 @@ const fallbackIcons = {damage:'sword',heal:'heart',energy:'bolt',poison:'flask',
 let cards = [], cardMap, state, view, selected = null, mode = null, botTimer;
 let socket, server = '', room = '', token = '', connected = false, pending = false;
 let reconnectTimer, reconnectAttempt = 0, intentionalClose = false, turnDeadline = null, roomRequestVersion = 0;
+let turnWarningKey = '';
 const sessionKey = 'apina-card-pvp-session';
 let revealQueue = [], revealTimer, revealExitTimer, resultTimer, revealBusy = false;
 const shownReveals = new Set();
@@ -91,7 +92,8 @@ function makeCard(card, index) {
   for (const effect of card.effects) {const line = document.createElement('span'); line.textContent = effectText(effect); effects.append(line);}
   button.append(label,cost,icon,name,description,effects);
   button.setAttribute('aria-label',`${card.name}, ${card.cost} energy. ${card.effects.map(effect => effectText(effect)).join('. ')}`);
-  button.addEventListener('click',()=>{selected = selected === card.id ? null : card.id; renderHand(); updateControls();});
+  button.disabled = !canSelectCards();
+  button.addEventListener('click',()=>{if(!canSelectCards())return;selected = selected === card.id ? null : card.id; renderHand(); updateControls();});
   return button;
 }
 function renderHand(previousHand = view.hand) {
@@ -103,9 +105,13 @@ function renderHand(previousHand = view.hand) {
   $('hand-count').textContent = `${view.hand.length} cards`;
   $('deck-count').textContent = `${view.players[view.you].deckCount} in deck`;
 }
+function canSelectCards() {
+  return view?.status === 'playing' && view.turn === view.you && (mode === 'bot' || connected) && !pending && !(mode === 'online' && turnDeadline && Date.now() >= turnDeadline);
+}
 function updateControls() {
   const ownTurn = view?.status === 'playing' && view.turn === view.you;
-  const ready = ownTurn && (mode === 'bot' || connected) && !pending;
+  const ready = canSelectCards();
+  for(const button of $('hand').querySelectorAll('.battle-card'))button.disabled = !ready;
   const card = cardMap?.get(selected);
   $('play-card').disabled = !ready || !card || card.cost > view.players[view.you].energy;
   $('end-turn').disabled = !ready;
@@ -177,12 +183,13 @@ function renderOpponentPlays(previous) {
 
 function render(next) {
   const previous = view; view = next;
-  if (selected && !view.hand.includes(selected)) selected = null;
+  if (selected && (!view.hand.includes(selected) || view.status !== 'playing' || view.turn !== view.you)) selected = null;
   $('lobby').hidden = true; $('battle').hidden = false; document.body.classList.add('battle-active');
   const ownTurn = view.turn === view.you;
   $('turn-label').textContent = view.status === 'finished' ? 'Match complete' : ownTurn ? 'Your turn' : 'Opponent’s turn';
   $('turn-label').classList.toggle('your-turn',ownTurn && view.status === 'playing');
   $('round-label').textContent = `ROUND ${String(view.round).padStart(2,'0')}`;
+  updateTurnClock();
   for(let display=0;display<2;display++) {
     const actor = display === 0 ? view.you : 1-view.you, p = view.players[actor];
     $(`player-name-${display}`).textContent = p.name;
@@ -337,8 +344,21 @@ try {
   }
 } catch(error) {message(`Game unavailable: ${error.message} Check the card definitions and reload.`,true);$('play-bot').disabled=$('friend-toggle').disabled=true;}
 
-setInterval(()=>{
-  if(!view || mode!=='online' || view.status!=='playing' || !turnDeadline)return;
-  const seconds=Math.max(0,Math.ceil((turnDeadline-Date.now())/1000));
-  $('round-label').textContent=`ROUND ${String(view.round).padStart(2,'0')} · ${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')} left`;
-},1000);
+function updateTurnClock() {
+  const timed = view && mode === 'online' && view.status === 'playing' && turnDeadline;
+  const seconds = timed ? Math.max(0,Math.ceil((turnDeadline-Date.now())/1000)) : null;
+  const ownTurn = view?.turn === view?.you;
+  const urgent = timed && ownTurn && seconds <= 10;
+  const critical = urgent && seconds <= 5;
+  $('turn-label').classList.toggle('time-warning',Boolean(urgent));
+  $('turn-label').classList.toggle('time-critical',Boolean(critical));
+  $('round-label').classList.toggle('time-warning',Boolean(urgent));
+  $('round-label').classList.toggle('time-critical',Boolean(critical));
+  if(timed){const label=`ROUND ${String(view.round).padStart(2,'0')} · ${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')} left`;if($('round-label').textContent!==label)$('round-label').textContent=label;}
+  if(urgent){const label=seconds===0?'Turn time expired':critical?'Your turn · act now!':'Your turn · time running out';if($('turn-label').textContent!==label)$('turn-label').textContent=label;}
+  const warning = urgent ? seconds===0?'Your turn time has expired.':critical?'5 seconds or less left. Play or end your turn now.':'10 seconds or less left. Play or end your turn.' : '';
+  const key = warning ? `${turnDeadline}:${warning}` : '';
+  if(key !== turnWarningKey){turnWarningKey=key;$('turn-warning').textContent=warning;}
+  if(timed && seconds===0)updateControls();
+}
+setInterval(updateTurnClock,250);
