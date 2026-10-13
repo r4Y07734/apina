@@ -34,7 +34,7 @@ Each card supports 1–8 effects. Effects run in the order you list them, and vi
 
 Costs are integers 0–10. Effect amounts are integers 1–100, except `energy`, which also accepts negative amounts down to −100. Poison duration is 1–10 target turns. Choose an `accent` of `damage`, `heal`, `energy`, `poison`, or `mixed`; this controls the card's visual styling.
 
-Default match rules are in `dist/card-pvp/rules.js`: 40 health, 3 starting energy, 10 energy cap, 3 energy restored each turn, 5 starting cards, and a 7-card hand limit. At the start of later turns, poison resolves first, then energy is restored and one card is drawn. A full hand does not consume a deck card. When a deck runs out, its discard pile is reshuffled. Both players reaching zero health from the same card results in a draw.
+Default match rules are in `dist/card-pvp/rules.js`: 40 health, 3 starting energy, 10 energy cap, 3 energy restored each turn, 5 starting cards, and a 5-card hand limit. At the start of later turns, poison resolves first, then energy is restored and one card is drawn. A full hand does not consume a deck card. When a deck runs out, its discard pile is reshuffled. Both players reaching zero health from the same card results in a draw.
 
 After changing the JSON, reload the bot game to check it. The game validates the catalog and displays a useful error for invalid entries. Redeploy both Pages and the Worker for multiplayer changes. Running rooms preserve their original card catalog until they expire, so card changes affect new matches. For significant rule changes, deploy while no matches are running.
 
@@ -111,7 +111,7 @@ The server shuffles the decks, validates turn order, checks that a played card i
 
 Room codes are invite codes. An unguessable, separate token identifies each player; do not share a reconnect token. The browser keeps its token in that tab's `sessionStorage`, permitting a reload to reconnect. Opening a second connection with the same token replaces the previous connection. There are no accounts or public matchmaking, and bots run locally.
 
-Turns last up to **3 minutes**; running out of time forfeits the match. A disconnected player has **90 seconds** to reconnect before forfeiting. If both players remain disconnected, the player whose turn it is forfeits. Playing a card does not reset the turn timer. The server uses Durable Object alarms for these deadlines and cleanup, allowing it to hibernate between actions.
+Turns last up to **30 seconds**; running out of time forfeits the match. A disconnected player has **90 seconds** to reconnect before forfeiting. If both players remain disconnected, the player whose turn it is forfeits. Playing a card does not reset the turn timer. The server uses Durable Object alarms for these deadlines and cleanup, allowing it to hibernate between actions.
 
 Server room data includes player names, reconnect tokens, match state, the last 32 activity-log entries, and the room's card catalog. Waiting rooms expire **30 minutes after creation**. Active rooms expire at most **24 hours after creation**. Finished rooms are retained for **10 minutes after the match ends**, or until the earlier 24-hour limit. Expiry closes connections and deletes the room's stored application data. Cloudflare's own platform logging and infrastructure retention are governed by Cloudflare. A Worker redeploy can briefly disconnect WebSockets; reconnect restores persisted room state within the grace period.
 

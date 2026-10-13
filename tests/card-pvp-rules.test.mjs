@@ -234,27 +234,46 @@ test('a later heal on the same card can recover from zero before the winner is d
 
 test('turn starts grant capped energy, draw one card, and advance full-round count', () => {
   const state = makeGame(shippedCards);
+  for (const player of state.players) player.discard.push(player.hand.pop());
   state.players[1].energy = 9;
   end(state, shippedCards);
   assert.equal(state.turn, 1);
   assert.equal(state.round, 1);
   assert.equal(state.players[1].energy, 10);
-  assert.equal(state.players[1].hand.length, 6);
+  assert.equal(state.players[1].hand.length, 5);
   assert.equal(state.players[0].energy, 3);
   end(state, shippedCards);
   assert.equal(state.turn, 0);
   assert.equal(state.round, 2);
   assert.equal(state.players[0].energy, 6);
-  assert.equal(state.players[0].hand.length, 6);
+  assert.equal(state.players[0].hand.length, 5);
 });
 
-test('a full seven-card hand skips drawing without burning a deck card', () => {
+test('a full five-card hand skips drawing without consuming or changing the deck', () => {
   const state = makeGame(shippedCards);
+  const decks = state.players.map(player => [...player.deck]);
   for (let turn = 0; turn < 6; turn += 1) end(state, shippedCards);
   assert.equal(state.players[0].hand.length, RULES.maxHand);
-  assert.equal(state.players[0].deck.length, 43);
+  assert.equal(state.players[0].deck.length, 45);
   assert.equal(state.players[1].hand.length, RULES.maxHand);
-  assert.equal(state.players[1].deck.length, 43);
+  assert.equal(state.players[1].deck.length, 45);
+  assert.equal(RULES.maxHand, 5);
+  assert.deepEqual(state.players.map(player => player.deck), decks);
+});
+
+test('playing a card makes room for exactly one draw on the next turn', () => {
+  const cards = cloneCards(), state = makeGame(cards);
+  const cardId = state.players[0].hand[0];
+  Object.assign(cards.find(card => card.id === cardId), { cost: 0, effects: [{ type: 'heal', target: 'self', amount: 1 }] });
+  const game = { cards, state, cardId };
+  play(game);
+  assert.equal(game.state.players[0].hand.length, 4);
+  const nextCard = game.state.players[0].deck.at(-1);
+  end(game.state, game.cards);
+  end(game.state, game.cards);
+  assert.equal(game.state.players[0].hand.length, 5);
+  assert.equal(game.state.players[0].hand.at(-1), nextCard);
+  assert.equal(game.state.players[0].deck.length, 44);
 });
 
 test('an empty deck securely reshuffles discard after restoring a serialized game', () => {

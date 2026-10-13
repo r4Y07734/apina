@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import worker, { allowedOrigin, playerName, CardRoom } from '../worker.js';
+import { createGame } from '../../../dist/card-pvp/rules.js';
 
 test('only exact configured browser origins receive access', () => {
   const env = { ALLOWED_ORIGINS: 'https://apina.example,http://localhost:8000' };
@@ -100,6 +101,35 @@ test('stale turns forfeit and schedule short finished retention', async () => {
   assert.equal(room.room.game.winner, 1);
   assert.match(room.room.notice, /turn time/);
   assert.ok(ctx.alarmTime() <= Date.now() + 10 * 60_000);
+});
+
+test('multiplayer deadlines allow 30 seconds and only reset when the turn changes', async () => {
+  const before = Date.now();
+  const { room, ctx } = await startedRoom();
+  assert.ok(room.room.turnDeadline >= before + 30_000);
+  assert.ok(room.room.turnDeadline <= Date.now() + 30_000);
+  assert.equal(ctx.alarmTime(), room.room.turnDeadline);
+  room.room.cards = Array.from({ length: 50 }, (_, i) => ({
+    id: `test-${i}`, name: 'Test card', description: '', cost: 0, icon: 'heart', accent: 'heal',
+    effects: [{ type: 'heal', target: 'self', amount: 1 }],
+  }));
+  room.room.game = createGame(room.room.cards);
+  const socket = {
+    deserializeAttachment() { return { actor: 0, rateStart: Date.now(), rateCount: 0, replaced: false }; },
+    serializeAttachment() {},
+  };
+  const deadline = room.room.turnDeadline;
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'play', cardId: room.room.game.players[0].hand[0] }));
+  assert.equal(room.room.turnDeadline, deadline);
+  assert.equal(room.room.game.players[0].hand.length, 4);
+  const nextTurn = Date.now();
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'end' }));
+  assert.equal(room.room.game.turn, 1);
+  assert.equal(room.room.game.players[1].hand.length, 5);
+  assert.equal(room.room.game.players[1].deck.length, 45);
+  assert.ok(room.room.turnDeadline >= nextTurn + 30_000);
+  assert.ok(room.room.turnDeadline <= Date.now() + 30_000);
+  assert.equal(ctx.alarmTime(), room.room.turnDeadline);
 });
 
 test('disconnect grace forfeits and expired rooms erase stored data', async () => {
