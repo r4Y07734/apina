@@ -1,5 +1,5 @@
 const games = [
-  {id:'cards',name:'Card PVP',category:'Strategy',mood:'Multiplayer',scene:'cards',badge:'NEW',order:9,description:"A turn-based card duel. Spend energy, combine effects and outplay a friend or the practice bot."},
+  {id:'cards',name:'Offensive Card PvP',category:'Strategy',mood:'Multiplayer',scene:'cards',badge:'NEW',order:9,description:"A turn-based card duel. Spend energy, combine effects and outplay a friend or the practice bot."},
   {id:'drift',name:'Sunset Drift',category:'Racing',mood:'Arcade',scene:'drift',badge:'',order:4,description:"Drive three routes with moving traffic, nitro, drift combos and timed checkpoints. Reach the 6 km finish with your car intact."},
   {id:'orbit',name:'Orbit',category:'Puzzle',mood:'Relaxing',scene:'orbit',badge:'',order:3,description:"Launch a probe through planetary gravity. Collect the beacons and reach the portal across five hand-built levels."},
   {id:'stack',name:'Stack Theory',category:'Puzzle',mood:'Quick play',scene:'stack',badge:'NEW',order:8,description:"Drop moving blocks onto the tower. Overhangs are cut away, and perfect placements build a streak."},

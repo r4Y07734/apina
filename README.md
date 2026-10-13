@@ -8,7 +8,7 @@ python3 -m http.server 8000 --directory dist
 
 Cloudflare Pages uses `dist` as its output directory with no build command.
 
-## Card PVP
+## Offensive Card PvP
 
 Open `dist/play/card-pvp.html` through the local server. Practice against the bot or deploy the included Cloudflare Worker to play with a friend.
 

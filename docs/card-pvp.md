@@ -1,4 +1,4 @@
-# Card duel: cards, icons, and multiplayer
+# Offensive Card PvP: cards, icons, and multiplayer
 
 Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browser and need no account or backend. Friend matches use the small Cloudflare Worker included in `backend/card-pvp`.
 
