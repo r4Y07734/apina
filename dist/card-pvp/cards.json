@@ -263,7 +263,7 @@
       {
         "type": "damage",
         "target": "opponent",
-        "amount": 25,
+        "amount": 25
       }
     ]
   },

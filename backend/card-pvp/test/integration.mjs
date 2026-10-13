@@ -75,6 +75,9 @@ try {
     assert.equal(packet.state.players[0].deck, undefined);
     assert.equal(packet.state.tokens, undefined);
     assert.ok(packet.deadline > Date.now());
+    assert.equal(packet.state.players[0].deckCount, 15);
+    assert.ok(packet.state.hand.every(id => cards.slice(0, 20).some(card => card.id === id)));
+    assert.deepEqual(packet.state.playedCards, []);
   }
   assert.equal((await post(`/rooms/${host.body.room}/join`, { name: 'Third' })).status, 409);
   b.socket.send(JSON.stringify({ type: 'end' }));
@@ -84,13 +87,19 @@ try {
   a.socket.send(JSON.stringify({ type: 'end' }));
   const afterTurn = await waitFor(b, message => message.type === 'state' && message.state.turn === 1);
   assert.equal(afterTurn.state.players[0].health, initialB.state.players[0].health);
-  const playable = afterTurn.state.hand.find(id => cards.find(card => card.id === id).cost <= afterTurn.state.players[1].energy);
+  const playable = afterTurn.state.hand.find(id => {
+    const card=cards.find(card => card.id===id);
+    return card.cost<=afterTurn.state.players[1].energy && card.effects.filter(effect=>effect.type==='damage' && effect.target==='self').reduce((sum,effect)=>sum+Number(effect.amount),0)<afterTurn.state.players[1].health;
+  });
   assert.ok(playable, 'The second player has an affordable card');
   b.socket.send(JSON.stringify({ type: 'play', cardId: playable }));
   const afterPlay = await waitFor(b, message => message.type === 'state' && message.state.revision === afterTurn.state.revision + 1);
   assert.equal(afterPlay.state.hand.includes(playable), false);
   assert.equal(afterPlay.state.lastEvent.cardId, playable);
   assert.equal(afterPlay.state.turn, 1);
+  assert.equal(afterPlay.state.playedCards.at(-1).card.id, playable);
+  assert.equal(afterPlay.state.playedCards.at(-1).actor, 1);
+  await waitFor(a, message => message.type==='state' && message.state.playedCards.at(-1)?.card.id===playable);
   const close = new Promise(resolve => a.socket.once('close', resolve));
   a.socket.close();
   await close;
@@ -101,6 +110,7 @@ try {
   assert.equal(restored.state.turn, 1);
   assert.equal(restored.state.revision, afterPlay.state.revision);
   assert.deepEqual(restored.state.hand, initialA.state.hand);
+  assert.equal(restored.state.playedCards.at(-1).card.id, playable);
   const replaced = new Promise(resolve => reconnected.socket.once('close', (code) => resolve(code)));
   const replacement = await connect(host.body.room, host.body.token);
   assert.equal(await replaced, 4001);

@@ -4,7 +4,7 @@ Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browse
 
 ## Edit your 50 card slots
 
-Edit `dist/card-pvp/cards.json`. It contains exactly 50 playable example slots, named **Card 01** through **Card 50**, so you can replace their names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 50 entries. Each player gets a separately shuffled deck containing all 50 slots.
+Edit `dist/card-pvp/cards.json`. It contains 50 editable slots. Only the **first 20 entries** are currently active; entries 21–50 stay in the file and are never dealt or playable. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 50 entries. Each player gets a separately shuffled deck containing the first 20 slots. Change `RULES.activeCards` in `rules.js` if you later want a different active count, then redeploy both frontend and backend.
 
 ```json
 {
@@ -41,6 +41,8 @@ After changing the JSON, reload the bot game to check it. The game validates the
 ## Use icons from a big pack
 
 Download a trusted SVG from [Lucide](https://lucide.dev/icons/), [Tabler Icons](https://tabler.io/icons), or [Game-icons.net](https://game-icons.net/). Save it under `dist/card-pvp/icons/` and set a card's `icon` to a local path, such as `"icons/swords.svg"`. You can use different SVGs for every slot without changing JavaScript or installing an icon library. Icons stay on your own Pages site, so no external icon service is needed.
+
+The `heart` accent is accepted as an alias for `heal`, and `attack` for `damage`. Whole-number strings in effect amounts are normalized at runtime without rewriting the JSON. Descriptions remain display copy and do not override effects.
 
 The built-in icon names are `sword`, `heart`, `bolt`, `flask`, `arrows`, `spark`, and `shield`. Missing image files fall back to a built-in icon. Dark SVG fills work well on the light cards; an SVG displayed as an image cannot inherit the page's `currentColor`. Follow each icon pack's license. Lucide and Tabler use permissive licenses; Game-icons.net usually requires attribution, including the icon's artist.
 
@@ -125,3 +127,5 @@ Server room data includes player names, reconnect tokens, match state, the last 
 Use `Content-Type: application/json` for POST bodies. Names are 1–24 characters. Browser HTTP requests and WebSocket upgrades must use an allowed origin. JSON bodies and socket actions are capped at 1 KB; socket actions are capped at 15 per 5 seconds per connection.
 
 The socket accepts `{"type":"play","cardId":"card-01"}`, `{"type":"end"}`, or `{"type":"concede"}`. It sends `{"type":"waiting","room":"ABCDEF","connected":[true,false],"deadline":null}` until a guest joins, then `{"type":"state","state":{…},"room":"ABCDEF","connected":[true,true],"deadline":1234567890000,"notice":null}`. `deadline` is the turn's Unix timestamp in milliseconds; a finished game has `null`. Errors use `{"type":"error","error":"Wait for your turn."}`. Timed forfeits also include a human-readable `notice` on the final state packet.
+
+Played cards are public. The opponent’s latest played card shows its name, icon, description, energy cost and effects, and earlier plays can be expanded. Public play history survives reconnects; unplayed cards and deck order stay private. This rules update expires rooms created under the old 50-card rules; start a new match after deploying.

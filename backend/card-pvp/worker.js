@@ -1,5 +1,8 @@
-import cards from '../../dist/card-pvp/cards.json' with { type: 'json' };
-import { createGame, applyAction, viewFor, validateCards } from '../../dist/card-pvp/rules.js';
+import rawCards from '../../dist/card-pvp/cards.json' with { type: 'json' };
+import { createGame, applyAction, viewFor, validateCards, normalizeCards } from '../../dist/card-pvp/rules.js';
+
+const cards = normalizeCards(rawCards);
+const RULES_VERSION = 2;
 
 const ROOM_CODE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
 const ROOM_TOKEN = /^[a-f0-9]{64}$/;
@@ -196,10 +199,10 @@ export class CardRoom {
     await this.ctx.storage.setAlarm(Math.max(Date.now() + 1, Math.min(...times)));
   }
 
-  async expire() {
+  async expire(message = 'This room has expired. Create a new room to play again.') {
     for (const socket of this.sockets()) {
-      this.send(socket, { type: 'error', error: 'This room has expired. Create a new room to play again.' });
-      socket.close(1000, 'Room expired');
+      this.send(socket, { type: 'error', error: message });
+      socket.close(4002, 'Room expired');
     }
     this.room = null;
     await this.ctx.storage.deleteAll();
@@ -208,6 +211,7 @@ export class CardRoom {
 
   async enforceLimits() {
     if (!this.room) return;
+    if (this.room.rulesVersion !== RULES_VERSION) { await this.expire('The game has been updated. Create a new room for the 20-card deck.'); return; }
     const now = Date.now();
     if (now >= this.room.expiresAt) { await this.expire(); return; }
     if (this.room.game?.status !== 'playing') return;
@@ -239,7 +243,7 @@ export class CardRoom {
       validateCards(cards);
       const token = randomHex();
       this.room = {
-        code: room, names: [name, null], tokens: [token, null], game: null, cards,
+        rulesVersion: RULES_VERSION, code: room, names: [name, null], tokens: [token, null], game: null, cards,
         createdAt: Date.now(), expiresAt: Date.now() + WAIT_MS,
         disconnectedAt: [null, null], turnDeadline: null, notice: null,
       };

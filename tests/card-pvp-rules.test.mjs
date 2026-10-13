@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { RULES, validateCards, createGame, applyAction, viewFor, pickBotAction } from '../dist/card-pvp/rules.js';
+import { RULES, validateCards, createGame, applyAction, viewFor, pickBotAction, normalizeCards } from '../dist/card-pvp/rules.js';
 
-const shippedCards = JSON.parse(await readFile(new URL('../dist/card-pvp/cards.json', import.meta.url), 'utf8'));
+const shippedCards = normalizeCards(JSON.parse(await readFile(new URL('../dist/card-pvp/cards.json', import.meta.url), 'utf8')));
 const cloneCards = () => structuredClone(shippedCards);
 const makeGame = cards => {
   let seed = 123456789;
@@ -36,7 +36,7 @@ function end(state, cards) {
 test('the editable catalog has exactly 50 unique, usable named slots', () => {
   assert.equal(validateCards(shippedCards), true);
   assert.equal(shippedCards.length, 50);
-  assert.deepEqual(shippedCards.map(card => card.name), Array.from({ length: 50 }, (_, i) => `Card ${String(i + 1).padStart(2, '0')}`));
+  assert.ok(shippedCards.every(card => typeof card.name === 'string' && card.name.trim()));
   assert.equal(new Set(shippedCards.map(card => card.id)).size, 50);
 });
 
@@ -76,8 +76,8 @@ test('a new game deals independently shuffled decks without duplicates and fixed
     assert.equal(player.health, 40);
     assert.equal(player.energy, 3);
     assert.equal(player.hand.length, 5);
-    assert.equal(player.deck.length, 45);
-    assert.equal(new Set([...player.hand, ...player.deck]).size, 50);
+    assert.equal(player.deck.length, 15);
+    assert.equal(new Set([...player.hand, ...player.deck]).size, 20);
     assert.deepEqual(player.discard, []);
   }
   assert.notDeepEqual(state.players[0].hand, state.players[1].hand);
@@ -252,9 +252,9 @@ test('a full seven-card hand skips drawing without burning a deck card', () => {
   const state = makeGame(shippedCards);
   for (let turn = 0; turn < 6; turn += 1) end(state, shippedCards);
   assert.equal(state.players[0].hand.length, RULES.maxHand);
-  assert.equal(state.players[0].deck.length, 43);
+  assert.equal(state.players[0].deck.length, 13);
   assert.equal(state.players[1].hand.length, RULES.maxHand);
-  assert.equal(state.players[1].deck.length, 43);
+  assert.equal(state.players[1].deck.length, 13);
 });
 
 test('an empty deck securely reshuffles discard after restoring a serialized game', () => {
@@ -341,9 +341,65 @@ test('long turn sequences preserve every card and keep logs bounded without hidd
   assert.equal(state.log.length, 32);
   assert.equal(state.revision, 100);
   for (const player of state.players) {
-    assert.equal(player.hand.length + player.deck.length + player.discard.length, 50);
-    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 50);
+    assert.equal(player.hand.length + player.deck.length + player.discard.length, 20);
+    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 20);
     assert.equal(player.energy, 10);
   }
   assert.equal(state.log.some(entry => /card-\d/.test(entry.text)), false);
+});
+
+
+test('only the first 20 entries are dealt and inactive cards cannot be played', () => {
+  const active = new Set(shippedCards.slice(0, RULES.activeCards).map(card => card.id));
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const state = createGame(shippedCards);
+    for (const player of state.players) {
+      assert.equal(player.deck.length + player.hand.length, 20);
+      assert.ok([...player.deck, ...player.hand].every(id => active.has(id)));
+    }
+  }
+  const state = makeGame(shippedCards);
+  state.players[0].hand = [shippedCards[20].id];
+  state.players[0].energy = 10;
+  const before = structuredClone(state);
+  assert.equal(applyAction(state, 0, { type:'play', cardId:shippedCards[20].id }, shippedCards).ok, false);
+  assert.deepEqual(state, before);
+});
+
+test('compatibility normalization preserves user data and makes common values usable', () => {
+  const raw = cloneCards();
+  raw[0].accent = 'heart'; raw[1].accent = 'attack';
+  raw[0].effects = [{type:'heal', target:'self', amount:'10'}];
+  const before = structuredClone(raw), normalized = normalizeCards(raw);
+  assert.equal(normalized[0].accent, 'heal'); assert.equal(normalized[1].accent, 'damage');
+  assert.equal(normalized[0].effects[0].amount, 10);
+  assert.deepEqual(raw, before); assert.equal(validateCards(normalized), true);
+});
+
+test('public played-card history survives turns and reconnects without revealing unplayed hands', () => {
+  const game = fixture([{type:'damage',target:'opponent',amount:4}]);
+  game.state.players[1].hand = ['card-20'];
+  play(game);
+  end(game.state, game.cards);
+  const restored = JSON.parse(JSON.stringify(game.state));
+  const opponent = viewFor(restored, 1);
+  assert.equal(opponent.playedCards.length, 1);
+  assert.equal(opponent.playedCards[0].card.id, game.cardId);
+  assert.deepEqual(opponent.playedCards[0].card.effects, game.cards[0].effects);
+  assert.equal(opponent.playedCards[0].actor, 0);
+  assert.equal(opponent.players[0].hand, undefined);
+  opponent.playedCards[0].card.effects[0].amount = 100;
+  assert.equal(restored.playedCards[0].card.effects[0].amount, 4);
+  applyAction(restored, 1, {type:'concede'}, game.cards);
+  assert.equal(viewFor(restored, 0).playedCards.length, 1);
+});
+
+test('played-card history stays bounded without losing the latest revealed card', () => {
+  const game = fixture([{type:'damage', target:'opponent', amount:1}]);
+  for (let count = 0; count < 25; count++) {
+    game.state.players[0].hand = [game.cardId];
+    play(game);
+  }
+  assert.equal(game.state.playedCards.length, 20);
+  assert.equal(viewFor(game.state, 1).playedCards.at(-1).id, game.state.lastEvent.id);
 });

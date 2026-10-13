@@ -8,6 +8,7 @@ export const RULES = Object.freeze({
   initialHand: 5,
   maxHand: 7,
   catalogSize: 50,
+  activeCards: 20,
 });
 
 const EFFECT_TYPES = new Set(['damage', 'heal', 'energy', 'steal', 'poison']);
@@ -22,6 +23,22 @@ function validIcon(icon) {
   if (typeof icon !== 'string' || icon.length > 160) return false;
   if (/^[a-z][a-z0-9-]*$/.test(icon)) return true;
   return /^\/?(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.svg$/.test(icon);
+}
+
+// Accept common presentation aliases without rewriting the user's JSON file.
+export function normalizeCards(cards) {
+  if (!Array.isArray(cards)) return cards;
+  return cards.map(card => {
+    if (!card || typeof card !== 'object' || Array.isArray(card)) return card;
+    const aliases = { heart: 'heal', attack: 'damage' };
+    return { ...card, accent: aliases[card.accent] || card.accent,
+      effects: Array.isArray(card.effects) ? card.effects.map(effect => {
+        if (!effect || typeof effect !== 'object') return effect;
+        const amount = typeof effect.amount === 'string' && /^-?\d+$/.test(effect.amount)
+          ? Number(effect.amount) : effect.amount;
+        return { ...effect, amount };
+      }) : card.effects };
+  });
 }
 
 /** Validate the editable catalog. No executable code or remote icon URLs. */
@@ -139,6 +156,7 @@ export function createGame(cards, { names = ['You', 'Bot'], random = secureRando
     players: [],
     winner: null,
     log: [],
+    playedCards: [],
     lastEvent: null,
     revision: 0,
     eventSequence: 0,
@@ -152,7 +170,7 @@ export function createGame(cards, { names = ['You', 'Bot'], random = secureRando
       maxEnergy: RULES.maxEnergy,
       poison: [],
       hand: [],
-      deck: shuffle(cards.map(card => card.id), random),
+      deck: shuffle(cards.slice(0, RULES.activeCards).map(card => card.id), random),
       discard: [],
     });
     for (let count = 0; count < RULES.initialHand; count += 1) draw(state, actor);
@@ -248,7 +266,7 @@ export function applyAction(state, actor, action, cards) {
   } catch {
     return fail('The card catalog is invalid.');
   }
-  if (!card) return fail('That card is unavailable.');
+  if (!card || !cards.slice(0, RULES.activeCards).some(entry => entry.id === card.id)) return fail('That card is not active in this match.');
   if (player.energy < card.cost) return fail(`You need ${card.cost} energy to play this card.`);
 
   player.energy -= card.cost;
@@ -258,6 +276,9 @@ export function applyAction(state, actor, action, cards) {
   const targets = [...new Set(outcomes.flatMap(outcome => outcome.targets || [outcome.target]))];
   const id = log(state, `${player.name} played ${card.name}. ${outcomes.map(outcome => outcome.text).join(' ')}`, card.accent);
   state.lastEvent = { id, kind: 'play', actor, targets, cardId: card.id };
+  state.playedCards ||= [];
+  state.playedCards.push({ id, actor, round: state.round, card: structuredClone(card) });
+  if (state.playedCards.length > 20) state.playedCards.splice(0, state.playedCards.length - 20);
   setWinner(state);
   state.revision += 1;
   return { ok: true };
@@ -281,6 +302,7 @@ export function viewFor(state, actor) {
       deckCount: player.deck.length,
     })),
     hand: [...state.players[actor].hand],
+    playedCards: structuredClone(state.playedCards || []),
     you: actor,
     winner: state.winner,
     log: state.log.map(entry => ({ ...entry })),

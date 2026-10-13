@@ -115,3 +115,12 @@ test('disconnect grace forfeits and expired rooms erase stored data', async () =
   assert.equal(ctx.stored(), undefined);
   assert.equal(ctx.alarmTime(), null);
 });
+
+test('rooms created under old deck rules expire instead of dealing inactive cards', async () => {
+  const {room, ctx} = await startedRoom();
+  delete room.room.rulesVersion;
+  await room.enforceLimits();
+  assert.equal(room.room, null);
+  assert.equal(ctx.stored(), undefined);
+  assert.equal(ctx.alarmTime(), null);
+});

@@ -1,4 +1,4 @@
-import { createGame, applyAction, viewFor, pickBotAction, validateCards } from './rules.js';
+import { createGame, applyAction, viewFor, pickBotAction, validateCards, normalizeCards } from './rules.js';
 import { multiplayerServer } from './config.js';
 
 const $ = id => document.getElementById(id);
@@ -64,8 +64,8 @@ function builtInIcon(name) {
   svg.setAttribute('stroke-linecap','round'); svg.setAttribute('stroke-linejoin','round'); svg.setAttribute('aria-hidden','true');
   for (const d of iconPaths[name]) {const p = document.createElementNS(svgNS,'path'); p.setAttribute('d',d); svg.append(p);} return svg;
 }
-function effectText(effect) {
-  const target = effect.target === 'self' ? 'you' : 'opponent';
+function effectText(effect, ownerIsYou = true) {
+  const target = effect.target === 'self' ? (ownerIsYou ? 'you' : 'opponent') : (ownerIsYou ? 'opponent' : 'you');
   if (effect.type === 'damage') return `${effect.amount} damage to ${target}`;
   if (effect.type === 'heal') return `Heal ${target} for ${effect.amount}`;
   if (effect.type === 'energy') return `${effect.amount} energy to ${target}`;
@@ -87,7 +87,7 @@ function makeCard(card, index) {
   const effects = document.createElement('span'); effects.className = 'card-effects';
   for (const effect of card.effects) {const line = document.createElement('span'); line.textContent = effectText(effect); effects.append(line);}
   button.append(label,cost,icon,name,description,effects);
-  button.setAttribute('aria-label',`${card.name}, ${card.cost} energy. ${card.effects.map(effectText).join('. ')}`);
+  button.setAttribute('aria-label',`${card.name}, ${card.cost} energy. ${card.effects.map(effect => effectText(effect)).join('. ')}`);
   button.addEventListener('click',()=>{selected = selected === card.id ? null : card.id; renderHand(); updateControls();});
   return button;
 }
@@ -107,7 +107,7 @@ function updateControls() {
   $('play-card').disabled = !ready || !card || card.cost > view.players[view.you].energy;
   $('end-turn').disabled = !ready;
   $('play-card').textContent = card ? `Play card · ${card.cost} energy` : 'Play selected card';
-  $('selection-hint').textContent = !connected && mode === 'online' ? 'Reconnecting to your match…' : pending ? 'Sending your move…' : view?.status === 'finished' ? 'Match complete' : !ownTurn ? (mode === 'bot' ? 'Bot is choosing a card…' : 'Waiting for your opponent') : card ? card.cost > view.players[view.you].energy ? `You need ${card.cost - view.players[view.you].energy} more energy` : card.effects.map(effectText).join(' · ') : 'Select a card to inspect it, then play';
+  $('selection-hint').textContent = !connected && mode === 'online' ? 'Reconnecting to your match…' : pending ? 'Sending your move…' : view?.status === 'finished' ? 'Match complete' : !ownTurn ? (mode === 'bot' ? 'Bot is choosing a card…' : 'Waiting for your opponent') : card ? card.cost > view.players[view.you].energy ? `You need ${card.cost - view.players[view.you].energy} more energy` : card.effects.map(effect => effectText(effect)).join(' · ') : 'Select a card to inspect it, then play';
 }
 function animateChange(oldView, newView) {
   if (!oldView || oldView.revision === newView.revision) return;
@@ -126,6 +126,31 @@ function animateChange(oldView, newView) {
     }
   }
 }
+function renderOpponentPlays(previous) {
+  const plays = (view.playedCards || []).filter(entry => entry.actor !== view.you);
+  const latest = plays.at(-1);
+  const empty = $('opponent-play-empty'), display = $('opponent-play-card');
+  empty.hidden = Boolean(latest); display.hidden = !latest;
+  $('opponent-play-history').hidden = plays.length < 2;
+  if (!latest) { display.replaceChildren(); $('opponent-play-list').replaceChildren(); return; }
+  const card = latest.card;
+  const icon = document.createElement('span'); icon.className = 'played-icon'; icon.append(iconFor(card));
+  const copy = document.createElement('div'); copy.className = 'played-copy';
+  const title = document.createElement('strong'); title.textContent = card.name;
+  const description = document.createElement('p'); description.textContent = card.description;
+  const effects = document.createElement('p'); effects.className = 'played-effects'; effects.textContent = card.effects.map(effect => effectText(effect, false)).join(' · ');
+  copy.append(title, description, effects);
+  const cost = document.createElement('span'); cost.className = 'played-cost'; cost.textContent = `${card.cost} energy · round ${latest.round}`;
+  display.className = `played-card accent-${card.accent}`; display.replaceChildren(icon, copy, cost);
+  const oldLatest = (previous?.playedCards || []).filter(entry => entry.actor !== view.you).at(-1);
+  if (oldLatest?.id !== latest.id) { display.classList.add('revealed'); display.addEventListener('animationend',()=>display.classList.remove('revealed'),{once:true}); }
+  $('opponent-play-list').replaceChildren(...plays.slice(0,-1).reverse().map(entry => {
+    const li = document.createElement('li'); const label = document.createElement('strong'); label.textContent = entry.card.name;
+    const detail = document.createElement('span'); detail.textContent = `Round ${entry.round} · ${entry.card.effects.map(effect => effectText(effect, false)).join(' · ')}`;
+    li.append(label, detail); return li;
+  }));
+}
+
 function render(next) {
   const previous = view; view = next;
   if (selected && !view.hand.includes(selected)) selected = null;
@@ -150,7 +175,7 @@ function render(next) {
   const opponent = view.players[1-view.you];
   $('opponent-hand').replaceChildren(...Array.from({length:opponent.handCount},()=>{const back=document.createElement('span');back.className='card-back';back.setAttribute('aria-hidden','true');return back;}));
   $('opponent-hand').setAttribute('aria-label',`Opponent has ${opponent.handCount} hidden cards`);
-  renderHand(previous?.hand || []); updateControls(); animateChange(previous,view);
+  renderOpponentPlays(previous); renderHand(previous?.hand || []); updateControls(); animateChange(previous,view);
   $('activity-log').replaceChildren(...view.log.slice(-7).reverse().map(entry=>{const line=document.createElement('li');line.textContent=entry.text;line.className=`log-${entry.kind}`;return line;}));
   if (view.status==='finished' && previous?.status!=='finished') {
     const won=view.winner===view.you, draw=view.winner==='draw';
@@ -234,6 +259,7 @@ function connectRoom() {
   socket.onclose=event=>{
     connected=false;pending=false;if(intentionalClose)return;
     updateControls();
+    if(event.code===4002){showLobby();$('lobby-message').textContent='This match has expired or the game was updated. Create a new room.';return;}
     if(event.code===4001){message('This match was opened in another tab. Reload to reconnect here.',true);return;}
     if(view?.status==='finished')return;
     if(reconnectAttempt>=6){message('Connection lost. Reload this page to retry your saved match.',true);return;}
@@ -270,7 +296,7 @@ $('log-toggle').addEventListener('click',()=>{const open=$('activity-log').hidde
 
 try {
   const response=await fetch(new URL('./cards.json',import.meta.url));if(!response.ok)throw Error('Card file could not be loaded.');
-  cards=await response.json();validateCards(cards);cardMap=new Map(cards.map(card=>[card.id,card]));
+  cards=normalizeCards(await response.json());validateCards(cards);cardMap=new Map(cards.map(card=>[card.id,card]));
   $('play-bot').disabled=false;$('friend-toggle').disabled=false;
   $('server-url').value=multiplayerServer;
   const params=new URLSearchParams(location.search);
