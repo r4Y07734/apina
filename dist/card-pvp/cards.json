@@ -1,37 +1,37 @@
 [
   {
     "id": "card-01",
-    "name": "Card 01",
-    "description": "Deal 6 damage to your opponent.",
+    "name": "Basic Nigger",
+    "description": "Steal 5 energy from opponent",
     "cost": 2,
-    "icon": "sword",
-    "accent": "damage",
+    "icon": "arrows",
+    "accent": "energy",
     "effects": [
       {
-        "type": "damage",
+        "type": "steal",
         "target": "opponent",
-        "amount": 6
+        "amount": 5
       }
     ]
   },
   {
     "id": "card-02",
-    "name": "Card 02",
-    "description": "Restore 7 of your health.",
-    "cost": 2,
-    "icon": "heart",
-    "accent": "heal",
+    "name": "Indian Scammer",
+    "description": "Steal 10 energy from opponent",
+    "cost": 5,
+    "icon": "arrows",
+    "accent": "energy",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 7
+        "type": "steal",
+        "target": "opponent",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-03",
-    "name": "Card 03",
+    "name": "Greedy Jew",
     "description": "Gain 2 energy.",
     "cost": 0,
     "icon": "bolt",
@@ -46,78 +46,87 @@
   },
   {
     "id": "card-04",
-    "name": "Card 04",
-    "description": "Steal up to 2 energy from your opponent.",
-    "cost": 1,
-    "icon": "arrows",
-    "accent": "energy",
+    "name": "Israel",
+    "description": "Deal 20 damage and gain 10 energy",
+    "cost": 10,
+    "icon": "sword",
+    "accent": "damage",
     "effects": [
       {
-        "type": "steal",
+        "type": "damage",
         "target": "opponent",
-        "amount": 2
+        "amount": 20
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-05",
-    "name": "Card 05",
-    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
-    "cost": 2,
-    "icon": "flask",
-    "accent": "poison",
+    "name": "Magic Mushrooms",
+    "description": "Heal 10 and gain 10 energy. You might experience side effects...",
+    "cost": 3,
+    "icon": "bolt",
+    "accent": "heart",
     "effects": [
       {
         "type": "poison",
-        "target": "opponent",
-        "amount": 2,
+        "target": "self",
+        "amount": 4,
         "rounds": 3
-      }
-    ]
-  },
-  {
-    "id": "card-06",
-    "name": "Card 06",
-    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
-    "cost": 2,
-    "icon": "spark",
-    "accent": "mixed",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 4
       },
       {
         "type": "heal",
         "target": "self",
+        "amount": "10"
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
+    ]
+  },
+  {
+    "id": "card-06",
+    "name": "Cumshot",
+    "description": "Deal 3 damage to opponent. Opponent will also gain 3 energy.",
+    "cost": 2,
+    "icon": "arrows",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 3
+      },
+      {
+        "type": "energy",
+        "target": "opponent",
         "amount": 3
       }
     ]
   },
   {
     "id": "card-07",
-    "name": "Card 07",
-    "description": "Take 3 damage to gain 4 energy.",
-    "cost": 1,
-    "icon": "sword",
-    "accent": "mixed",
+    "name": "Suicide",
+    "description": "KYS",
+    "cost": 0,
+    "icon": "heart",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
         "target": "self",
-        "amount": 3
-      },
-      {
-        "type": "energy",
-        "target": "self",
-        "amount": 4
+        "amount": 40
       }
     ]
   },
   {
     "id": "card-08",
-    "name": "Card 08",
+    "name": "Nuke",
     "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
     "cost": 3,
     "icon": "spark",
@@ -138,113 +147,43 @@
   },
   {
     "id": "card-09",
-    "name": "Card 09",
-    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
-    "cost": 0,
-    "icon": "heart",
-    "accent": "mixed",
-    "effects": [
-      {
-        "type": "steal",
-        "target": "self",
-        "amount": 2
-      },
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 5
-      }
-    ]
-  },
-  {
-    "id": "card-10",
-    "name": "Card 10",
-    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
-    "cost": 3,
-    "icon": "spark",
-    "accent": "mixed",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "steal",
-        "target": "opponent",
-        "amount": 1
-      },
-      {
-        "type": "heal",
-        "target": "self",
-        "amount": 2
-      }
-    ]
-  },
-  {
-    "id": "card-11",
-    "name": "Card 11",
-    "description": "Deal 6 damage to your opponent.",
-    "cost": 2,
-    "icon": "sword",
-    "accent": "damage",
-    "effects": [
-      {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 6
-      }
-    ]
-  },
-  {
-    "id": "card-12",
-    "name": "Card 12",
-    "description": "Restore 7 of your health.",
-    "cost": 2,
+    "name": "Equal Pay",
+    "description": "You and your opponent will heal 10",
+    "cost": 1,
     "icon": "heart",
     "accent": "heal",
     "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 7
-      }
-    ]
-  },
-  {
-    "id": "card-13",
-    "name": "Card 13",
-    "description": "Gain 2 energy.",
-    "cost": 0,
-    "icon": "bolt",
-    "accent": "energy",
-    "effects": [
+        "amount": 10
+      },
       {
-        "type": "energy",
-        "target": "self",
-        "amount": 2
-      }
-    ]
-  },
-  {
-    "id": "card-14",
-    "name": "Card 14",
-    "description": "Steal up to 2 energy from your opponent.",
-    "cost": 1,
-    "icon": "arrows",
-    "accent": "energy",
-    "effects": [
-      {
-        "type": "steal",
+        "type": "heal",
         "target": "opponent",
-        "amount": 2
+        "amount": 10
       }
     ]
   },
   {
-    "id": "card-15",
-    "name": "Card 15",
-    "description": "Poison your opponent for 2 damage at the start of their next 3 turns.",
+    "id": "card-10",
+    "name": "Slave Master",
+    "description": "Use your whip to deal 1 damage",
+    "cost": 0,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-11",
+    "name": "Indian Poop Festival",
+    "description": "Poison your opponent with 2 damage for 3 rounds.",
     "cost": 2,
     "icon": "flask",
     "accent": "poison",
@@ -258,31 +197,96 @@
     ]
   },
   {
-    "id": "card-16",
-    "name": "Card 16",
-    "description": "Deal 4 damage to your opponent and restore 3 of your health.",
-    "cost": 2,
-    "icon": "spark",
-    "accent": "mixed",
+    "id": "card-12",
+    "name": "Missile Strike",
+    "description": "Deal 7 damage",
+    "cost": 5,
+    "icon": "arrows",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
         "target": "opponent",
-        "amount": 4
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "id": "card-13",
+    "name": "Suicide Bomber",
+    "description": "Deal 10 damage to your opponent and 20 to yourself.",
+    "cost": 2,
+    "icon": "sword",
+    "accent": "attack",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 20
       },
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "id": "card-14",
+    "name": "Water",
+    "description": "Drink water. No effects.",
+    "cost": 3,
+    "icon": "flask",
+    "accent": "mixed",
+    "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 3
+        "amount": 1
+      },
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-15",
+    "name": "Hitman",
+    "description": "Deal 25 damage.",
+    "cost": 10,
+    "icon": "sword",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 25,
+      }
+    ]
+  },
+  {
+    "id": "card-16",
+    "name": "Golden Apple",
+    "description": "Heal 10.",
+    "cost": 5,
+    "icon": "heart",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-17",
-    "name": "Card 17",
-    "description": "Take 3 damage to gain 4 energy.",
-    "cost": 1,
-    "icon": "sword",
+    "name": "Donate to Charity",
+    "description": "Give 3 energy to your opponent.",
+    "cost": 0,
+    "icon": "heart",
     "accent": "mixed",
     "effects": [
       {
@@ -291,24 +295,24 @@
         "amount": 3
       },
       {
-        "type": "energy",
-        "target": "self",
-        "amount": 4
+        "type": "heal",
+        "target": "opponent",
+        "amount": 3
       }
     ]
   },
   {
     "id": "card-18",
-    "name": "Card 18",
-    "description": "Deal 5 damage and poison your opponent for 1 damage over their next 3 turns.",
-    "cost": 3,
+    "name": "AI",
+    "description": "Deal 2 damage.",
+    "cost": 10,
     "icon": "spark",
-    "accent": "mixed",
+    "accent": "damage",
     "effects": [
       {
         "type": "damage",
         "target": "opponent",
-        "amount": 5
+        "amount": 2
       },
       {
         "type": "poison",
@@ -320,46 +324,38 @@
   },
   {
     "id": "card-19",
-    "name": "Card 19",
-    "description": "Give your opponent up to 2 of your energy and restore 5 of your health.",
-    "cost": 0,
-    "icon": "heart",
-    "accent": "mixed",
+    "name": "Chernobyl",
+    "description": "Poison yourself and your opponent.",
+    "cost": 3,
+    "icon": "flask",
+    "accent": "poison",
     "effects": [
       {
-        "type": "steal",
+        "type": "poison",
         "target": "self",
-        "amount": 2
+        "amount": 2,
+        "rounds": 5
       },
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 5
+        "type": "poison",
+        "target": "opponent",
+        "amount": 2,
+        "rounds": 2
       }
     ]
   },
   {
     "id": "card-20",
-    "name": "Card 20",
-    "description": "Deal 4 damage to your opponent, steal 1 energy and restore 2 of your health.",
+    "name": "Eat Batteries",
+    "description": "Gain 5 energy",
     "cost": 3,
     "icon": "spark",
-    "accent": "mixed",
+    "accent": "energy",
     "effects": [
       {
-        "type": "damage",
-        "target": "opponent",
-        "amount": 4
-      },
-      {
-        "type": "steal",
-        "target": "opponent",
-        "amount": 1
-      },
-      {
-        "type": "heal",
+        "type": "energy",
         "target": "self",
-        "amount": 2
+        "amount": 5
       }
     ]
   },
