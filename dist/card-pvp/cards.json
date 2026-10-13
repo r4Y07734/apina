@@ -87,6 +87,7 @@
         "type": "energy",
         "target": "self",
         "amount": 10
+      }
     ]
   },
   {
