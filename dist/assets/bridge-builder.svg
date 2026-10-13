@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" role="img" aria-labelledby="title desc">
+  <title id="title">Bridgeworks</title>
+  <desc id="desc">A golden car crosses a steel truss bridge over an alpine river.</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#d9e9ef"/><stop offset="1" stop-color="#afcdd3"/></linearGradient>
+    <linearGradient id="mountain" x2="0" y2="1"><stop stop-color="#809d9f"/><stop offset="1" stop-color="#c7d7d0"/></linearGradient>
+    <linearGradient id="water" x2="0" y2="1"><stop stop-color="#83a6a1"/><stop offset="1" stop-color="#3c707c"/></linearGradient>
+    <linearGradient id="rock" x2="0" y2="1"><stop stop-color="#9a9e87"/><stop offset="1" stop-color="#64766c"/></linearGradient>
+    <linearGradient id="grass" x2="0" y2="1"><stop stop-color="#a0ad79"/><stop offset="1" stop-color="#577453"/></linearGradient>
+    <linearGradient id="steel" x2="0" y2="1"><stop stop-color="#97b1ac"/><stop offset="1" stop-color="#527b81"/></linearGradient>
+    <linearGradient id="car" x2="0" y2="1"><stop stop-color="#e3b46a"/><stop offset="1" stop-color="#aa753f"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#fff8d6" stop-opacity=".62"/><stop offset="1" stop-color="#fff8d6" stop-opacity="0"/></radialGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h600v380H0z"/>
+  <circle cx="470" cy="62" r="145" fill="url(#sun)"/>
+  <path fill="#b4c8c9" d="m-10 178 62-44 54 16 68-76 45 52 42-39 56 56 66-68 54 41 54-17 54 69v119H-10z"/>
+  <path fill="#e5ebe3" opacity=".74" d="m174 74-27 31 17-5 10 14 8-14 13 8zm209 1-21 28 18-6 9 9 9-12 13 12z"/>
+  <path fill="url(#mountain)" d="m-10 204 66-45 52 20 69-55 76 65 71-62 70 54 63-47 72 58 81-19v169H-10z"/>
+  <path fill="#688a85" opacity=".3" d="m177 124 17 105 59-40zm147 3 14 111 56-57zm133 7 5 83 67-25z"/>
+  <path fill="#dce6d5" opacity=".3" d="M0 212q125-48 235-3t365-6v65H0z"/>
+  <path fill="url(#water)" d="M0 252h600v128H0z"/>
+  <g fill="none" stroke="#d4e4d7" stroke-linecap="round" opacity=".23">
+    <path d="M135 269h73m84-7h37m105 15h66M99 303h44m79-10h85m25 22h46m79-18h58M118 334h85m53-2h58m52 18h89M76 366h80m67-14h82m32 18h132"/>
+  </g>
+  <path fill="url(#rock)" d="M0 212h125l8 29-5 19 24 37-15 83H0zm600 0H476l-10 31 7 24-24 33 9 80h142z"/>
+  <g fill="none" stroke="#425e4f" opacity=".28"><path d="m0 240 134 4m-134 30 139 4M0 312l145-5M0 347l142-7m458-101-131 6m131 30-130 5m130 31-145-3m145 42-143-8"/></g>
+  <path fill="url(#grass)" d="M0 197q62-8 124 9l3 16H0zm600 0q-62-8-122 9l-5 16h127z"/>
+  <g fill="#4a745c">
+    <path d="m30 139-18 29h10L9 190h17l-1 16h11l-1-16h16l-13-22h9z"/>
+    <path d="m76 155-15 24h8l-13 20h16l-1 10h10l-1-10h15l-12-20h8z"/>
+    <path d="m550 133-18 30h10l-14 24h17l-1 17h11l-1-17h18l-15-24h10z"/>
+    <path d="m515 165-12 18h7l-11 18h13l-1 8h8l-1-8h13l-10-18h7z"/>
+  </g>
+  <g fill="#648362"><ellipse cx="40" cy="209" rx="18" ry="4"/><ellipse cx="567" cy="211" rx="24" ry="4"/></g>
+  <path d="M0 216h600" stroke="#314e54" stroke-width="13" opacity=".32"/>
+  <path d="M0 211h600" stroke="#5b7273" stroke-width="9"/>
+  <path d="M0 208h600" stroke="#ccd1b8" stroke-width="2"/>
+  <path d="M0 211h600" stroke="#e4dcc2" stroke-width="1" stroke-dasharray="10 17"/>
+  <g stroke="#33585f" stroke-width="8" fill="none" opacity=".3" transform="translate(2 4)"><path d="m125 212 58-70h234l59 70M125 212l116-70 59 70 59-70 117 70M183 142l58 70 59-70 59 70 58-70"/></g>
+  <g stroke="url(#steel)" stroke-width="6" fill="none" stroke-linejoin="round"><path d="m125 209 58-70h234l59 70M125 209l116-70 59 70 59-70 117 70M183 139l58 70 59-70 59 70 58-70"/></g>
+  <g fill="none" stroke="#d8e5d4" stroke-width="1" opacity=".64"><path d="m125 207 58-70h234l59 70M183 137l58 70 59-70 59 70 58-70"/></g>
+  <g fill="#bcc6b3" stroke="#567476"><circle cx="183" cy="139" r="4"/><circle cx="241" cy="139" r="4"/><circle cx="300" cy="139" r="4"/><circle cx="359" cy="139" r="4"/><circle cx="417" cy="139" r="4"/><circle cx="241" cy="209" r="4"/><circle cx="300" cy="209" r="4"/><circle cx="359" cy="209" r="4"/></g>
+  <g fill="#d9a161" stroke="#786242"><rect x="117" y="205" width="16" height="11" rx="2"/><rect x="468" y="205" width="16" height="11" rx="2"/></g>
+  <g transform="translate(295 200)">
+    <ellipse cy="14" rx="39" ry="4" fill="#243e40" opacity=".24"/>
+    <path fill="url(#car)" d="m-37-7 11-4 8-17h25l13 17 15 4 2 14h-74z"/>
+    <path fill="#afc9c6" d="m-15-25 20 0 11 14h-38z"/><path d="M-1-25v14" stroke="#bc8c4f" stroke-width="3"/>
+    <path d="M-35-5h67" stroke="#f0cd92" opacity=".7"/>
+    <path d="M-35 5h70" stroke="#79573d" stroke-width="3"/>
+    <rect x="32" y="-6" width="4" height="5" rx="1" fill="#fff0bc"/><rect x="-38" y="-3" width="3" height="4" rx="1" fill="#ad5441"/>
+    <g fill="#283c40"><circle cx="-22" cy="6" r="8"/><circle cx="23" cy="6" r="8"/></g>
+    <g fill="#bfcdc3" stroke="#647f7a" stroke-width="2"><circle cx="-22" cy="6" r="4.5"/><circle cx="23" cy="6" r="4.5"/></g>
+  </g>
+  <path d="M493 209v-32" stroke="#68816a" stroke-width="2"/>
+  <path fill="#e8e9d2" d="M494 179h17v11h-17z"/><path fill="#547366" d="M494 179h5v5h-5zm10 0h6v5h-6zm-5 5h5v6h-5z"/>
+  <g fill="#f0e2b8" opacity=".26"><path d="m130 275 16 5-4 10-16-2zm338 17-17 3-6-8 15-6z"/></g>
+</svg>

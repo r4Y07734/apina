@@ -8,6 +8,20 @@ python3 -m http.server 8000 --directory dist
 
 Cloudflare Pages uses `dist` as its output directory with no build command.
 
+## Bridgeworks
+
+Open `dist/play/bridge-builder.html` through the local server. The bridge builder includes 20 levels and runs entirely on Cloudflare Pages, with no backend or build step.
+
+- [Controls, materials and structural simulation](docs/bridgeworks.md).
+- Level definitions: `dist/bridge-builder/levels.js`.
+- Optional progress and bridge designs stay in the browser on the player's device.
+
+Run its physics regression checks:
+
+```sh
+node --test tests/bridge-physics.test.mjs
+```
+
 ## Offensive Card PvP
 
 Open `dist/play/card-pvp.html` through the local server. Practice against the bot or deploy the included Cloudflare Worker to play with a friend.
