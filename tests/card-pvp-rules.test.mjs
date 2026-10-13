@@ -76,8 +76,8 @@ test('a new game deals independently shuffled decks without duplicates and fixed
     assert.equal(player.health, 40);
     assert.equal(player.energy, 3);
     assert.equal(player.hand.length, 5);
-    assert.equal(player.deck.length, 15);
-    assert.equal(new Set([...player.hand, ...player.deck]).size, 20);
+    assert.equal(player.deck.length, 45);
+    assert.equal(new Set([...player.hand, ...player.deck]).size, 50);
     assert.deepEqual(player.discard, []);
   }
   assert.notDeepEqual(state.players[0].hand, state.players[1].hand);
@@ -252,9 +252,9 @@ test('a full seven-card hand skips drawing without burning a deck card', () => {
   const state = makeGame(shippedCards);
   for (let turn = 0; turn < 6; turn += 1) end(state, shippedCards);
   assert.equal(state.players[0].hand.length, RULES.maxHand);
-  assert.equal(state.players[0].deck.length, 13);
+  assert.equal(state.players[0].deck.length, 43);
   assert.equal(state.players[1].hand.length, RULES.maxHand);
-  assert.equal(state.players[1].deck.length, 13);
+  assert.equal(state.players[1].deck.length, 43);
 });
 
 test('an empty deck securely reshuffles discard after restoring a serialized game', () => {
@@ -341,29 +341,31 @@ test('long turn sequences preserve every card and keep logs bounded without hidd
   assert.equal(state.log.length, 32);
   assert.equal(state.revision, 100);
   for (const player of state.players) {
-    assert.equal(player.hand.length + player.deck.length + player.discard.length, 20);
-    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 20);
+    assert.equal(player.hand.length + player.deck.length + player.discard.length, 50);
+    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 50);
     assert.equal(player.energy, 10);
   }
   assert.equal(state.log.some(entry => /card-\d/.test(entry.text)), false);
 });
 
 
-test('only the first 20 entries are dealt and inactive cards cannot be played', () => {
-  const active = new Set(shippedCards.slice(0, RULES.activeCards).map(card => card.id));
+test('all 50 entries are dealt and the final slot can be played', () => {
+  const cards = cloneCards();
+  const active = new Set(cards.map(card => card.id));
+  assert.equal(RULES.activeCards, 50);
   for (let attempt = 0; attempt < 30; attempt++) {
-    const state = createGame(shippedCards);
+    const state = createGame(cards);
     for (const player of state.players) {
-      assert.equal(player.deck.length + player.hand.length, 20);
-      assert.ok([...player.deck, ...player.hand].every(id => active.has(id)));
+      const deck = [...player.hand, ...player.deck];
+      assert.equal(deck.length, 50);
+      assert.deepEqual(new Set(deck), active);
     }
   }
-  const state = makeGame(shippedCards);
-  state.players[0].hand = [shippedCards[20].id];
-  state.players[0].energy = 10;
-  const before = structuredClone(state);
-  assert.equal(applyAction(state, 0, { type:'play', cardId:shippedCards[20].id }, shippedCards).ok, false);
-  assert.deepEqual(state, before);
+  cards[49] = { ...cards[49], cost:0, effects:[{type:'damage',target:'opponent',amount:1}] };
+  const state = makeGame(cards);
+  state.players[0].hand = [cards[49].id];
+  assert.equal(applyAction(state,0,{type:'play',cardId:cards[49].id},cards).ok,true);
+  assert.equal(state.players[1].health,39);
 });
 
 test('compatibility normalization preserves user data and makes common values usable', () => {

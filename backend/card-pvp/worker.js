@@ -2,7 +2,7 @@ import rawCards from '../../dist/card-pvp/cards.json' with { type: 'json' };
 import { createGame, applyAction, viewFor, validateCards, normalizeCards } from '../../dist/card-pvp/rules.js';
 
 const cards = normalizeCards(rawCards);
-const RULES_VERSION = 2;
+const RULES_VERSION = 3;
 
 const ROOM_CODE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
 const ROOM_TOKEN = /^[a-f0-9]{64}$/;
@@ -211,7 +211,7 @@ export class CardRoom {
 
   async enforceLimits() {
     if (!this.room) return;
-    if (this.room.rulesVersion !== RULES_VERSION) { await this.expire('The game has been updated. Create a new room for the 20-card deck.'); return; }
+    if (this.room.rulesVersion !== RULES_VERSION) { await this.expire('The game has been updated. Create a new room for the 50-card deck.'); return; }
     const now = Date.now();
     if (now >= this.room.expiresAt) { await this.expire(); return; }
     if (this.room.game?.status !== 'playing') return;

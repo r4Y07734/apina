@@ -75,8 +75,8 @@ try {
     assert.equal(packet.state.players[0].deck, undefined);
     assert.equal(packet.state.tokens, undefined);
     assert.ok(packet.deadline > Date.now());
-    assert.equal(packet.state.players[0].deckCount, 15);
-    assert.ok(packet.state.hand.every(id => cards.slice(0, 20).some(card => card.id === id)));
+    assert.equal(packet.state.players[0].deckCount, 45);
+    assert.ok(packet.state.hand.every(id => cards.slice(0, 50).some(card => card.id === id)));
     assert.deepEqual(packet.state.playedCards, []);
   }
   assert.equal((await post(`/rooms/${host.body.room}/join`, { name: 'Third' })).status, 409);

@@ -8,7 +8,7 @@ export const RULES = Object.freeze({
   initialHand: 5,
   maxHand: 7,
   catalogSize: 50,
-  activeCards: 20,
+  activeCards: 50,
 });
 
 const EFFECT_TYPES = new Set(['damage', 'heal', 'energy', 'steal', 'poison']);
