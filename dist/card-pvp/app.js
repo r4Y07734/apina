@@ -1,6 +1,7 @@
 import { createGame, applyAction, viewFor, pickBotAction, validateCards, normalizeCards } from './rules.js';
 import { multiplayerServer } from './config.js';
 import { createCardAnimations } from './animations.js';
+import { CHARACTERS, DEFAULT_CHARACTER, characterFor, validCharacter } from './characters.js';
 
 const $ = id => document.getElementById(id);
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -23,6 +24,38 @@ let revealQueue = [], revealTimer, revealExitTimer, resultTimer, revealBusy = fa
 const shownReveals = new Set();
 const cardAnimations = createCardAnimations(document.querySelector('.arena'));
 let cancelAnimationResult = () => {};
+let selectedCharacter=DEFAULT_CHARACTER, characterLocked=false;
+
+function applyPortrait(element,id){
+  const character=characterFor(id);
+  element.style.setProperty('--portrait-x',`${character.column/3*100}%`);
+  element.style.setProperty('--portrait-y',`${character.row*100}%`);
+  element.dataset.character=character.id;
+  element.setAttribute('aria-label',character.name);
+  element.title=character.name;
+}
+function updateCharacterPicker(){
+  for(const button of $('character-grid').querySelectorAll('button')){
+    const active=button.dataset.character===selectedCharacter;
+    button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));button.disabled=characterLocked;
+  }
+  $('selected-character-name').textContent=characterFor(selectedCharacter).name;
+}
+for(const character of CHARACTERS){
+  const button=document.createElement('button');button.type='button';button.className='character-choice';button.dataset.character=character.id;
+  const portrait=document.createElement('span');portrait.className='character-thumbnail';portrait.setAttribute('aria-hidden','true');applyPortrait(portrait,character.id);
+  const label=document.createElement('span');label.textContent=character.name;
+  button.append(portrait,label);button.addEventListener('click',()=>{if(characterLocked||!validCharacter(character.id))return;selectedCharacter=character.id;updateCharacterPicker();});
+  $('character-grid').append(button);
+}
+updateCharacterPicker();
+const characterLayout=matchMedia('(max-width:850px)');
+function positionCharacterPicker(){
+  const picker=document.querySelector('.character-picker');
+  if(characterLayout.matches)document.querySelector('.lobby-copy').insertBefore(picker,document.querySelector('.lobby-choices'));
+  else $('lobby').append(picker);
+}
+positionCharacterPicker();characterLayout.addEventListener('change',positionCharacterPicker);
 
 function message(text, isError = false) {
   const element = mode && view ? $('battle-message') : $('lobby-message');
@@ -50,6 +83,7 @@ function showLobby() {
   $('friend-panel').hidden = true; $('friend-toggle').setAttribute('aria-expanded','false');
   $('lobby-message').textContent = ''; $('connection-status').textContent = 'Bot is ready · no account needed';
   $('result-dialog').close(); $('activity-dialog').close();
+  characterLocked=false;updateCharacterPicker();
   $('play-bot').focus({preventScroll:true});
 }
 function iconFor(card) {
@@ -187,6 +221,7 @@ function renderOpponentPlays(previous) {
 
 function render(next) {
   const previous = view; view = next;
+  if(!previous&&mode==='online'){selectedCharacter=characterFor(view.players[view.you].character).id;updateCharacterPicker();}
   if (selected && (!view.hand.includes(selected) || view.status !== 'playing' || view.turn !== view.you)) selected = null;
   $('lobby').hidden = true; $('battle').hidden = false; document.body.classList.add('battle-active');
   const ownTurn = view.turn === view.you;
@@ -197,6 +232,8 @@ function render(next) {
   for(let display=0;display<2;display++) {
     const actor = display === 0 ? view.you : 1-view.you, p = view.players[actor];
     $(`player-name-${display}`).textContent = p.name;
+    applyPortrait($(`portrait-${display}`),p.character);
+    $(`character-name-${display}`).textContent=characterFor(p.character).name;
     $(`player-hp-${display}`).textContent = `${p.health} / ${p.maxHealth}`;
     $(`hp-fill-${display}`).style.width = `${p.health/p.maxHealth*100}%`;
     $(`player-energy-${display}`).textContent = `${p.energy} / ${p.maxEnergy}`;
@@ -250,7 +287,8 @@ function scheduleBot() {
 function startBot() {
   roomRequestVersion++; closeConnection();clearSession();mode='bot';selected=null;pending=false;connected=true;turnDeadline=null;
   const name=$('player-name').value.trim().slice(0,24)||'You';
-  state=createGame(cards,{names:[name,'Practice bot']});view=null;
+  const botCharacter=CHARACTERS[crypto.getRandomValues(new Uint8Array(1))[0]%CHARACTERS.length].id;
+  state=createGame(cards,{names:[name,'Practice bot'],characters:[selectedCharacter,botCharacter]});view=null;
   $('battle-message').textContent='';render(viewFor(state,0));scheduleBot();
 }
 async function roomRequest(join) {
@@ -261,18 +299,20 @@ async function roomRequest(join) {
   const code=$('room-code').value.trim().toUpperCase();
   if(join && !/^[A-Z0-9]{6}$/.test(code)){message('Enter the six-character room code.',true);$('room-code').focus();return;}
   $('create-room').disabled=$('join-room').disabled=true;
+  characterLocked=true;updateCharacterPicker();
   message(join?'Joining room…':'Creating room…');
   try {
-    const response=await fetch(`${server}/rooms${join?`/${code}/join`:''}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('player-name').value.trim().slice(0,24)||'Player'}),signal:AbortSignal.timeout(15000)});
+    const response=await fetch(`${server}/rooms${join?`/${code}/join`:''}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('player-name').value.trim().slice(0,24)||'Player',character:selectedCharacter}),signal:AbortSignal.timeout(15000)});
     const data=await response.json();if(requestVersion!==roomRequestVersion)return;if(!response.ok)throw Error(data.error||'Could not open this room.');
     room=data.room||code;token=data.token;
     if(!/^[A-Z0-9]{6}$/.test(room)||typeof token!=='string'||!token)throw Error('The server returned an invalid room.');
     closeConnection();mode='online';view=null;selected=null;reconnectAttempt=0;
     rememberSession();connectRoom();
   }catch(error){if(requestVersion!==roomRequestVersion)return;message(error instanceof TypeError?'Could not reach the server. Check its URL and allowed website origins.':error.message,true);}
-  finally{$('create-room').disabled=$('join-room').disabled=false;}
+  finally{if(requestVersion===roomRequestVersion){$('create-room').disabled=$('join-room').disabled=false;characterLocked=mode==='online';updateCharacterPicker();}}
 }
 function waiting() {
+  characterLocked=true;updateCharacterPicker();
   $('lobby').hidden=false;$('battle').hidden=true;$('friend-panel').hidden=true;$('waiting-panel').hidden=false;
   $('waiting-code').textContent=room;
   $('connection-status').textContent=connected?'Room connected · waiting for a friend':'Connecting to room…';

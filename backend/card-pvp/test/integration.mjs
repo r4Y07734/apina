@@ -49,7 +49,7 @@ async function rejectedConnection(room, token, requestOrigin = origin) {
 try {
   assert.equal((await fetch(`${base}/health`)).status, 200);
   assert.equal((await post('/rooms', { name: 'Blocked' }, 'https://attacker.example')).status, 403);
-  const host = await post('/rooms', { name: 'Aino' });
+  const host = await post('/rooms', { name: 'Aino',character:'monkey' });
   assert.equal(host.status, 201);
   assert.match(host.body.room, /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/);
   assert.match(host.body.token, /^[a-f0-9]{64}$/);
@@ -59,7 +59,7 @@ try {
   const waiting = await waitFor(a, message => message.type === 'waiting');
   assert.deepEqual(waiting.connected, [true, false]);
   assert.equal(waiting.state, undefined);
-  const guest = await post(`/rooms/${host.body.room}/join`, { name: 'Elias' });
+  const guest = await post(`/rooms/${host.body.room}/join`, { name: 'Elias',character:'indian' });
   assert.equal(guest.status, 201);
   assert.notEqual(guest.body.token, host.body.token);
   const b = await connect(host.body.room, guest.body.token);
@@ -70,6 +70,7 @@ try {
   assert.equal(initialA.state.hand.length, 5);
   assert.equal(initialB.state.hand.length, 5);
   for (const packet of [initialA, initialB]) {
+    assert.deepEqual(packet.state.players.map(player=>player.character),['monkey','indian']);
     assert.equal(packet.state.players[0].hand, undefined);
     assert.equal(packet.state.players[1].hand, undefined);
     assert.equal(packet.state.players[0].deck, undefined);
@@ -127,6 +128,7 @@ try {
   const reconnected = await connect(host.body.room, host.body.token);
   const restored = await waitFor(reconnected, message => message.type === 'state');
   assert.equal(restored.state.you, 0);
+  assert.deepEqual(restored.state.players.map(player=>player.character),['monkey','indian']);
   assert.equal(restored.state.turn, 1);
   assert.equal(restored.state.revision, afterPlay.state.revision);
   assert.deepEqual(restored.state.hand, initialA.state.hand);

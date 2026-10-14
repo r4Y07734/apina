@@ -1,5 +1,6 @@
 import rawCards from '../../dist/card-pvp/cards.json' with { type: 'json' };
 import { createGame, applyAction, viewFor, validateCards, normalizeCards } from '../../dist/card-pvp/rules.js';
+import { DEFAULT_CHARACTER, validCharacter } from '../../dist/card-pvp/characters.js';
 
 const cards = normalizeCards(rawCards);
 const RULES_VERSION = 4;
@@ -50,6 +51,12 @@ export function playerName(body) {
     throw new ClientError('Use a name with 1–24 characters, without control characters.');
   }
   return name;
+}
+
+export function playerCharacter(body){
+  if(body?.character===undefined)return DEFAULT_CHARACTER;
+  if(!validCharacter(body.character))throw new ClientError('Choose a character from the selection.',400);
+  return body.character;
 }
 
 async function readJson(request) {
@@ -110,12 +117,12 @@ export default {
         response = json({ ok: true, service: 'apina-card-pvp' });
       } else if (path === '/rooms') {
         if (request.method !== 'POST') throw new ClientError('Use POST to create a room.', 405);
-        const name = playerName(await readJson(request));
+        const body = await readJson(request), name = playerName(body), character = playerCharacter(body);
         for (let attempt = 0; attempt < 5; attempt++) {
           const room = randomRoomCode();
           const stub = env.ROOMS.get(env.ROOMS.idFromName(room));
           response = await stub.fetch(new Request('https://room.internal/create', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, room }),
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, room, character }),
           }));
           if (response.status !== 409) break;
         }
@@ -126,9 +133,9 @@ export default {
         const stub = env.ROOMS.get(env.ROOMS.idFromName(room));
         if (operation === 'join') {
           if (request.method !== 'POST') throw new ClientError('Use POST to join a room.', 405);
-          const name = playerName(await readJson(request));
+          const body = await readJson(request), name = playerName(body), character = playerCharacter(body);
           response = await stub.fetch(new Request('https://room.internal/join', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }),
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, character }),
           }));
         } else {
           if (request.method !== 'GET') throw new ClientError('Use GET to connect.', 405);
@@ -249,11 +256,11 @@ export class CardRoom {
     const url = new URL(request.url);
     if (url.pathname === '/create') {
       if (this.room) return json({ error: 'Room code is already in use.' }, 409);
-      const { name, room } = await request.json();
+      const body=await request.json(), { name, room } = body, character=playerCharacter(body);
       validateCards(cards);
       const token = randomHex();
       this.room = {
-        rulesVersion: RULES_VERSION, code: room, names: [name, null], tokens: [token, null], game: null, cards,
+        rulesVersion: RULES_VERSION, code: room, names: [name, null], characters:[character,null], tokens: [token, null], game: null, cards,
         createdAt: Date.now(), expiresAt: Date.now() + WAIT_MS,
         disconnectedAt: [null, null], turnDeadline: null, notice: null,
       };
@@ -263,11 +270,13 @@ export class CardRoom {
     if (!this.room) return json({ error: 'Room not found or expired. Check the code or create a new room.' }, 404);
     if (url.pathname === '/join') {
       if (this.room.tokens[1]) return json({ error: 'This room already has two players.' }, 409);
-      const { name } = await request.json();
+      const body=await request.json(), {name}=body, character=playerCharacter(body);
       const token = randomHex();
       this.room.names[1] = name;
       this.room.tokens[1] = token;
-      this.room.game = createGame(this.room.cards, { names: this.room.names, startingPlayer: crypto.getRandomValues(new Uint8Array(1))[0] & 1 });
+      this.room.characters ||= [DEFAULT_CHARACTER,null];
+      this.room.characters[1]=character;
+      this.room.game = createGame(this.room.cards, { names: this.room.names, characters:this.room.characters, startingPlayer: crypto.getRandomValues(new Uint8Array(1))[0] & 1 });
       const now = Date.now();
       this.room.turnDeadline = now + TURN_MS;
       this.room.expiresAt = this.room.createdAt + MAX_ROOM_MS;

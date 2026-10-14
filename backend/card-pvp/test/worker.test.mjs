@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { allowedOrigin, playerName, CardRoom } from '../worker.js';
+import worker, { allowedOrigin, playerName, playerCharacter, CardRoom } from '../worker.js';
 import { createGame, RULES } from '../../../dist/card-pvp/rules.js';
 
 test('only exact configured browser origins receive access', () => {
@@ -19,6 +19,22 @@ test('names have clear bounds and reject controls', () => {
   assert.throws(() => playerName({ name: 1 }));
 });
 
+test('character requests accept only cosmetic IDs from the selection',()=>{
+  assert.equal(playerCharacter({character:'monkey'}),'monkey');
+  assert.equal(playerCharacter({}),'black-man');
+  for(const id of ['__proto__','https://attacker.test/p.png','unknown',1,null])assert.throws(()=>playerCharacter({character:id}));
+});
+
+test('host and guest character choices survive room storage and both private views',async()=>{
+  const ctx=mockContext(),room=new CardRoom(ctx,{});await Promise.resolve();
+  await room.fetch(new Request('https://room.internal/create',{method:'POST',body:JSON.stringify({name:'Host',room:'ABCDEF',character:'monkey'})}));
+  await room.fetch(new Request('https://room.internal/join',{method:'POST',body:JSON.stringify({name:'Guest',character:'indian'})}));
+  assert.deepEqual(ctx.stored().characters,['monkey','indian']);
+  for(const actor of [0,1])assert.deepEqual(room.snapshot(actor).state.players.map(p=>p.character),['monkey','indian']);
+  const reloaded=new CardRoom(ctx,{});await Promise.resolve();
+  assert.deepEqual(reloaded.snapshot(1).state.players.map(p=>p.character),['monkey','indian']);
+});
+
 test('invalid browser origin and invalid input never allocate a room', async () => {
   const env = { ALLOWED_ORIGINS: 'http://localhost:8000', ROOMS: { idFromName() { throw new Error('Must not allocate'); } } };
   const response = await worker.fetch(new Request('https://server.example/rooms', {
@@ -31,6 +47,10 @@ test('invalid browser origin and invalid input never allocate a room', async () 
   }), env);
   assert.equal(invalid.status, 400);
   assert.equal(invalid.headers.get('Access-Control-Allow-Origin'), 'http://localhost:8000');
+  const invalidCharacter=await worker.fetch(new Request('https://server.example/rooms',{
+    method:'POST',headers:{Origin:'http://localhost:8000','Content-Type':'application/json'},body:JSON.stringify({name:'Test',character:'unknown'}),
+  }),env);
+  assert.equal(invalidCharacter.status,400);
 });
 
 test('large request bodies are rejected before room allocation', async () => {

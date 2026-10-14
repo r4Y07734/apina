@@ -2,6 +2,12 @@
 
 Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browser and need no account or backend. Friend matches use the small Cloudflare Worker included in `backend/card-pvp`.
 
+## Choose a character
+
+The lobby offers eight cosmetic characters with illustrated portraits. Choose one before starting a bot match or creating/joining a friend room. Every character has the same health, energy and deck rules. The bot receives a random portrait. Online character choices are stored with the match and shown to both players, including after reconnecting; older rooms use the default portrait. The picker is locked while waiting in a room. Character selection does not change the card catalog or activate reserved slots.
+
+The choices live in `dist/card-pvp/characters.js`; the portrait atlas is `dist/card-pvp/characters/portraits.png`. A restore tag, `card-pvp-before-character-selection-2026-10-14`, preserves the version before character selection.
+
 ## Edit your 75 card slots
 
 Edit `dist/card-pvp/cards.json`. It contains 75 editable slots. Only the **first 50 entries** are active and can be dealt or played. Slots **51–75 are inactive placeholders** for future cards; editing them does not activate them. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 75 entries. Each player gets a separately shuffled deck containing the first 50 slots. Change `RULES.activeCards` in `rules.js` if you later want a different active count, then redeploy both frontend and backend.

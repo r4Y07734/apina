@@ -1,5 +1,6 @@
 // Shared by the browser bot game and the authoritative multiplayer server.
 // Keep this module free of browser APIs so the same rules run in both places.
+import { DEFAULT_CHARACTER, validCharacter } from './characters.js';
 export const RULES = Object.freeze({
   health: 40,
   initialEnergy: 3,
@@ -146,7 +147,7 @@ function safeName(value, fallback) {
   return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, 24) || fallback : fallback;
 }
 
-export function createGame(cards, { names = ['You', 'Bot'], random = secureRandom, startingPlayer = 0 } = {}) {
+export function createGame(cards, { names = ['You', 'Bot'], random = secureRandom, startingPlayer = 0, characters = [DEFAULT_CHARACTER,DEFAULT_CHARACTER] } = {}) {
   validateCards(cards);
   if (typeof random !== 'function') throw new Error('random must be a function.');
   if (startingPlayer !== 0 && startingPlayer !== 1) throw new Error('Starting player must be 0 or 1.');
@@ -166,6 +167,7 @@ export function createGame(cards, { names = ['You', 'Bot'], random = secureRando
   for (let actor = 0; actor < 2; actor += 1) {
     state.players.push({
       name: safeName(names?.[actor], actor === 0 ? 'You' : 'Bot'),
+      character: validCharacter(characters?.[actor]) ? characters[actor] : DEFAULT_CHARACTER,
       health: RULES.health,
       maxHealth: RULES.health,
       energy: RULES.initialEnergy,
@@ -295,6 +297,7 @@ export function viewFor(state, actor) {
     round: state.round,
     players: state.players.map(player => ({
       name: player.name,
+      character: validCharacter(player.character) ? player.character : DEFAULT_CHARACTER,
       health: player.health,
       maxHealth: player.maxHealth,
       energy: player.energy,

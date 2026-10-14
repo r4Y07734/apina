@@ -72,7 +72,9 @@ export function createCardAnimations(arena) {
     const bounds = canvas.getBoundingClientRect();
     const display = actor === viewer ? 0 : 1;
     const portrait = arena.querySelector(`#fighter-${display} .fighter-avatar`).getBoundingClientRect();
-    return { x:portrait.left+portrait.width*.5-bounds.left, y:portrait.top+portrait.height*.5-bounds.top, size:Math.max(45,Math.min(180,portrait.height)) };
+    const character=arena.querySelector(`#fighter-${display} .fighter-avatar`).dataset.character;
+    const anchorY = character === 'monkey' ? .53 : character === 'nazi' ? .45 : .4;
+    return { x:portrait.left+portrait.width*.5-bounds.left, y:portrait.top+portrait.height*anchorY-bounds.top, size:Math.max(45,Math.min(180,portrait.height)) };
   }
   function idle() {
     current = null; canvas.hidden = true; ctx.clearRect(0,0,canvas.width,canvas.height);
