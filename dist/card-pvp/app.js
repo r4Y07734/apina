@@ -1,5 +1,6 @@
 import { createGame, applyAction, viewFor, pickBotAction, validateCards, normalizeCards } from './rules.js';
 import { multiplayerServer } from './config.js';
+import { createCardAnimations } from './animations.js';
 
 const $ = id => document.getElementById(id);
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -20,6 +21,8 @@ let turnWarningKey = '';
 const sessionKey = 'apina-card-pvp-session';
 let revealQueue = [], revealTimer, revealExitTimer, resultTimer, revealBusy = false;
 const shownReveals = new Set();
+const cardAnimations = createCardAnimations(document.querySelector('.arena'));
+let cancelAnimationResult = () => {};
 
 function message(text, isError = false) {
   const element = mode && view ? $('battle-message') : $('lobby-message');
@@ -136,6 +139,7 @@ function animateChange(oldView, newView) {
   }
 }
 function resetCardReveals() {
+  cancelAnimationResult(); cancelAnimationResult = () => {}; cardAnimations.reset();
   clearTimeout(revealTimer); clearTimeout(revealExitTimer); clearTimeout(resultTimer);
   revealQueue = []; revealBusy = false; shownReveals.clear();
   $('opponent-card-reveal').hidden = true;
@@ -206,6 +210,7 @@ function render(next) {
   const opponent = view.players[1-view.you];
   $('opponent-hand').replaceChildren(...Array.from({length:opponent.handCount},()=>{const back=document.createElement('span');back.className='card-back';back.setAttribute('aria-hidden','true');return back;}));
   $('opponent-hand').setAttribute('aria-label',`Opponent has ${opponent.handCount} hidden cards`);
+  cardAnimations.receive(previous,view);
   renderOpponentPlays(previous); renderHand(previous?.hand || []); updateControls(); animateChange(previous,view);
   $('activity-log').replaceChildren(...view.log.slice(-7).reverse().map(entry=>{const line=document.createElement('li');line.textContent=entry.text;line.className=`log-${entry.kind}`;return line;}));
   if (view.status==='finished' && previous?.status!=='finished') {
@@ -214,8 +219,12 @@ function render(next) {
     $('result-description').textContent=draw?'Both fighters fell in the same exchange.':won?'The arena is yours. Ready for another round?':'A good duel. Try a different hand next time.';
     $('rematch').textContent=mode==='bot'?'Play bot again':'New online match';
     const finalOpponentPlay = view.lastEvent?.kind === 'play' && view.lastEvent.actor !== view.you;
-    if (finalOpponentPlay) resultTimer = setTimeout(() => $('result-dialog').showModal(), 3100);
-    else $('result-dialog').showModal();
+    const finishedAt = performance.now();
+    cancelAnimationResult = cardAnimations.whenIdle(() => {
+      const showResult = () => { if(view?.status==='finished' && !$('result-dialog').open)$('result-dialog').showModal(); };
+      if(finalOpponentPlay)resultTimer=setTimeout(showResult,Math.max(0,3100-(performance.now()-finishedAt)));
+      else showResult();
+    });
     clearTimeout(botTimer); if(mode==='online')clearSession();
   }
 }

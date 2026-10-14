@@ -491,3 +491,10 @@ input::placeholder { color: var(--quiet); }
 .round-label.time-critical { color: #ffc0af; }
 @keyframes turn-urgency { 50% { box-shadow: 0 0 0 4px #d9836d26; } }
 @media (prefers-reduced-motion: reduce) { .turn-label.time-critical { animation: none; } }
+
+/* Card actions stay in the arena and never capture input or shift the layout. */
+.arena { position: relative; }
+.card-action-canvas { position:absolute; inset:0; width:100%; height:100%; z-index:30; pointer-events:none; border-radius:inherit; }
+.card-reveal { transition:opacity .18s ease; }
+.arena.card-animation-opponent .card-reveal { opacity:.12; }
+@media (prefers-reduced-motion:reduce) { .card-reveal { transition:none; } }

@@ -40,6 +40,8 @@ After changing the JSON, reload the bot game to check it. The game validates the
 
 ## Use icons from a big pack
 
+Card action scenes, targeting, reduced motion and the saved restore point are described in [Card animations and restore point](card-animations.md).
+
 Download a trusted SVG from [Lucide](https://lucide.dev/icons/), [Tabler Icons](https://tabler.io/icons), or [Game-icons.net](https://game-icons.net/). Save it under `dist/card-pvp/icons/` and set a card's `icon` to a local path, such as `"icons/swords.svg"`. You can use different SVGs for every slot without changing JavaScript or installing an icon library. Icons stay on your own Pages site, so no external icon service is needed.
 
 The `heart` accent is accepted as an alias for `heal`, and `attack` for `damage`. Whole-number strings in effect amounts are normalized at runtime without rewriting the JSON. Descriptions remain display copy and do not override effects.
