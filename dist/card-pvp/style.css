@@ -518,11 +518,11 @@ input::placeholder { color: var(--quiet); }
 .character-choice:hover:not(:disabled) { border-color:#829977; background:#28342b; }
 .character-choice.selected { color:var(--mint); border-color:#a0c187; box-shadow:inset 0 0 0 1px #a0c18744; background:#27352a; }
 .character-choice:disabled { opacity:.6; cursor:default; }
-.character-thumbnail,.character-portrait { background-image:url('characters/portraits.png'); background-size:400% 200%; background-position:var(--portrait-x,0%) var(--portrait-y,0%); background-repeat:no-repeat; }
+.character-thumbnail,.character-portrait { background-image:url('characters/portraits-low-poly.png'); background-size:400% 200%; background-position:var(--portrait-x,0%) var(--portrait-y,0%); background-repeat:no-repeat; }
 .character-thumbnail { display:block; width:60px; aspect-ratio:3/4; border-radius:5px; }
 .character-picker>p { font-size:10px; line-height:1.5; color:var(--quiet); margin:9px 0 0; }
 .fighter-avatar.character-portrait { display:block; width:auto; aspect-ratio:3/4; border-radius:8px; mask-image:linear-gradient(#000 0%,#000 87%,transparent 100%); }
 .character-name { color:var(--muted); font-weight:400; text-transform:none; letter-spacing:0; margin-left:5px; }
-@media(min-width:900px) { .battle-active .fighter-avatar.character-portrait { width:calc(var(--portrait-height)*.75); }.battle-active .character-name { display:none; } }
+@media(min-width:900px) { .battle-active .fighter-avatar.character-portrait { width:calc(var(--portrait-height)*.75); }.battle-active .character-name { display:inline; color:#c2cfba; } }
 @media(max-width:650px) { .character-picker { margin:18px 0; }.character-picker-heading>span { font-size:10px; }.character-thumbnail { width:55px; }.character-choice { font-size:9px; }.character-name { display:block; margin:4px 0 0; font-size:8px; } }
 @media(min-width:851px) { .lobby>.character-picker { margin:0; max-width:none; width:100%; padding:22px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }.lobby>.character-picker .character-thumbnail { width:80px; }.lobby>.character-picker .character-choice { padding:9px 5px; } }

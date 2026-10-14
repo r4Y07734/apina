@@ -6,7 +6,7 @@ Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browse
 
 The lobby offers eight cosmetic characters with illustrated portraits. Choose one before starting a bot match or creating/joining a friend room. Every character has the same health, energy and deck rules. The bot receives a random portrait. Online character choices are stored with the match and shown to both players, including after reconnecting; older rooms use the default portrait. The picker is locked while waiting in a room. Character selection does not change the card catalog or activate reserved slots.
 
-The choices live in `dist/card-pvp/characters.js`; the portrait atlas is `dist/card-pvp/characters/portraits.png`. A restore tag, `card-pvp-before-character-selection-2026-10-14`, preserves the version before character selection.
+The portraits use faceted low-poly artwork with larger faces and distinct clothing. The original `portraits.png` remains available for rollback. The choices live in `dist/card-pvp/characters.js`; the portrait atlas is `dist/card-pvp/characters/portraits-low-poly.png`. A restore tag, `card-pvp-before-character-selection-2026-10-14`, preserves the version before character selection.
 
 ## Edit your 75 card slots
 
