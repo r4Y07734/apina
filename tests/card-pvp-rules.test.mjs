@@ -453,3 +453,34 @@ test('played-card history stays bounded without losing the latest revealed card'
   assert.equal(game.state.playedCards.length, 20);
   assert.equal(viewFor(game.state, 1).playedCards.at(-1).id, game.state.lastEvent.id);
 });
+
+test('effect chances roll independently and failed effects still consume the card and cost',()=>{
+  const game=fixture([{type:'damage',target:'opponent',amount:8,chance:25},{type:'poison',target:'opponent',amount:2,rounds:3,chance:50},{type:'heal',target:'self',amount:4}],{cost:2});
+  game.state.players[0].health=30;
+  const rolls=[.25,.49];
+  assert.equal(applyAction(game.state,0,{type:'play',cardId:game.cardId},game.cards,()=>rolls.shift()).ok,true);
+  assert.equal(game.state.players[1].health,40);
+  assert.equal(game.state.players[0].health,34);
+  assert.deepEqual(game.state.players[1].poison,[{amount:2,remaining:3}]);
+  assert.equal(game.state.players[0].energy,1);
+  assert.equal(game.state.players[0].hand.length,0);
+  assert.deepEqual(game.state.lastEvent.effectResults,[false,true,true]);
+  assert.deepEqual(viewFor(game.state,1).playedCards[0].effectResults,[false,true,true]);
+  assert.match(game.state.log.at(-1).text,/did not trigger/);
+});
+
+test('0 and 100 percent need no rolls; failed lethal effects cannot end a match',()=>{
+  const game=fixture([{type:'damage',target:'opponent',amount:100,chance:0},{type:'damage',target:'self',amount:2,chance:100}]);
+  applyAction(game.state,0,{type:'play',cardId:game.cardId},game.cards,()=>{throw Error('Unexpected roll');});
+  assert.equal(game.state.status,'playing');assert.equal(game.state.players[1].health,40);assert.equal(game.state.players[0].health,38);
+  assert.deepEqual(game.state.lastEvent.targets,[0]);
+});
+
+test('chance percentages validate and normalize without rewriting other card fields',()=>{
+  for(const chance of [-1,101,NaN,Infinity,null,true,'25%']){
+    const cards=cloneCards();cards[0].effects=[{type:'damage',target:'opponent',amount:2,chance}];assert.throws(()=>validateCards(cards),/chance/);
+  }
+  for(const chance of [0,12.5,100])validateCards(fixture([{type:'damage',target:'opponent',amount:2,chance}]).cards);
+  const game={cards:cloneCards()};game.cards[0].effects=[{type:'heal',target:'self',amount:2,chance:'12.5'}];
+  const normalized=normalizeCards(game.cards);assert.equal(normalized[0].effects[0].chance,12.5);assert.equal(game.cards[0].effects[0].chance,'12.5');
+});

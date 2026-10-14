@@ -118,6 +118,10 @@ function builtInIcon(name) {
   for (const d of iconPaths[name]) {const p = document.createElementNS(svgNS,'path'); p.setAttribute('d',d); svg.append(p);} return svg;
 }
 function effectText(effect, ownerIsYou = true) {
+  const text=effectDescription(effect,ownerIsYou);
+  return effect.chance === undefined || effect.chance === 100 ? text : `${effect.chance}% chance: ${text}`;
+}
+function effectDescription(effect, ownerIsYou = true) {
   const target = effect.target === 'self' ? (ownerIsYou ? 'you' : 'opponent') : (ownerIsYou ? 'opponent' : 'you');
   if (effect.type === 'damage') return `${effect.amount} damage to ${target}`;
   if (effect.type === 'heal') return `Heal ${target} for ${effect.amount}`;

@@ -116,7 +116,10 @@ export function createCardAnimations(arena) {
     for(const entry of plays){
       if(seen.has(entry.id)||prior.has(entry.id))continue;
       seen.add(entry.id);
-      if(entry.card && (entry.actor===0||entry.actor===1))queue.push(entry);
+      if(entry.card && (entry.actor===0||entry.actor===1)){
+        const effects=entry.card.effects.filter((effect,index)=>!Array.isArray(entry.effectResults)||entry.effectResults[index]!==false);
+        if(effects.length)queue.push({...entry,card:{...entry.card,effects}});
+      }
     }
     // At most five cards can be played from a hand; bound delayed reconnect bursts.
     if(queue.length>8)queue=queue.slice(-8);

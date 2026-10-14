@@ -37,7 +37,8 @@ export function normalizeCards(cards) {
         if (!effect || typeof effect !== 'object') return effect;
         const amount = typeof effect.amount === 'string' && /^-?\d+$/.test(effect.amount)
           ? Number(effect.amount) : effect.amount;
-        return { ...effect, amount };
+        const chance = typeof effect.chance === 'string' && /^\d+(\.\d+)?$/.test(effect.chance) ? Number(effect.chance) : effect.chance;
+        return { ...effect, amount, ...(chance !== undefined ? {chance} : {}) };
       }) : card.effects };
   });
 }
@@ -78,6 +79,9 @@ export function validateCards(cards) {
     for (const effect of card.effects) {
       if (!effect || !EFFECT_TYPES.has(effect.type) || !['self', 'opponent'].includes(effect.target)) {
         throw new Error(`${label} has an invalid effect type or target.`);
+      }
+      if (effect.chance !== undefined && (typeof effect.chance !== 'number' || !Number.isFinite(effect.chance) || effect.chance < 0 || effect.chance > 100)) {
+        throw new Error(`${label} effect chance must be a percentage from 0 to 100.`);
       }
       const min = effect.type === 'energy' ? -100 : 1;
       if (!integer(effect.amount, min, 100) || effect.amount === 0) {
@@ -235,7 +239,7 @@ function startTurn(state, actor) {
 }
 
 /** Apply one authorized action. Invalid actions leave state byte-for-byte unchanged. */
-export function applyAction(state, actor, action, cards) {
+export function applyAction(state, actor, action, cards, random = secureRandom) {
   const fail = error => ({ ok: false, error });
   if (actor !== 0 && actor !== 1) return fail('Unknown player.');
   if (!state || state.status !== 'playing') return fail('This match has finished.');
@@ -273,15 +277,26 @@ export function applyAction(state, actor, action, cards) {
   if (!card || !cards.slice(0, RULES.activeCards).some(entry => entry.id === card.id)) return fail('That card is not active in this match.');
   if (player.energy < card.cost) return fail(`You need ${card.cost} energy to play this card.`);
 
+  // Roll independently before mutating anything; multiplayer uses server-side secure randomness.
+  const effectResults = card.effects.map(effect => {
+    const chance = effect.chance ?? 100;
+    if(chance === 100)return true;
+    if(chance === 0)return false;
+    const roll=random();
+    if(typeof roll !== 'number' || !Number.isFinite(roll) || roll < 0 || roll >= 1)throw new Error('random must return a number from 0 (inclusive) to 1 (exclusive).');
+    return roll < chance / 100;
+  });
   player.energy -= card.cost;
   player.hand.splice(handIndex, 1);
   player.discard.push(card.id);
-  const outcomes = card.effects.map(effect => applyEffect(state, actor, effect));
+  const outcomes = card.effects.map((effect,index) => effectResults[index]
+    ? applyEffect(state, actor, effect)
+    : {targets:[],text:`${effect.type} effect did not trigger (${effect.chance}% chance).`});
   const targets = [...new Set(outcomes.flatMap(outcome => outcome.targets || [outcome.target]))];
   const id = log(state, `${player.name} played ${card.name}. ${outcomes.map(outcome => outcome.text).join(' ')}`, card.accent);
-  state.lastEvent = { id, kind: 'play', actor, targets, cardId: card.id };
+  state.lastEvent = { id, kind: 'play', actor, targets, cardId: card.id, effectResults };
   state.playedCards ||= [];
-  state.playedCards.push({ id, actor, round: state.round, card: structuredClone(card) });
+  state.playedCards.push({ id, actor, round: state.round, card: structuredClone(card), effectResults });
   if (state.playedCards.length > 20) state.playedCards.splice(0, state.playedCards.length - 20);
   setWinner(state);
   state.revision += 1;
@@ -331,7 +346,15 @@ export function pickBotAction(state, actor, cards) {
     const card = cards.find(entry => entry.id === cardId);
     if (!card || card.cost > own.energy) continue;
     const simulated = structuredClone(state);
-    if (!applyAction(simulated, actor, { type: 'play', cardId }, cards).ok) continue;
+    // Approximate expected value without rolling hypothetical effects during bot selection.
+    const expectedEffects = card.effects.filter(effect => (effect.chance ?? 100) > 0).map(effect => ({
+      ...effect,
+      amount: Math.sign(effect.amount) * Math.max(1, Math.round(Math.abs(effect.amount) * (effect.chance ?? 100) / 100)),
+      chance: 100,
+    }));
+    if (!expectedEffects.length) continue;
+    const expectedCards = cards.map(entry => entry === card ? {...entry, effects:expectedEffects} : entry);
+    if (!applyAction(simulated, actor, { type: 'play', cardId }, expectedCards).ok) continue;
     const nextOwn = simulated.players[actor];
     const nextOpponent = simulated.players[1 - actor];
     let score =

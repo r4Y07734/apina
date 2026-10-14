@@ -143,3 +143,17 @@ Played cards are public. Each opponent card appears as a large floating card ove
 After a friend match ends, either player can request a rematch from the result dialog or the board. The other player sees **Accept rematch**. Both players must accept and be connected; a single request never restarts the game. Rematches keep the same room, reconnect tokens, names, character choices and room card catalog. Health, energy, poison, decks and played-card history reset, and a fresh random coin flip chooses the starter. Finished rooms still expire after 10 minutes if no rematch starts.
 
 State packets include `matchId` (starting at 1) and `rematch` (two boolean votes in player order). Send `{"type":"rematch","matchId":1}` to request or accept. The server increments `matchId` when the rematch starts and rejects actions carrying an older match ID. Saved browser sessions remain available after a match ends so players can reconnect for a rematch; leaving the room clears the session.
+
+## Give an effect a percentage chance
+
+Add an optional `chance` to any individual effect. Use a number from **0 to 100**; decimal percentages work too. Omitting it means **100%**. Each effect rolls independently when the card is played, in both bot and online matches. Online rolls use secure randomness on the server. Poison rolls once when applied; a successful poison then ticks for its normal duration. Failed effects still spend the card and its energy cost. Card details show the percentage, and the activity log records effects that did not trigger.
+
+```json
+"effects": [
+  { "type": "damage", "target": "opponent", "amount": 6 },
+  { "type": "poison", "target": "opponent", "amount": 2, "rounds": 3, "chance": 25 },
+  { "type": "heal", "target": "self", "amount": 4, "chance": 50 }
+]
+```
+
+Here damage always happens, poison has a 25% chance, and healing independently has a 50% chance. Deploy the frontend and backend after editing the catalog; create a new room to use the updated effects.
