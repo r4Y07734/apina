@@ -2,9 +2,9 @@
 
 Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browser and need no account or backend. Friend matches use the small Cloudflare Worker included in `backend/card-pvp`.
 
-## Edit your 50 card slots
+## Edit your 75 card slots
 
-Edit `dist/card-pvp/cards.json`. It contains 50 editable slots. All **50 entries** are active and can be dealt or played. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 50 entries. Each player gets a separately shuffled deck containing all 50 slots. Change `RULES.activeCards` in `rules.js` if you later want a different active count, then redeploy both frontend and backend.
+Edit `dist/card-pvp/cards.json`. It contains 75 editable slots. Only the **first 50 entries** are active and can be dealt or played. Slots **51–75 are inactive placeholders** for future cards; editing them does not activate them. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 75 entries. Each player gets a separately shuffled deck containing the first 50 slots. Change `RULES.activeCards` in `rules.js` if you later want a different active count, then redeploy both frontend and backend.
 
 ```json
 {

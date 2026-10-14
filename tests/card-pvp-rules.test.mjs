@@ -33,11 +33,11 @@ function end(state, cards) {
   assert.deepEqual(applyAction(state, state.turn, { type: 'end' }, cards), { ok: true });
 }
 
-test('the editable catalog has exactly 50 unique, usable named slots', () => {
+test('the editable catalog has exactly 75 unique slots with 50 active cards', () => {
   assert.equal(validateCards(shippedCards), true);
-  assert.equal(shippedCards.length, 50);
+  assert.equal(shippedCards.length, 75);
   assert.ok(shippedCards.every(card => typeof card.name === 'string' && card.name.trim()));
-  assert.equal(new Set(shippedCards.map(card => card.id)).size, 50);
+  assert.equal(new Set(shippedCards.map(card => card.id)).size, 75);
 });
 
 test('catalog validation rejects malformed amounts, costs, targets, durations, and unsafe icons', () => {
@@ -385,9 +385,9 @@ test('long turn sequences preserve every card and keep logs bounded without hidd
 });
 
 
-test('all 50 entries are dealt and the final slot can be played', () => {
+test('only the first 50 entries are dealt and the last active slot can be played', () => {
   const cards = cloneCards();
-  const active = new Set(cards.map(card => card.id));
+  const active = new Set(cards.slice(0,50).map(card => card.id));
   assert.equal(RULES.activeCards, 50);
   for (let attempt = 0; attempt < 30; attempt++) {
     const state = createGame(cards);
@@ -402,6 +402,18 @@ test('all 50 entries are dealt and the final slot can be played', () => {
   state.players[0].hand = [cards[49].id];
   assert.equal(applyAction(state,0,{type:'play',cardId:cards[49].id},cards).ok,true);
   assert.equal(state.players[1].health,39);
+});
+
+test('reserved slots 51–75 cannot be played even if inserted into a hand',()=>{
+  const state=makeGame(shippedCards);
+  for(const card of shippedCards.slice(50)){
+    state.players[0].hand=[card.id];
+    const before=structuredClone(state);
+    const result=applyAction(state,0,{type:'play',cardId:card.id},shippedCards);
+    assert.equal(result.ok,false);
+    assert.match(result.error,/not active/);
+    assert.deepEqual(state,before);
+  }
 });
 
 test('compatibility normalization preserves user data and makes common values usable', () => {

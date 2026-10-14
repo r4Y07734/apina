@@ -7,7 +7,7 @@ export const RULES = Object.freeze({
   energyPerTurn: 3,
   initialHand: 5,
   maxHand: 5,
-  catalogSize: 50,
+  catalogSize: 75,
   activeCards: 50,
 });
 

@@ -212,6 +212,8 @@ export class CardRoom {
   async enforceLimits() {
     if (!this.room) return;
     if (this.room.rulesVersion !== RULES_VERSION) { await this.expire('The game rules have been updated. Create a new room to play.'); return; }
+    // Add inactive reserved slots to older rooms while preserving their active catalog and match.
+    if(this.room.cards.length===50 && cards.length===75){this.room.cards=this.room.cards.concat(cards.slice(50));await this.save();}
     const now = Date.now();
     if (now >= this.room.expiresAt) { await this.expire(); return; }
     if (this.room.game?.status !== 'playing') return;

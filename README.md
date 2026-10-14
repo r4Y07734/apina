@@ -26,7 +26,7 @@ node --test tests/bridge-physics.test.mjs
 
 Open `dist/play/card-pvp.html` through the local server. Practice against the bot or deploy the included Cloudflare Worker to play with a friend.
 
-- [Edit the 50 card slots](dist/card-pvp/cards.json): names, descriptions, energy costs, SVG icons, and combined effects.
+- [Edit the 75 card slots (50 active)](dist/card-pvp/cards.json): names, descriptions, energy costs, SVG icons, and combined effects.
 - [Card editing, icon packs, and free multiplayer deployment](docs/card-pvp.md).
 - [Multiplayer server](backend/card-pvp).
 

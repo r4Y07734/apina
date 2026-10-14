@@ -865,5 +865,380 @@
         "amount": 2
       }
     ]
+  },
+  {
+    "id": "card-51",
+    "name": "Card 51",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-52",
+    "name": "Card 52",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-53",
+    "name": "Card 53",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-54",
+    "name": "Card 54",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-55",
+    "name": "Card 55",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-56",
+    "name": "Card 56",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-57",
+    "name": "Card 57",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-58",
+    "name": "Card 58",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-59",
+    "name": "Card 59",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-60",
+    "name": "Card 60",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-61",
+    "name": "Card 61",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-62",
+    "name": "Card 62",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-63",
+    "name": "Card 63",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-64",
+    "name": "Card 64",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-65",
+    "name": "Card 65",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-66",
+    "name": "Card 66",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-67",
+    "name": "Card 67",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-68",
+    "name": "Card 68",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-69",
+    "name": "Card 69",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-70",
+    "name": "Card 70",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-71",
+    "name": "Card 71",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-72",
+    "name": "Card 72",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-73",
+    "name": "Card 73",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-74",
+    "name": "Card 74",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "card-75",
+    "name": "Card 75",
+    "description": "",
+    "cost": 1,
+    "icon": "spark",
+    "accent": "heal",
+    "effects": [
+      {
+        "type": "heal",
+        "target": "self",
+        "amount": 1
+      }
+    ]
   }
 ]

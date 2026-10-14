@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import worker, { allowedOrigin, playerName, CardRoom } from '../worker.js';
-import { createGame } from '../../../dist/card-pvp/rules.js';
+import { createGame, RULES } from '../../../dist/card-pvp/rules.js';
 
 test('only exact configured browser origins receive access', () => {
   const env = { ALLOWED_ORIGINS: 'https://apina.example,http://localhost:8000' };
@@ -77,7 +77,7 @@ async function startedRoom() {
 
 test('a room stores authoritative cards and private views only contain own hand', async () => {
   const { room, ctx } = await startedRoom();
-  assert.equal(ctx.stored().cards.length, 50);
+  assert.equal(ctx.stored().cards.length, 75);
   const first = room.snapshot(0);
   const second = room.snapshot(1);
   assert.equal(first.state.you, 0);
@@ -109,6 +109,16 @@ test('expired turns switch players, preserve the match, and schedule the next de
   const revision=room.room.game.revision;
   await room.enforceLimits();
   assert.equal(room.room.game.revision,revision);
+});
+
+test('older 50-slot rooms gain inactive slots without interrupting their match',async()=>{
+  const {room,ctx}=await startedRoom();
+  room.room.cards=room.room.cards.slice(0,50);
+  const active=structuredClone(room.room.cards),game=structuredClone(room.room.game);
+  await room.enforceLimits();
+  assert.equal(ctx.stored().cards.length,75);
+  assert.deepEqual(room.room.cards.slice(0,50),active);
+  assert.deepEqual(room.room.game,game);
 });
 
 test('either multiplayer player can start according to the secure coin flip',async()=>{
@@ -145,7 +155,7 @@ test('multiplayer deadlines allow 30 seconds and only reset when the turn change
   assert.ok(room.room.turnDeadline >= before + 30_000);
   assert.ok(room.room.turnDeadline <= Date.now() + 30_000);
   assert.equal(ctx.alarmTime(), room.room.turnDeadline);
-  room.room.cards = Array.from({ length: 50 }, (_, i) => ({
+  room.room.cards = Array.from({ length: RULES.catalogSize }, (_, i) => ({
     id: `test-${i}`, name: 'Test card', description: '', cost: 0, icon: 'heart', accent: 'heal',
     effects: [{ type: 'heal', target: 'self', amount: 1 }],
   }));
