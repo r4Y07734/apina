@@ -498,3 +498,12 @@ input::placeholder { color: var(--quiet); }
 .card-reveal { transition:opacity .18s ease; }
 .arena.card-animation-opponent .card-reveal { opacity:.12; }
 @media (prefers-reduced-motion:reduce) { .card-reveal { transition:none; } }
+
+.round-clock { display:flex; align-items:center; gap:14px; }
+.turn-timer { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; color:var(--ink); background:#253025; border:1px solid #53634b; border-radius:8px; }
+.turn-timer svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; }
+.turn-timer strong { font-size:25px; line-height:1; font-weight:750; font-variant-numeric:tabular-nums; letter-spacing:-.7px; }
+.turn-timer>span { font-size:10px; color:var(--muted); }
+.turn-timer.time-warning { color:#ffcf8a; border-color:#b38442; background:#42321e; }
+.turn-timer.time-critical { color:#ffc0af; border-color:#d9836d; background:#4b2925; }
+@media(max-width:650px) { .round-clock { gap:6px; flex-direction:column; align-items:flex-start; }.turn-timer { padding:5px 8px; gap:5px; }.turn-timer strong { font-size:24px; }.turn-timer svg { width:16px; height:16px; }.battle-active .battle-topbar { padding-bottom:10px; } }

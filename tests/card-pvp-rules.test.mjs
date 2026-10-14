@@ -84,6 +84,23 @@ test('a new game deals independently shuffled decks without duplicates and fixed
   assert.deepEqual(state, makeGame(shippedCards));
 });
 
+test('either starting player gets full resources and rounds advance after both turns',()=>{
+  for(const startingPlayer of [0,1]){
+    const state=createGame(shippedCards,{startingPlayer});
+    assert.equal(state.turn,startingPlayer);
+    assert.equal(state.lastEvent.actor,startingPlayer);
+    assert.equal(state.round,1);
+    for(const player of state.players){assert.equal(player.hand.length,5);assert.equal(player.energy,3);}
+    end(state,shippedCards);
+    assert.equal(state.turn,1-startingPlayer);
+    assert.equal(state.round,1);
+    end(state,shippedCards);
+    assert.equal(state.turn,startingPlayer);
+    assert.equal(state.round,2);
+  }
+  assert.throws(()=>createGame(shippedCards,{startingPlayer:2}));
+});
+
 test('invalid actions do not mutate state or revisions', () => {
   const state = makeGame(shippedCards);
   state.players[0].hand = ['card-01'];

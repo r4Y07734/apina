@@ -23,8 +23,8 @@ async function connect(room, token) {
   return { socket, messages };
 }
 
-async function waitFor(client, predicate) {
-  const stop = Date.now() + 5_000;
+async function waitFor(client, predicate, timeout = 5_000) {
+  const stop = Date.now() + timeout;
   while (Date.now() < stop) {
     const message = client.messages.find(predicate);
     if (message) return message;
@@ -80,13 +80,26 @@ try {
     assert.ok(packet.state.hand.every(id => cards.slice(0, 50).some(card => card.id === id)));
     assert.deepEqual(packet.state.playedCards, []);
   }
+  const timedTurn=await waitFor(a,message=>message.type==='state'&&message.state.revision>initialA.state.revision&&message.state.turn!==initialA.state.turn,35_000);
+  assert.equal(timedTurn.state.status,'playing');
+  assert.equal(timedTurn.state.winner,null);
+  assert.match(timedTurn.notice,/ended automatically/);
+  assert.ok(timedTurn.deadline>initialA.deadline);
+  assert.equal(timedTurn.state.players[timedTurn.state.turn].energy,6);
+  let baselineRevision=timedTurn.state.revision;
+  // Exercise the same flow regardless of the server's random starting player.
+  if(timedTurn.state.turn===1){
+    b.socket.send(JSON.stringify({type:'end'}));
+    const hostTurn=await waitFor(a,message=>message.type==='state'&&message.state.turn===0&&message.state.revision>baselineRevision);
+    baselineRevision=hostTurn.state.revision;
+  }
   assert.equal((await post(`/rooms/${host.body.room}/join`, { name: 'Third' })).status, 409);
   b.socket.send(JSON.stringify({ type: 'end' }));
   await waitFor(b, message => message.type === 'error');
   a.socket.send(JSON.stringify({ type: 'play', cardId: 'not-in-deck', damage: 9999 }));
   await waitFor(a, message => message.type === 'error');
   a.socket.send(JSON.stringify({ type: 'end' }));
-  const afterTurn = await waitFor(b, message => message.type === 'state' && message.state.turn === 1);
+  const afterTurn = await waitFor(b, message => message.type === 'state' && message.state.turn === 1 && message.state.revision > baselineRevision);
   assert.equal(afterTurn.state.hand.length, 5);
   assert.equal(afterTurn.state.players[1].deckCount, 45);
   assert.ok(afterTurn.deadline > Date.now());

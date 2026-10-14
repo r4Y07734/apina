@@ -363,9 +363,12 @@ function updateTurnClock() {
   $('turn-label').classList.toggle('time-critical',Boolean(critical));
   $('round-label').classList.toggle('time-warning',Boolean(urgent));
   $('round-label').classList.toggle('time-critical',Boolean(critical));
-  if(timed){const label=`ROUND ${String(view.round).padStart(2,'0')} · ${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')} left`;if($('round-label').textContent!==label)$('round-label').textContent=label;}
-  if(urgent){const label=seconds===0?'Turn time expired':critical?'Your turn · act now!':'Your turn · time running out';if($('turn-label').textContent!==label)$('turn-label').textContent=label;}
-  const warning = urgent ? seconds===0?'Your turn time has expired.':critical?'5 seconds or less left. Play or end your turn now.':'10 seconds or less left. Play or end your turn.' : '';
+  $('turn-timer').hidden=!timed;
+  $('turn-timer').classList.toggle('time-warning',Boolean(urgent));
+  $('turn-timer').classList.toggle('time-critical',Boolean(critical));
+  if(timed){const label=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;if($('turn-seconds').textContent!==label)$('turn-seconds').textContent=label;}
+  if(urgent){const label=seconds===0?'Turn ended · switching…':critical?'Your turn · act now!':'Your turn · time running out';if($('turn-label').textContent!==label)$('turn-label').textContent=label;}
+  const warning = urgent ? seconds===0?'Your time ran out. Your turn ends automatically.':critical?'5 seconds or less left. Play or end your turn now.':'10 seconds or less left. Play or end your turn.' : '';
   const key = warning ? `${turnDeadline}:${warning}` : '';
   if(key !== turnWarningKey){turnWarningKey=key;$('turn-warning').textContent=warning;}
   if(timed && seconds===0)updateControls();

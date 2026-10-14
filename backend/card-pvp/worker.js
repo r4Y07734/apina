@@ -222,8 +222,16 @@ export class CardRoom {
       loser = absent.length === 2 ? game.turn : absent[0];
       this.room.notice = `${game.players[loser].name} did not reconnect within 90 seconds.`;
     } else if (now >= this.room.turnDeadline) {
-      loser = game.turn;
-      this.room.notice = `${game.players[loser].name} ran out of turn time.`;
+      const actor = game.turn;
+      applyAction(game, actor, { type: 'end' }, this.room.cards);
+      this.room.notice = `${game.players[actor].name}'s time ran out. Turn ended automatically.`;
+      if(game.status === 'finished') {
+        this.room.turnDeadline = null;
+        this.room.expiresAt = Math.min(this.room.expiresAt,now + FINISHED_MS);
+      } else this.room.turnDeadline = now + TURN_MS;
+      await this.save();
+      this.broadcast();
+      return;
     }
     if (loser !== null) {
       applyAction(game, loser, { type: 'concede' }, this.room.cards);
@@ -257,7 +265,7 @@ export class CardRoom {
       const token = randomHex();
       this.room.names[1] = name;
       this.room.tokens[1] = token;
-      this.room.game = createGame(this.room.cards, { names: this.room.names });
+      this.room.game = createGame(this.room.cards, { names: this.room.names, startingPlayer: crypto.getRandomValues(new Uint8Array(1))[0] & 1 });
       const now = Date.now();
       this.room.turnDeadline = now + TURN_MS;
       this.room.expiresAt = this.room.createdAt + MAX_ROOM_MS;
@@ -313,6 +321,7 @@ export class CardRoom {
     const previousTurn = this.room.game.turn;
     const result = applyAction(this.room.game, attachment.actor, action, this.room.cards);
     if (!result.ok) { fail(result.error); return; }
+    this.room.notice = null;
     if (this.room.game.status === 'finished') {
       this.room.turnDeadline = null;
       this.room.expiresAt = Math.min(this.room.expiresAt, now + FINISHED_MS);

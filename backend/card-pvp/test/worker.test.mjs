@@ -92,15 +92,51 @@ test('a room stores authoritative cards and private views only contain own hand'
   }
 });
 
-test('stale turns forfeit and schedule short finished retention', async () => {
+test('expired turns switch players, preserve the match, and schedule the next deadline', async () => {
   const { room, ctx } = await startedRoom();
+  const actor=room.room.game.turn;
   room.room.disconnectedAt = [null, null];
   room.room.turnDeadline = Date.now() - 1;
   await room.enforceLimits();
-  assert.equal(room.room.game.status, 'finished');
-  assert.equal(room.room.game.winner, 1);
-  assert.match(room.room.notice, /turn time/);
-  assert.ok(ctx.alarmTime() <= Date.now() + 10 * 60_000);
+  assert.equal(room.room.game.status, 'playing');
+  assert.equal(room.room.game.winner, null);
+  assert.equal(room.room.game.turn,1-actor);
+  assert.equal(room.room.game.players[1-actor].energy,6);
+  assert.equal(room.room.game.players[1-actor].hand.length,5);
+  assert.match(room.room.notice, /ended automatically/);
+  assert.ok(ctx.alarmTime() > Date.now());
+  assert.ok(ctx.alarmTime() <= Date.now()+30_000);
+  const revision=room.room.game.revision;
+  await room.enforceLimits();
+  assert.equal(room.room.game.revision,revision);
+});
+
+test('either multiplayer player can start according to the secure coin flip',async()=>{
+  const original=crypto.getRandomValues.bind(crypto);
+  for(const actor of [0,1]){
+    const mocked=test.mock.method(crypto,'getRandomValues',array=>{if(array instanceof Uint8Array&&array.length===1){array[0]=actor;return array;}return original(array);});
+    try{
+      const {room}=await startedRoom();
+      assert.equal(room.room.game.turn,actor);
+      assert.equal(room.room.game.startingPlayer,actor);
+      assert.equal(room.room.game.lastEvent.actor,actor);
+      assert.equal(room.room.game.round,1);
+    }finally{mocked.mock.restore();}
+  }
+});
+
+test('automatic turn endings resolve poison and normal lethal damage',async()=>{
+  const {room}=await startedRoom();
+  const actor=room.room.game.turn, next=1-actor;
+  room.room.disconnectedAt=[null,null];
+  room.room.game.players[next].health=2;
+  room.room.game.players[next].poison=[{amount:3,remaining:1}];
+  room.room.turnDeadline=Date.now()-1;
+  await room.enforceLimits();
+  assert.equal(room.room.game.players[next].health,0);
+  assert.equal(room.room.game.status,'finished');
+  assert.equal(room.room.game.winner,actor);
+  assert.equal(room.room.turnDeadline,null);
 });
 
 test('multiplayer deadlines allow 30 seconds and only reset when the turn changes', async () => {

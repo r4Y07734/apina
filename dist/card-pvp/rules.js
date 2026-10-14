@@ -146,12 +146,14 @@ function safeName(value, fallback) {
   return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, 24) || fallback : fallback;
 }
 
-export function createGame(cards, { names = ['You', 'Bot'], random = secureRandom } = {}) {
+export function createGame(cards, { names = ['You', 'Bot'], random = secureRandom, startingPlayer = 0 } = {}) {
   validateCards(cards);
   if (typeof random !== 'function') throw new Error('random must be a function.');
+  if (startingPlayer !== 0 && startingPlayer !== 1) throw new Error('Starting player must be 0 or 1.');
   const state = {
     status: 'playing',
-    turn: 0,
+    turn: startingPlayer,
+    startingPlayer,
     round: 1,
     players: [],
     winner: null,
@@ -175,8 +177,8 @@ export function createGame(cards, { names = ['You', 'Bot'], random = secureRando
     });
     for (let count = 0; count < RULES.initialHand; count += 1) draw(state, actor);
   }
-  const id = log(state, `${state.players[0].name} takes the first turn.`, 'turn', 0);
-  state.lastEvent = { id, kind: 'start', actor: 0, targets: [0] };
+  const id = log(state, `${state.players[startingPlayer].name} takes the first turn.`, 'turn', startingPlayer);
+  state.lastEvent = { id, kind: 'start', actor: startingPlayer, targets: [startingPlayer] };
   return state;
 }
 
@@ -213,7 +215,7 @@ function applyEffect(state, actor, effect) {
 function startTurn(state, actor) {
   const player = state.players[actor];
   state.turn = actor;
-  if (actor === 0) state.round += 1;
+  if (actor === (state.startingPlayer ?? 0)) state.round += 1;
   const damage = player.poison.reduce((total, effect) => total + effect.amount, 0);
   if (damage) {
     player.health = Math.max(0, player.health - damage);
