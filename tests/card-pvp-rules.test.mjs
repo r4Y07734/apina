@@ -33,7 +33,7 @@ function end(state, cards) {
   assert.deepEqual(applyAction(state, state.turn, { type: 'end' }, cards), { ok: true });
 }
 
-test('the editable catalog has exactly 75 unique slots with 50 active cards', () => {
+test('the editable catalog has exactly 75 unique slots with 75 active cards', () => {
   assert.equal(validateCards(shippedCards), true);
   assert.equal(shippedCards.length, 75);
   assert.ok(shippedCards.every(card => typeof card.name === 'string' && card.name.trim()));
@@ -76,8 +76,8 @@ test('a new game deals independently shuffled decks without duplicates and fixed
     assert.equal(player.health, 40);
     assert.equal(player.energy, 3);
     assert.equal(player.hand.length, 5);
-    assert.equal(player.deck.length, 45);
-    assert.equal(new Set([...player.hand, ...player.deck]).size, 50);
+    assert.equal(player.deck.length, 70);
+    assert.equal(new Set([...player.hand, ...player.deck]).size, 75);
     assert.deepEqual(player.discard, []);
   }
   assert.notDeepEqual(state.players[0].hand, state.players[1].hand);
@@ -271,9 +271,9 @@ test('a full five-card hand skips drawing without consuming or changing the deck
   const decks = state.players.map(player => [...player.deck]);
   for (let turn = 0; turn < 6; turn += 1) end(state, shippedCards);
   assert.equal(state.players[0].hand.length, RULES.maxHand);
-  assert.equal(state.players[0].deck.length, 45);
+  assert.equal(state.players[0].deck.length, 70);
   assert.equal(state.players[1].hand.length, RULES.maxHand);
-  assert.equal(state.players[1].deck.length, 45);
+  assert.equal(state.players[1].deck.length, 70);
   assert.equal(RULES.maxHand, 5);
   assert.deepEqual(state.players.map(player => player.deck), decks);
 });
@@ -290,7 +290,7 @@ test('playing a card makes room for exactly one draw on the next turn', () => {
   end(game.state, game.cards);
   assert.equal(game.state.players[0].hand.length, 5);
   assert.equal(game.state.players[0].hand.at(-1), nextCard);
-  assert.equal(game.state.players[0].deck.length, 44);
+  assert.equal(game.state.players[0].deck.length, 69);
 });
 
 test('an empty deck securely reshuffles discard after restoring a serialized game', () => {
@@ -377,43 +377,49 @@ test('long turn sequences preserve every card and keep logs bounded without hidd
   assert.equal(state.log.length, 32);
   assert.equal(state.revision, 100);
   for (const player of state.players) {
-    assert.equal(player.hand.length + player.deck.length + player.discard.length, 50);
-    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 50);
+    assert.equal(player.hand.length + player.deck.length + player.discard.length, 75);
+    assert.equal(new Set([...player.hand, ...player.deck, ...player.discard]).size, 75);
     assert.equal(player.energy, 10);
   }
   assert.equal(state.log.some(entry => /card-\d/.test(entry.text)), false);
 });
 
 
-test('only the first 50 entries are dealt and the last active slot can be played', () => {
+test('all 75 entries are dealt and the last active slot can be played', () => {
   const cards = cloneCards();
-  const active = new Set(cards.slice(0,50).map(card => card.id));
-  assert.equal(RULES.activeCards, 50);
+  const active = new Set(cards.slice(0,75).map(card => card.id));
+  assert.equal(RULES.activeCards, 75);
   for (let attempt = 0; attempt < 30; attempt++) {
     const state = createGame(cards);
     for (const player of state.players) {
       const deck = [...player.hand, ...player.deck];
-      assert.equal(deck.length, 50);
+      assert.equal(deck.length, 75);
       assert.deepEqual(new Set(deck), active);
     }
   }
-  cards[49] = { ...cards[49], cost:0, effects:[{type:'damage',target:'opponent',amount:1}] };
+  cards[74] = { ...cards[74], cost:0, effects:[{type:'damage',target:'opponent',amount:1}] };
   const state = makeGame(cards);
-  state.players[0].hand = [cards[49].id];
-  assert.equal(applyAction(state,0,{type:'play',cardId:cards[49].id},cards).ok,true);
+  state.players[0].hand = [cards[74].id];
+  assert.equal(applyAction(state,0,{type:'play',cardId:cards[74].id},cards).ok,true);
   assert.equal(state.players[1].health,39);
 });
 
-test('reserved slots 51–75 cannot be played even if inserted into a hand',()=>{
-  const state=makeGame(shippedCards);
+test('every new slot can be played with its configured probabilities',()=>{
   for(const card of shippedCards.slice(50)){
-    state.players[0].hand=[card.id];
-    const before=structuredClone(state);
-    const result=applyAction(state,0,{type:'play',cardId:card.id},shippedCards);
-    assert.equal(result.ok,false);
-    assert.match(result.error,/not active/);
-    assert.deepEqual(state,before);
+    const state=makeGame(shippedCards);state.players[0].hand=[card.id];state.players[0].energy=10;
+    const result=applyAction(state,0,{type:'play',cardId:card.id},shippedCards,()=>0);
+    assert.equal(result.ok,true,card.id);assert.equal(state.playedCards[0].card.id,card.id);
   }
+});
+
+test('50-turn poison is supported and durations above 50 are rejected',()=>{
+  const game=fixture([{type:'poison',target:'opponent',amount:1,rounds:50}]);play(game);
+  for(let turn=0;turn<49;turn++){
+    game.state.players[1].health=40;end(game.state,game.cards);end(game.state,game.cards);
+  }
+  assert.deepEqual(game.state.players[1].poison,[{amount:1,remaining:1}]);
+  end(game.state,game.cards);assert.deepEqual(game.state.players[1].poison,[]);
+  game.cards[0].effects[0].rounds=51;assert.throws(()=>validateCards(game.cards),/duration/);
 });
 
 test('compatibility normalization preserves user data and makes common values usable', () => {

@@ -871,7 +871,7 @@
     "name": "Coin Flip",
     "description": "Deal damage to you, opponent or both",
     "cost": 10,
-    "icon": "",
+    "icon": "icons/tabler-coin.svg",
     "accent": "damage",
     "effects": [
       {
@@ -893,7 +893,7 @@
     "name": "9/11",
     "description": "Fly a plane at your opponent",
     "cost": 7,
-    "icon": "",
+    "icon": "icons/tabler-plane.svg",
     "accent": "damage",
     "effects": [
       {
@@ -908,7 +908,7 @@
     "name": "Africa",
     "description": "Deplete your opponents resources",
     "cost": 3,
-    "icon": "",
+    "icon": "icons/tabler-battery-off.svg",
     "accent": "poison",
     "effects": [
       {
@@ -929,7 +929,7 @@
     "name": "Charlie Kirk",
     "description": "Assasinate your opponent",
     "cost": 9,
-    "icon": "",
+    "icon": "icons/tabler-focus-2.svg",
     "accent": "damage",
     "effects": [
       {
@@ -944,7 +944,7 @@
     "name": "Pray",
     "description": "God bless you!",
     "cost": 0,
-    "icon": "",
+    "icon": "icons/tabler-sun.svg",
     "accent": "heal",
     "effects": [
       {
@@ -964,7 +964,7 @@
     "name": "Super AI",
     "description": "Depletes your and your opponents energy for small profits",
     "cost": 10,
-    "icon": "",
+    "icon": "icons/tabler-cpu.svg",
     "accent": "damage",
     "effects": [
       {
@@ -984,7 +984,7 @@
     "name": "Bad Aim",
     "description": "Your missile might hit the opponent",
     "cost": 4,
-    "icon": "",
+    "icon": "icons/tabler-target-arrow.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1000,7 +1000,7 @@
     "name": "Suspicious Stew",
     "description": "No one knows what will happen",
     "cost": 2,
-    "icon": "",
+    "icon": "icons/tabler-soup.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -1041,7 +1041,7 @@
     "name": "We are Charlie Kirk",
     "description": "The beautiful melody hurts your opponents ears but gives him energy",
     "cost": 3,
-    "icon": "",
+    "icon": "icons/tabler-music.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -1061,7 +1061,7 @@
     "name": "Jeffrey Epstein",
     "description": "Give your opponent backshots, age doesn't matter",
     "cost": 5,
-    "icon": "",
+    "icon": "icons/tabler-bolt.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1076,7 +1076,7 @@
     "name": "Cancer",
     "description": "Your opponent has cancer, so sad",
     "cost": 10,
-    "icon": "",
+    "icon": "icons/tabler-virus.svg",
     "accent": "poison",
     "effects": [
       {
@@ -1092,7 +1092,7 @@
     "name": "Mr Beast",
     "description": "He wants to donate some money",
     "cost": 0,
-    "icon": "",
+    "icon": "icons/tabler-gift.svg",
     "accent": "heal",
     "effects": [
       {
@@ -1112,7 +1112,7 @@
     "name": "Heil Hitler",
     "description": "You are an amazing attacker but you also have a massive drug problem.",
     "cost": 4,
-    "icon": "",
+    "icon": "icons/tabler-shield-x.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1133,7 +1133,7 @@
     "name": "Gay Marriage",
     "description": "Marry your opponent",
     "cost": 1,
-    "icon": "",
+    "icon": "icons/tabler-rings.svg",
     "accent": "heal",
     "effects": [
       {
@@ -1153,7 +1153,7 @@
     "name": "Smegma",
     "description": "Lucky! There is cheese under your foreskin.",
     "cost": 0,
-    "icon": "",
+    "icon": "icons/tabler-cheese.svg",
     "accent": "energy",
     "effects": [
       {
@@ -1168,7 +1168,7 @@
     "name": "Woman",
     "description": "Makes good food but accidentally drives over your opponent",
     "cost": 5,
-    "icon": "",
+    "icon": "icons/tabler-tools-kitchen-2.svg",
     "accent": "mixed",
     "effects": [
       {
@@ -1193,7 +1193,7 @@
     "name": "Indian Steet Food",
     "description": "Curry or Poop?",
     "cost": 1,
-    "icon": "",
+    "icon": "icons/tabler-bowl-spoon.svg",
     "accent": "heal",
     "effects": [
       {
@@ -1215,7 +1215,7 @@
     "name": "Pee",
     "description": "Disgusting",
     "cost": 1,
-    "icon": "",
+    "icon": "icons/tabler-droplet.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1230,7 +1230,7 @@
     "name": "69",
     "description": "Have 69 with you mother",
     "cost": 0,
-    "icon": "",
+    "icon": "icons/tabler-flask.svg",
     "accent": "poison",
     "effects": [
       {
@@ -1246,7 +1246,7 @@
     "name": "Break Up",
     "description": "Your and your opponents gay marriage is over",
     "cost": 0,
-    "icon": "",
+    "icon": "icons/tabler-heart-broken.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1266,7 +1266,7 @@
     "name": "Surprise",
     "description": "Flash your boobs (your opponent is gay)",
     "cost": 4,
-    "icon": "",
+    "icon": "icons/tabler-sparkles.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1281,7 +1281,7 @@
     "name": "Russian Roulette",
     "description": "Death is very likely",
     "cost": 10,
-    "icon": "",
+    "icon": "icons/tabler-dice-6.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1303,7 +1303,7 @@
     "name": "BLM",
     "description": "You send angry black people supporters to attack your opponent",
     "cost": 5,
-    "icon": "",
+    "icon": "icons/tabler-hand-stop.svg",
     "accent": "damage",
     "effects": [
       {
@@ -1318,7 +1318,7 @@
     "name": "Snake Potion",
     "description": "Good poison, long lasting effect",
     "cost": 3,
-    "icon": "",
+    "icon": "icons/tabler-flask-2.svg",
     "accent": "heal",
     "effects": [
       {
@@ -1339,7 +1339,7 @@
     "name": "Mystery Gun",
     "description": "Shoot at your opponent",
     "cost": 5,
-    "icon": "",
+    "icon": "icons/tabler-target.svg",
     "accent": "damage",
     "effects": [
       {

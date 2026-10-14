@@ -77,8 +77,8 @@ try {
     assert.equal(packet.state.tokens, undefined);
     assert.ok(packet.deadline > Date.now());
     assert.ok(packet.deadline <= Date.now() + 30_000);
-    assert.equal(packet.state.players[0].deckCount, 45);
-    assert.ok(packet.state.hand.every(id => cards.slice(0, 50).some(card => card.id === id)));
+    assert.equal(packet.state.players[0].deckCount, 70);
+    assert.ok(packet.state.hand.every(id => cards.slice(0, 75).some(card => card.id === id)));
     assert.deepEqual(packet.state.playedCards, []);
   }
   const timedTurn=await waitFor(a,message=>message.type==='state'&&message.state.revision>initialA.state.revision&&message.state.turn!==initialA.state.turn,35_000);
@@ -102,7 +102,7 @@ try {
   a.socket.send(JSON.stringify({ type: 'end' }));
   const afterTurn = await waitFor(b, message => message.type === 'state' && message.state.turn === 1 && message.state.revision > baselineRevision);
   assert.equal(afterTurn.state.hand.length, 5);
-  assert.equal(afterTurn.state.players[1].deckCount, 45);
+  assert.equal(afterTurn.state.players[1].deckCount, 70);
   assert.ok(afterTurn.deadline > Date.now());
   assert.ok(afterTurn.deadline <= Date.now() + 30_000);
   assert.equal(afterTurn.state.players[0].health, initialB.state.players[0].health);

@@ -4,13 +4,13 @@ Open `/play/card-pvp.html` from the site. Bot matches run entirely in the browse
 
 ## Choose a character
 
-The lobby offers eight cosmetic characters with illustrated portraits. Choose one before starting a bot match or creating/joining a friend room. Every character has the same health, energy and deck rules. The bot receives a random portrait. Online character choices are stored with the match and shown to both players, including after reconnecting; older rooms use the default portrait. The picker is locked while waiting in a room. Character selection does not change the card catalog or activate reserved slots.
+The lobby offers eight cosmetic characters with illustrated portraits. Choose one before starting a bot match or creating/joining a friend room. Every character has the same health, energy and deck rules. The bot receives a random portrait. Online character choices are stored with the match and shown to both players, including after reconnecting; older rooms use the default portrait. The picker is locked while waiting in a room. Character selection does not change the card catalog or alter deck contents.
 
 The portraits use faceted low-poly artwork with larger faces and distinct clothing. The original `portraits.png` remains available for rollback. The choices live in `dist/card-pvp/characters.js`; the portrait atlas is `dist/card-pvp/characters/portraits-low-poly.png`. A restore tag, `card-pvp-before-character-selection-2026-10-14`, preserves the version before character selection.
 
 ## Edit your 75 card slots
 
-Edit `dist/card-pvp/cards.json`. It contains 75 editable slots. Only the **first 50 entries** are active and can be dealt or played. Slots **51–75 are inactive placeholders** for future cards; editing them does not activate them. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 75 entries. Each player gets a separately shuffled deck containing the first 50 slots. Change `RULES.activeCards` in `rules.js` if you later want a different active count, then redeploy both frontend and backend.
+Edit `dist/card-pvp/cards.json`. All **75 entries are active** and can be dealt or played. You can replace names, descriptions, icons, costs, and abilities. Keep the `id` of each slot stable and keep exactly 75 entries. Each player gets a separately shuffled deck containing all 75 slots. Change `RULES.activeCards` in `rules.js` if you want a different active count, then redeploy both frontend and backend.
 
 ```json
 {
@@ -38,7 +38,7 @@ Each card supports 1–8 effects. Effects run in the order you list them, and vi
 | Steal | `{"type":"steal","target":"opponent","amount":2}` | Take energy **from the target**, giving it to the other player. Use `self` to give your energy to your opponent. |
 | Poison | `{"type":"poison","target":"opponent","amount":2,"rounds":3}` | Deal 2 damage at the beginning of the target's next 3 turns. Separate poison effects stack. |
 
-Costs are integers 0–10. Effect amounts are integers 1–100, except `energy`, which also accepts negative amounts down to −100. Poison duration is 1–10 target turns. Choose an `accent` of `damage`, `heal`, `energy`, `poison`, or `mixed`; this controls the card's visual styling.
+Costs are integers 0–10. Effect amounts are integers 1–100, except `energy`, which also accepts negative amounts down to −100. Poison duration is 1–50 target turns. Choose an `accent` of `damage`, `heal`, `energy`, `poison`, or `mixed`; this controls the card's visual styling.
 
 Default match rules are in `dist/card-pvp/rules.js`: 40 health, 3 starting energy, 10 energy cap, 3 energy restored each turn, 5 starting cards, and a 5-card hand limit. At the start of later turns, poison resolves first, then energy is restored and one card is drawn. A full hand does not consume a deck card. When a deck runs out, its discard pile is reshuffled. Both players reaching zero health from the same card results in a draw.
 

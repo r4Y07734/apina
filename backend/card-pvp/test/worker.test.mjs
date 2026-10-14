@@ -131,14 +131,9 @@ test('expired turns switch players, preserve the match, and schedule the next de
   assert.equal(room.room.game.revision,revision);
 });
 
-test('older 50-slot rooms gain inactive slots without interrupting their match',async()=>{
-  const {room,ctx}=await startedRoom();
-  room.room.cards=room.room.cards.slice(0,50);
-  const active=structuredClone(room.room.cards),game=structuredClone(room.room.game);
-  await room.enforceLimits();
-  assert.equal(ctx.stored().cards.length,75);
-  assert.deepEqual(room.room.cards.slice(0,50),active);
-  assert.deepEqual(room.room.game,game);
+test('rooms from the old 50-card rules expire before dealing the expanded deck',async()=>{
+  const {room,ctx}=await startedRoom();room.room.rulesVersion=4;
+  await room.enforceLimits();assert.equal(room.room,null);assert.equal(ctx.stored(),undefined);
 });
 
 test('either multiplayer player can start according to the secure coin flip',async()=>{
@@ -192,7 +187,7 @@ test('multiplayer deadlines allow 30 seconds and only reset when the turn change
   await room.webSocketMessage(socket, JSON.stringify({ type: 'end' }));
   assert.equal(room.room.game.turn, 1);
   assert.equal(room.room.game.players[1].hand.length, 5);
-  assert.equal(room.room.game.players[1].deck.length, 45);
+  assert.equal(room.room.game.players[1].deck.length, 70);
   assert.ok(room.room.turnDeadline >= nextTurn + 30_000);
   assert.ok(room.room.turnDeadline <= Date.now() + 30_000);
   assert.equal(ctx.alarmTime(), room.room.turnDeadline);

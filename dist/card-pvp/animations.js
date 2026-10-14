@@ -1,8 +1,8 @@
 import { animationFor, resolveAnimationTargets } from './animation-profiles.js';
 import { drawCardScene } from './animation-renderer.js';
 
-const damageScenes = new Set(['missile','sniper','slash','car','traffic','projectile','cannon','balloon','sand','gust','sonic','barrel','collapse','fracture','numbers']);
-const positiveScenes = new Set(['charge','drink','apple','battery','vitality','charity','gift','investment','jackpot','music','dance']);
+const damageScenes = new Set(['missile','sniper','slash','car','traffic','projectile','cannon','balloon','sand','gust','sonic','barrel','collapse','fracture','numbers','paperplane','precision','bad-aim','impact','droplet','surprise','pressure','mystery-shot']);
+const positiveScenes = new Set(['charge','drink','apple','battery','vitality','charity','gift','investment','jackpot','music','dance','blessing','donation','snack','feast','curry','snake']);
 const effectActor = (effect, actor) => effect.target === 'self' ? actor : 1 - actor;
 
 /** Presentation targets are derived from effects, never from a card's text. */

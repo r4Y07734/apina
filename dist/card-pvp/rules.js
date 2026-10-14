@@ -9,7 +9,7 @@ export const RULES = Object.freeze({
   initialHand: 5,
   maxHand: 5,
   catalogSize: 75,
-  activeCards: 50,
+  activeCards: 75,
 });
 
 const EFFECT_TYPES = new Set(['damage', 'heal', 'energy', 'steal', 'poison']);
@@ -87,8 +87,8 @@ export function validateCards(cards) {
       if (!integer(effect.amount, min, 100) || effect.amount === 0) {
         throw new Error(`${label} effect amount must be a nonzero integer ${min}–100.`);
       }
-      if (effect.type === 'poison' && !integer(effect.rounds, 1, 10)) {
-        throw new Error(`${label} poison duration must be an integer from 1 to 10.`);
+      if (effect.type === 'poison' && !integer(effect.rounds, 1, 50)) {
+        throw new Error(`${label} poison duration must be an integer from 1 to 50.`);
       }
     }
   }

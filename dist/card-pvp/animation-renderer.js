@@ -1,3 +1,4 @@
+import { drawExpansionScene } from './expansion-animations.js';
 // Original Canvas artwork. This module only paints; the game owns time and state.
 const TAU = Math.PI * 2;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -485,6 +486,7 @@ function coinScene(ctx, frame, kind) {
  */
 export function drawCardScene(ctx, frame) {
   if (!ctx || !frame?.from || !frame?.to) return;
+  if (drawExpansionScene(ctx,frame)) return;
   const p = clamp(Number(frame.progress) || 0);
   if (p <= 0 || p >= 1) return;
   const source = frame.from, target = frame.to;

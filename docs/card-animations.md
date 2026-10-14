@@ -23,7 +23,7 @@ Run this from a clean checkout containing the published animation changes. Cloud
 
 ## Animation behavior
 
-Each of the 50 stable card IDs has a scene in `dist/card-pvp/animation-profiles.js`. The canvas artwork lives in `animation-renderer.js`; `animations.js` handles playback. Custom card IDs receive an effect-based fallback.
+Each of the 75 stable card IDs has a scene in `dist/card-pvp/animation-profiles.js`. The canvas artwork lives in `animation-renderer.js` and `expansion-animations.js`; `animations.js` handles playback. Custom card IDs receive an effect-based fallback.
 
 Targets are resolved from the card's effects. Missiles follow damage targets, water and healing props follow their affected player, and energy theft travels from the source to the recipient. Separate visual cues show additional damage, healing, energy and poison effects on mixed cards. Changes to names or descriptions do not affect targeting.
 
@@ -36,3 +36,5 @@ Run the profile and targeting checks alongside the gameplay tests:
 ```sh
 node --test tests/card-animation-profiles.test.mjs tests/card-animation-targets.test.mjs tests/card-pvp-rules.test.mjs backend/card-pvp/test/worker.test.mjs
 ```
+
+Cards 51–75 use dedicated object and effect scenes: coin flips, a paper plane, resource depletion, a computer, stew, music, gift delivery, paired rings, food, droplets, roulette and a snake. Successful effects determine animation targets; failed chance effects do not animate. The new Tabler SVG icons are stored locally under the existing MIT license.

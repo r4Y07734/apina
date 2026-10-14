@@ -7,7 +7,8 @@ const catalogUrl = new URL('../dist/card-pvp/cards.json', import.meta.url);
 const catalogBytes = await readFile(catalogUrl);
 const cards = JSON.parse(catalogBytes.toString('utf8'));
 
-const renderScenes = new Set([
+import { EXPANSION_SCENES } from '../dist/card-pvp/expansion-animations.js';
+const renderScenes = new Set([...EXPANSION_SCENES,
   'transfer', 'scam', 'charge', 'missile', 'mushrooms', 'splash', 'collapse', 'nuclear',
   'balance', 'slash', 'poison', 'bomb', 'drink', 'sniper', 'apple', 'charity', 'circuitry',
   'reactor', 'battery', 'music', 'sand', 'car', 'vitality', 'projectile', 'drain', 'fracture',
@@ -31,10 +32,10 @@ function freezeTree(value) {
   return value;
 }
 
-test('all 50 shipped slots have valid explicit animation profiles', () => {
-  const ids = Array.from({ length: 50 }, (_, index) => `card-${String(index + 1).padStart(2, '0')}`);
+test('all 75 shipped slots have valid explicit animation profiles', () => {
+  const ids = Array.from({ length: 75 }, (_, index) => `card-${String(index + 1).padStart(2, '0')}`);
   assert.deepEqual(Object.keys(CARD_ANIMATIONS), ids);
-  assert.deepEqual(cards.slice(0,50).map(card => card.id), ids);
+  assert.deepEqual(cards.slice(0,75).map(card => card.id), ids);
   for (const card of cards) {
     checkProfile(animationFor(card));
     if(CARD_ANIMATIONS[card.id])assert.equal(animationFor(card), CARD_ANIMATIONS[card.id]);
@@ -126,4 +127,12 @@ test('animations preserve every catalog field and cannot mutate shared profiles'
   assert.ok(Object.isFrozen(CARD_ANIMATIONS));
   for (const value of Object.values(CARD_ANIMATIONS)) assert.ok(Object.isFrozen(value));
   assert.throws(() => { CARD_ANIMATIONS['card-14'].scene = 'missile'; }, TypeError);
+});
+
+test('all new cards use valid locally bundled SVG icons',async()=>{
+  for(const card of cards.slice(50)){
+    assert.match(card.icon,/^icons\/tabler-[a-z0-9-]+\.svg$/);
+    const svg=await readFile(new URL(`../dist/card-pvp/${card.icon}`,import.meta.url),'utf8');
+    assert.match(svg,/<svg\b/);assert.doesNotMatch(svg,/<script|<foreignObject|onload=/i);
+  }
 });
