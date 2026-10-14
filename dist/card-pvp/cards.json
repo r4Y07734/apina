@@ -112,7 +112,7 @@
   },
   {
     "id": "card-07",
-    "name": "Suicide",
+    "name": "Walter White Jr.",
     "description": "KYS",
     "cost": 0,
     "icon": "icons/skull.svg",
@@ -868,376 +868,492 @@
   },
   {
     "id": "card-51",
-    "name": "Card 51",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Coin Flip",
+    "description": "Deal damage to you, opponent or both",
+    "cost": 10,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
+        "type": "damage",
         "target": "self",
-        "amount": 1
+        "amount": 20,
+        "chance": 50
+      },
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 20,
+        "chance": 50
       }
     ]
   },
   {
     "id": "card-52",
-    "name": "Card 52",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "9/11",
+    "description": "Fly a plane at your opponent",
+    "cost": 7,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-53",
-    "name": "Card 53",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Africa",
+    "description": "Deplete your opponents resources",
+    "cost": 3,
+    "icon": "",
+    "accent": "poison",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "poison",
+        "target": "opponent",
+        "amount": 1,
+        "rounds": 10
+      },
+      {
+        "type": "energy",
+        "target": "opponent",
+        "amount": -10
       }
     ]
   },
   {
     "id": "card-54",
-    "name": "Card 54",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Charlie Kirk",
+    "description": "Assasinate your opponent",
+    "cost": 9,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 20
       }
     ]
   },
   {
     "id": "card-55",
-    "name": "Card 55",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
+    "name": "Pray",
+    "description": "God bless you!",
+    "cost": 0,
+    "icon": "",
     "accent": "heal",
     "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 1
+        "amount": 20
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-56",
-    "name": "Card 56",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Super AI",
+    "description": "Depletes your and your opponents energy for small profits",
+    "cost": 10,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
+      },
+      {
+        "type": "energy",
+        "target": "opponent",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-57",
-    "name": "Card 57",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Bad Aim",
+    "description": "Your missile might hit the opponent",
+    "cost": 4,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 9,
+        "chance": 50
       }
     ]
   },
   {
     "id": "card-58",
-    "name": "Card 58",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Suspicious Stew",
+    "description": "No one knows what will happen",
+    "cost": 2,
+    "icon": "",
+    "accent": "mixed",
     "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 1
+        "amount": 10,
+        "chance": 20
+      },
+      {
+        "type": "damage",
+        "target": "self",
+        "amount": 10,
+        "chance": 20
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10,
+        "chance": 20
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": -10,
+        "chance": 20
+      },
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 5,
+        "rounds": 2,
+        "chance": 20
       }
     ]
   },
   {
     "id": "card-59",
-    "name": "Card 59",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "We are Charlie Kirk",
+    "description": "The beautiful melody hurts your opponents ears but gives him energy",
+    "cost": 3,
+    "icon": "",
+    "accent": "mixed",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "energy",
+        "target": "opponent",
+        "amount": 5
+      },
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 5
       }
     ]
   },
   {
     "id": "card-60",
-    "name": "Card 60",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Jeffrey Epstein",
+    "description": "Give your opponent backshots, age doesn't matter",
+    "cost": 5,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 2
       }
     ]
   },
   {
     "id": "card-61",
-    "name": "Card 61",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Cancer",
+    "description": "Your opponent has cancer, so sad",
+    "cost": 10,
+    "icon": "",
+    "accent": "poison",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "poison",
+        "target": "opponent",
+        "amount": 5,
+        "rounds": 10
       }
     ]
   },
   {
     "id": "card-62",
-    "name": "Card 62",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
+    "name": "Mr Beast",
+    "description": "He wants to donate some money",
+    "cost": 0,
+    "icon": "",
     "accent": "heal",
     "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 1
+        "amount": 10
+      },
+      {
+        "type": "energy",
+        "target": "self",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-63",
-    "name": "Card 63",
-    "description": "",
+    "name": "Heil Hitler",
+    "description": "You are an amazing attacker but you also have a massive drug problem.",
+    "cost": 4,
+    "icon": "",
+    "accent": "damage",
+    "effects": [
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 15
+      },
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 2,
+        "rounds": 5
+      }
+    ]
+  },
+  {
+    "id": "card-64",
+    "name": "Gay Marriage",
+    "description": "Marry your opponent",
     "cost": 1,
-    "icon": "spark",
+    "icon": "",
     "accent": "heal",
     "effects": [
       {
         "type": "heal",
         "target": "self",
         "amount": 1
-      }
-    ]
-  },
-  {
-    "id": "card-64",
-    "name": "Card 64",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
-    "effects": [
+      },
       {
         "type": "heal",
-        "target": "self",
+        "target": "opponent",
         "amount": 1
       }
     ]
   },
   {
     "id": "card-65",
-    "name": "Card 65",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Smegma",
+    "description": "Lucky! There is cheese under your foreskin.",
+    "cost": 0,
+    "icon": "",
+    "accent": "energy",
     "effects": [
       {
-        "type": "heal",
+        "type": "energy",
         "target": "self",
-        "amount": 1
+        "amount": 3
       }
     ]
   },
   {
     "id": "card-66",
-    "name": "Card 66",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Woman",
+    "description": "Makes good food but accidentally drives over your opponent",
+    "cost": 5,
+    "icon": "",
+    "accent": "mixed",
     "effects": [
       {
-        "type": "heal",
+        "type": "energy",
         "target": "self",
-        "amount": 1
+        "amount": 10
+      },
+      {
+        "type": "energy",
+        "target": "opponent",
+        "amount": 10
+      },
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-67",
-    "name": "Card 67",
-    "description": "",
+    "name": "Indian Steet Food",
+    "description": "Curry or Poop?",
     "cost": 1,
-    "icon": "spark",
+    "icon": "",
     "accent": "heal",
     "effects": [
       {
-        "type": "heal",
+        "type": "energy",
         "target": "self",
-        "amount": 1
+        "amount": 10
+      },
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 1,
+        "rounds": 3,
+        "chance": 50
       }
     ]
   },
   {
     "id": "card-68",
-    "name": "Card 68",
-    "description": "",
+    "name": "Pee",
+    "description": "Disgusting",
     "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
+        "type": "damage",
+        "target": "opponent",
         "amount": 1
       }
     ]
   },
   {
     "id": "card-69",
-    "name": "Card 69",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "69",
+    "description": "Have 69 with you mother",
+    "cost": 0,
+    "icon": "",
+    "accent": "poison",
     "effects": [
       {
-        "type": "heal",
+        "type": "poison",
         "target": "self",
-        "amount": 1
+        "amount": 1,
+        "rounds": 2
       }
     ]
   },
   {
     "id": "card-70",
-    "name": "Card 70",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Break Up",
+    "description": "Your and your opponents gay marriage is over",
+    "cost": 0,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
+        "type": "damage",
         "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "damage",
+        "target": "opponent",
         "amount": 1
       }
     ]
   },
   {
     "id": "card-71",
-    "name": "Card 71",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Surprise",
+    "description": "Flash your boobs (your opponent is gay)",
+    "cost": 4,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 4
       }
     ]
   },
   {
     "id": "card-72",
-    "name": "Card 72",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Russian Roulette",
+    "description": "Death is very likely",
+    "cost": 10,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
+        "type": "damage",
         "target": "self",
-        "amount": 1
+        "amount": 40,
+        "chance": 50
+      },
+      {
+        "type": "damage",
+        "target": "opponent",
+        "amount": 40,
+        "chance": 50
       }
     ]
   },
   {
     "id": "card-73",
-    "name": "Card 73",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "BLM",
+    "description": "You send angry black people supporters to attack your opponent",
+    "cost": 5,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10
       }
     ]
   },
   {
     "id": "card-74",
-    "name": "Card 74",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
+    "name": "Snake Potion",
+    "description": "Good poison, long lasting effect",
+    "cost": 3,
+    "icon": "",
     "accent": "heal",
     "effects": [
       {
         "type": "heal",
         "target": "self",
-        "amount": 1
+        "amount": 40
+      },
+      {
+        "type": "poison",
+        "target": "self",
+        "amount": 1,
+        "rounds": 50
       }
     ]
   },
   {
     "id": "card-75",
-    "name": "Card 75",
-    "description": "",
-    "cost": 1,
-    "icon": "spark",
-    "accent": "heal",
+    "name": "Mystery Gun",
+    "description": "Shoot at your opponent",
+    "cost": 5,
+    "icon": "",
+    "accent": "damage",
     "effects": [
       {
-        "type": "heal",
-        "target": "self",
-        "amount": 1
+        "type": "damage",
+        "target": "opponent",
+        "amount": 10,
+        "chance": 50
+      },
+      {
+        "type": "poison",
+        "target": "opponent",
+        "amount": 5,
+        "rounds": 3,
+        "chance": 50
       }
     ]
   }
