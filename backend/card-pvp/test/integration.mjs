@@ -141,7 +141,21 @@ try {
   const result = await waitFor(replacement, message => message.type === 'state' && message.state.status === 'finished');
   assert.equal(result.state.winner, 0);
   assert.equal(result.deadline, null);
-  console.log('Worker integration passed: two players, origin and token checks, hand privacy, rejected actions, turn progression, authoritative card play, reconnect, socket replacement, and concession.');
+  replacement.socket.send(JSON.stringify({type:'rematch',matchId:result.matchId}));
+  const requested=await waitFor(b,m=>m.type==='state'&&m.rematch?.[0]===true);
+  assert.equal(requested.state.status,'finished');
+  b.socket.send(JSON.stringify({type:'rematch',matchId:result.matchId}));
+  const rematch=await waitFor(replacement,m=>m.type==='state'&&m.matchId===result.matchId+1);
+  assert.equal(rematch.state.status,'playing');
+  assert.deepEqual(rematch.rematch,[false,false]);
+  assert.deepEqual(rematch.state.players.map(p=>p.character),['monkey','indian']);
+  assert.deepEqual(rematch.state.players.map(p=>p.health),[40,40]);
+  assert.deepEqual(rematch.state.players.map(p=>p.energy),[3,3]);
+  assert.equal(rematch.state.hand.length,5);
+  assert.deepEqual(rematch.state.playedCards,[]);
+  assert.equal(rematch.state.players[1].hand,undefined);
+  assert.ok(rematch.deadline>Date.now());
+  console.log('Worker integration passed: two players, origin and token checks, hand privacy, rejected actions, turn progression, authoritative card play, reconnect, socket replacement, concession, and same-room rematches.');
 } finally {
   for (const socket of sockets) if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) socket.close();
 }

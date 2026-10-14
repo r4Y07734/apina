@@ -25,6 +25,18 @@ const shownReveals = new Set();
 const cardAnimations = createCardAnimations(document.querySelector('.arena'));
 let cancelAnimationResult = () => {};
 let selectedCharacter=DEFAULT_CHARACTER, characterLocked=false;
+let onlineMatchId=1, rematchVotes=[false,false], opponentConnected=true;
+
+function updateRematchControls(){
+  $('board-rematch').hidden=mode!=='online'||view?.status!=='finished';
+  if(mode!=='online'){$('rematch').disabled=false;$('rematch-status').textContent='';return;}
+  const own=Boolean(view&&rematchVotes[view.you]), other=Boolean(view&&rematchVotes[1-view.you]);
+  $('rematch').disabled=!connected||!opponentConnected||pending||own;
+  $('board-rematch').disabled=$('rematch').disabled;
+  $('rematch').textContent=own?'Rematch requested':other?'Accept rematch':'Rematch';
+  $('board-rematch').textContent=$('rematch').textContent;
+  $('rematch-status').textContent=!connected?'Reconnecting…':!opponentConnected?'Waiting for your opponent to reconnect…':own?'Waiting for your opponent to accept…':other?'Your opponent wants a rematch.':'';
+}
 
 function applyPortrait(element,id){
   const character=characterFor(id);
@@ -146,6 +158,7 @@ function canSelectCards() {
   return view?.status === 'playing' && view.turn === view.you && (mode === 'bot' || connected) && !pending && !(mode === 'online' && turnDeadline && Date.now() >= turnDeadline);
 }
 function updateControls() {
+  updateRematchControls();
   const ownTurn = view?.status === 'playing' && view.turn === view.you;
   const ready = canSelectCards();
   for(const button of $('hand').querySelectorAll('.battle-card'))button.disabled = !ready;
@@ -254,7 +267,8 @@ function render(next) {
     const won=view.winner===view.you, draw=view.winner==='draw';
     $('result-title').textContent=draw?'A draw':won?'You win':'Match lost';
     $('result-description').textContent=draw?'Both fighters fell in the same exchange.':won?'The arena is yours. Ready for another round?':'A good duel. Try a different hand next time.';
-    $('rematch').textContent=mode==='bot'?'Play bot again':'New online match';
+    if(mode==='bot')$('rematch').textContent='Play bot again';
+    updateRematchControls();
     const finalOpponentPlay = view.lastEvent?.kind === 'play' && view.lastEvent.actor !== view.you;
     const finishedAt = performance.now();
     cancelAnimationResult = cardAnimations.whenIdle(() => {
@@ -262,7 +276,7 @@ function render(next) {
       if(finalOpponentPlay)resultTimer=setTimeout(showResult,Math.max(0,3100-(performance.now()-finishedAt)));
       else showResult();
     });
-    clearTimeout(botTimer); if(mode==='online')clearSession();
+    clearTimeout(botTimer); if(mode==='online')rememberSession();
   }
 }
 function act(action) {
@@ -272,7 +286,7 @@ function act(action) {
     if(!result.ok){message(result.error,true);return;}
     message('');render(viewFor(state,0)); scheduleBot();
   } else if(connected && socket?.readyState===WebSocket.OPEN && !pending) {
-    pending=true; socket.send(JSON.stringify(action)); updateControls();
+    pending=true; socket.send(JSON.stringify({...action,matchId:onlineMatchId})); updateControls();
   }
 }
 function scheduleBot() {
@@ -306,7 +320,7 @@ async function roomRequest(join) {
     const data=await response.json();if(requestVersion!==roomRequestVersion)return;if(!response.ok)throw Error(data.error||'Could not open this room.');
     room=data.room||code;token=data.token;
     if(!/^[A-Z0-9]{6}$/.test(room)||typeof token!=='string'||!token)throw Error('The server returned an invalid room.');
-    closeConnection();mode='online';view=null;selected=null;reconnectAttempt=0;
+    closeConnection();onlineMatchId=1;rematchVotes=[false,false];opponentConnected=true;mode='online';view=null;selected=null;reconnectAttempt=0;
     rememberSession();connectRoom();
   }catch(error){if(requestVersion!==roomRequestVersion)return;message(error instanceof TypeError?'Could not reach the server. Check its URL and allowed website origins.':error.message,true);}
   finally{if(requestVersion===roomRequestVersion){$('create-room').disabled=$('join-room').disabled=false;characterLocked=mode==='online';updateCharacterPicker();}}
@@ -329,8 +343,12 @@ function connectRoom() {
     pending=false;
     if(data.type==='waiting'){waiting();}
     else if(data.type==='state'){
+      const nextMatchId=Number.isSafeInteger(data.matchId)?data.matchId:1;
+      if(view?.status==='finished'&&data.state.status==='playing'&&nextMatchId!==onlineMatchId){resetCardReveals();view=null;selected=null;$('result-dialog').close();$('activity-dialog').close();}
+      onlineMatchId=nextMatchId;rematchVotes=Array.isArray(data.rematch)?data.rematch:[false,false];
       turnDeadline = Number.isFinite(data.deadline) ? data.deadline : null;
       const otherConnected=data.connected?.[1-data.state.you];
+      opponentConnected=otherConnected!==false;
       message(otherConnected===false?'Opponent disconnected. Waiting for them to return…':`Room ${room} · hands are private`);
       render(data.state);
       if(data.notice && data.state.status==='finished')$('result-description').textContent=data.notice;
@@ -344,7 +362,6 @@ function connectRoom() {
     updateControls();
     if(event.code===4002){showLobby();$('lobby-message').textContent='This match has expired or the game was updated. Create a new room.';return;}
     if(event.code===4001){message('This match was opened in another tab. Reload to reconnect here.',true);return;}
-    if(view?.status==='finished')return;
     if(reconnectAttempt>=6){message('Connection lost. Reload this page to retry your saved match.',true);return;}
     message('Connection lost. Reconnecting…',true);
     reconnectTimer=setTimeout(connectRoom,Math.min(1000*2**reconnectAttempt++,10000));
@@ -368,13 +385,19 @@ $('play-card').addEventListener('click',()=>{if(selected)act({type:'play',cardId
 $('end-turn').addEventListener('click',()=>act({type:'end'}));
 $('new-match').addEventListener('click',()=>{
   if(view?.status==='playing'&&!confirm('Leave this match? In an online duel, this concedes the game.'))return;
-  if(mode==='online'&&view?.status==='playing'&&socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'concede'}));
+  if(mode==='online'&&view?.status==='playing'&&socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'concede',matchId:onlineMatchId}));
   showLobby();
 });
 $('rules-button').addEventListener('click',()=>$('rules-dialog').showModal());
 $('rules-close').addEventListener('click',()=>$('rules-dialog').close());
 $('result-close').addEventListener('click',()=>$('result-dialog').close());
-$('rematch').addEventListener('click',()=>{$('result-dialog').close();mode==='bot'?startBot():showLobby();});
+function requestRematch(){
+  if(mode==='bot'){$('result-dialog').close();startBot();return;}
+  if(view?.status!=='finished'||!connected||!opponentConnected||pending||rematchVotes[view.you])return;
+  pending=true;socket.send(JSON.stringify({type:'rematch',matchId:onlineMatchId}));updateRematchControls();
+}
+$('rematch').addEventListener('click',requestRematch);
+$('board-rematch').addEventListener('click',requestRematch);
 $('log-toggle').addEventListener('click',()=>$('activity-dialog').showModal());
 $('activity-close').addEventListener('click',()=>$('activity-dialog').close());
 

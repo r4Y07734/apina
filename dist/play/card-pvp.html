@@ -119,7 +119,7 @@
       <section class="hand-section" aria-labelledby="hand-title">
         <div class="hand-heading"><h2 id="hand-title">Your hand<span id="hand-count">5 cards</span></h2><span class="deck-count"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="11" height="13" rx="2"/><path d="M12 5V2H2v12h3"/></svg><span id="deck-count">45 in deck</span></span><button id="log-toggle" class="text-button log-toggle" type="button" aria-haspopup="dialog" aria-controls="activity-dialog">Activity</button></div>
         <div class="hand" id="hand" aria-label="Your cards"></div>
-        <div class="hand-actions"><p id="selection-hint">Select a card to see your next move.</p><div class="action-buttons"><button class="primary-button" id="play-card" type="button" disabled>Play card<span aria-hidden="true">↑</span></button><button class="secondary-button" id="end-turn" type="button">End turn<span aria-hidden="true">→</span></button></div></div>
+        <div class="hand-actions"><p id="selection-hint">Select a card to see your next move.</p><div class="action-buttons"><button class="primary-button" id="play-card" type="button" disabled>Play card<span aria-hidden="true">↑</span></button><button class="primary-button" id="board-rematch" type="button" hidden>Rematch</button><button class="secondary-button" id="end-turn" type="button">End turn<span aria-hidden="true">→</span></button></div></div>
       </section>
 
     </section>
@@ -146,7 +146,7 @@
   </dialog>
 
   <dialog class="game-dialog result-dialog" id="result-dialog" aria-labelledby="result-title">
-    <div class="result-mark" aria-hidden="true">✦</div><span class="eyebrow">MATCH COMPLETE</span><h2 id="result-title">Well played.</h2><p id="result-description">Every hand has another story.</p><div class="result-actions"><button id="rematch" class="primary-button" type="button">Play again<span aria-hidden="true">↗</span></button><button id="result-close" class="secondary-button" type="button">View board</button></div>
+    <div class="result-mark" aria-hidden="true">✦</div><span class="eyebrow">MATCH COMPLETE</span><h2 id="result-title">Well played.</h2><p id="result-description">Every hand has another story.</p><p id="rematch-status" role="status" aria-live="polite"></p><div class="result-actions"><button id="rematch" class="primary-button" type="button">Play again<span aria-hidden="true">↗</span></button><button id="result-close" class="secondary-button" type="button">View board</button></div>
   </dialog>
   <script type="module" src="../card-pvp/app.js"></script>
 </body>

@@ -181,7 +181,7 @@ export class CardRoom {
   }
 
   snapshot(actor) {
-    const shared = { room: this.room.code, connected: this.connected(), deadline: this.room.turnDeadline || null };
+    const shared = { room: this.room.code, connected: this.connected(), deadline: this.room.turnDeadline || null, matchId:this.room.matchId||1, rematch:this.room.rematch||[false,false] };
     if (!this.room.game) return { type: 'waiting', ...shared };
     return { type: 'state', state: viewFor(this.room.game, actor), ...shared, notice: this.room.notice || null };
   }
@@ -260,7 +260,7 @@ export class CardRoom {
       validateCards(cards);
       const token = randomHex();
       this.room = {
-        rulesVersion: RULES_VERSION, code: room, names: [name, null], characters:[character,null], tokens: [token, null], game: null, cards,
+        rulesVersion: RULES_VERSION, code: room, names: [name, null], characters:[character,null], tokens: [token, null], game: null, cards, matchId:1, rematch:[false,false],
         createdAt: Date.now(), expiresAt: Date.now() + WAIT_MS,
         disconnectedAt: [null, null], turnDeadline: null, notice: null,
       };
@@ -322,13 +322,30 @@ export class CardRoom {
     if (attachment.rateCount > 15) { fail('Too many actions. Wait a moment before trying again.'); return; }
     let action;
     try { action = JSON.parse(message); } catch { fail('The action is not valid JSON.'); return; }
-    if (!action || typeof action !== 'object' || Array.isArray(action) || !['play', 'end', 'concede'].includes(action.type)) {
+    if (!action || typeof action !== 'object' || Array.isArray(action) || !['play', 'end', 'concede','rematch'].includes(action.type)) {
       fail('Unknown action.'); return;
     }
     if (action.type === 'play' && (typeof action.cardId !== 'string' || action.cardId.length > 64)) {
       fail('Choose a card from your hand.'); return;
     }
     if (!this.room.game) { fail('Wait for your opponent to join.'); return; }
+    if(action.matchId!==undefined&&action.matchId!==(this.room.matchId||1)){fail('This action belongs to an older match.');return;}
+    if(action.type==='rematch'){
+      if(this.room.game.status!=='finished'){fail('Finish this match before requesting a rematch.');return;}
+      if(action.matchId!==(this.room.matchId||1)){fail('This rematch request belongs to an older match.');return;}
+      if(!this.connected().every(Boolean)){fail('Wait for your opponent to reconnect before requesting a rematch.');return;}
+      this.room.rematch ||= [false,false];
+      this.room.rematch[attachment.actor]=true;
+      if(this.room.rematch.every(Boolean)){
+        const characters=this.room.game.players.map(player=>player.character||DEFAULT_CHARACTER);
+        this.room.game=createGame(this.room.cards,{names:this.room.names,characters,startingPlayer:crypto.getRandomValues(new Uint8Array(1))[0]&1});
+        this.room.matchId=(this.room.matchId||1)+1;
+        this.room.rematch=[false,false];this.room.notice=null;
+        this.room.turnDeadline=now+TURN_MS;this.room.expiresAt=now+MAX_ROOM_MS;
+        this.room.disconnectedAt=[null,null];
+      }
+      await this.save();this.broadcast();return;
+    }
     const previousTurn = this.room.game.turn;
     const result = applyAction(this.room.game, attachment.actor, action, this.room.cards);
     if (!result.ok) { fail(result.error); return; }

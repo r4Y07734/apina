@@ -220,3 +220,58 @@ test('rooms created under old deck rules expire instead of dealing inactive card
   assert.equal(ctx.stored(), undefined);
   assert.equal(ctx.alarmTime(), null);
 });
+
+async function rematchRoom(){
+  const {room,ctx}=await startedRoom();
+  const sockets=[0,1].map(actor=>({
+    attachment:{actor,rateStart:Date.now(),rateCount:0,replaced:false},messages:[],
+    deserializeAttachment(){return this.attachment;},serializeAttachment(value){this.attachment=value;},
+    send(value){this.messages.push(JSON.parse(value));},
+  }));
+  ctx.getWebSockets=()=>sockets;
+  room.room.disconnectedAt=[null,null];
+  const send=(actor,action)=>room.webSocketMessage(sockets[actor],JSON.stringify(action));
+  return {room,ctx,sockets,send};
+}
+
+test('rematches require a finished game and consent from both connected players',async()=>{
+  const {room,ctx,sockets,send}=await rematchRoom();
+  await send(0,{type:'rematch',matchId:1});
+  assert.equal(sockets[0].messages.at(-1).type,'error');
+  await send(1,{type:'concede'});
+  const original=structuredClone(room.room.game),tokens=[...room.room.tokens];
+  await send(0,{type:'rematch',matchId:1});
+  await send(0,{type:'rematch',matchId:1});
+  assert.deepEqual(room.room.game,original);
+  assert.deepEqual(room.snapshot(1).rematch,[true,false]);
+  const restored=new CardRoom(ctx,{});await Promise.resolve();
+  assert.deepEqual(restored.snapshot(0).rematch,[true,false]);
+  await send(1,{type:'rematch',matchId:1});
+  assert.equal(room.room.game.status,'playing');
+  assert.equal(room.snapshot(0).matchId,2);
+  assert.deepEqual(room.snapshot(0).rematch,[false,false]);
+  assert.deepEqual(room.room.tokens,tokens);
+  assert.equal(room.room.code,'ABCDEF');
+  assert.deepEqual(room.room.game.players.map(p=>p.name),['Aino','Elias']);
+  for(const p of room.room.game.players){assert.equal(p.health,40);assert.equal(p.energy,3);assert.equal(p.hand.length,5);assert.deepEqual(p.poison,[]);}
+  assert.deepEqual(room.snapshot(0).state.playedCards,[]);
+  assert.ok(room.room.turnDeadline>Date.now());
+  assert.equal(room.snapshot(0).state.players[1].hand,undefined);
+  await send(0,{type:'concede',matchId:1});
+  assert.equal(room.room.game.status,'playing');
+  await send(1,{type:'concede',matchId:2});
+  await send(0,{type:'rematch',matchId:1});
+  assert.deepEqual(room.snapshot(0).rematch,[false,false]);
+});
+
+test('rematch waits for a disconnected opponent and preserves character choices',async()=>{
+  const {room,ctx,sockets,send}=await rematchRoom();
+  room.room.game.players[0].character='monkey';room.room.game.players[1].character='indian';
+  await send(1,{type:'concede'});
+  ctx.getWebSockets=()=>[sockets[0]];
+  await send(0,{type:'rematch',matchId:1});
+  assert.deepEqual(room.snapshot(0).rematch,[false,false]);
+  ctx.getWebSockets=()=>sockets;
+  await send(0,{type:'rematch',matchId:1});await send(1,{type:'rematch',matchId:1});
+  assert.deepEqual(room.snapshot(0).state.players.map(p=>p.character),['monkey','indian']);
+});
