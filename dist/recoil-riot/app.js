@@ -1,6 +1,8 @@
 import {WEAPONS} from './weapons.js';
 import {createWorld,addPlayer,step,RULES} from './simulation.js';
 import {createRenderer} from './renderer.js';
+import {vehicleHint} from './vehicles.js';
+import {ACTIVITIES,districtHint,activityProgress} from './activities.js';
 import {MULTIPLAYER_SERVER} from './config.js';
 const $=s=>document.querySelector(s),canvas=$('#arena'),renderer=createRenderer(canvas);
 const params=new URLSearchParams(location.search),keys=new Set(),pendingActions=new Set();
@@ -14,6 +16,7 @@ for(const [index,g] of WEAPONS.entries()){
  const art=document.createElement('canvas');art.width=40;art.height=28;art.className='weapon-art';const c=art.getContext('2d');c.fillStyle='#171b29';c.fillRect(3,8,30,9);c.fillStyle=g.color;c.fillRect(6,9,28,6);c.fillRect(12,15,6,7);if(index===3){c.fillRect(24,4,8,9);c.fillStyle='#ff965a';c.fillRect(31,7,6,3);}if(index===5){c.fillRect(23,5,13,15);}if(index===1)c.fillRect(8,5,8,5);
  const copy=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');strong.textContent=g.name;small.textContent=['EXTREME RECOIL','RAPID-FIRE SQUIRT','EXPLOSIVE SAUCE','BOUNCING DUCKS','CONFETTI CARNAGE','KEEP YOUR DISTANCE'][index];copy.append(strong,small);b.append(num,art,copy);b.onclick=()=>{select(index);if(playing)canvas.focus();};$('#weapons').append(b);buttons.push(b);
 }
+for(const a of ACTIVITIES){const row=document.createElement('li');row.id='job-'+a.id;const mark=document.createElement('b'),copy=document.createElement('span');mark.textContent='○';copy.textContent=a.name;row.title=a.zone+' · '+a.hint;row.append(mark,copy);$('#district-progress').append(row);}
 function select(i){selected=(i+WEAPONS.length)%WEAPONS.length;buttons.forEach((b,n)=>{b.classList.toggle('active',n===selected);b.setAttribute('aria-pressed',String(n===selected));});}select(0);
 function demo(){lastSound=0;world=createWorld();for(let n=0;n<4;n++){const p=addPlayer(world,'demo'+n,['Lil Bananas','Tax Evasion','Soup Enjoyer','Sir Quacks'][n],true);p.weapon=n;}myId='you';}
 demo();
@@ -51,7 +54,7 @@ window.addEventListener('keydown',e=>{
  if(!playing)return;
  const key=e.key.toLowerCase();if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(key))e.preventDefault();
  if(key==='escape'){pause(!paused);return;}if(e.repeat)return;
- keys.add(key);if(['r','f',' '].includes(key))pendingActions.add(key);if(/^[1-6]$/.test(key))select(Number(key)-1);if(key==='q')select(selected-1);if(key==='e')select(selected+1);
+ keys.add(key);if(['r','f',' ','g'].includes(key))pendingActions.add(key);if(/^[1-6]$/.test(key))select(Number(key)-1);if(key==='q')select(selected-1);if(key==='e')select(selected+1);
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{clearInput();if(playing)pause(true);});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();if(playing)pause(true);}});
 canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();pointer.x=(e.clientX-r.left)*960/r.width;pointer.y=(e.clientY-r.top)*640/r.height;});
@@ -65,7 +68,7 @@ function input(){
   angle:p?Math.atan2(target.y-p.y,target.x-p.x):0,fire:active&&pointer.down,
   dash:active&&(keys.has(' ')||pendingActions.has(' ')),
   melee:active&&(keys.has('f')||pendingActions.has('f')),
-  reload:active&&(keys.has('r')||pendingActions.has('r')),weapon:selected
+  reload:active&&(keys.has('r')||pendingActions.has('r')),interact:active&&(keys.has('g')||pendingActions.has('g')),weapon:selected
  };
  // Keep quick key taps until a local tick or online input packet consumes them.
  pendingActions.clear();return command;
@@ -80,11 +83,17 @@ function displayWorld(dt){
   return {...p,...point,angle:p.id===myId?Math.atan2(target.y-point.y,target.x-point.x):p.angle};
  });
  for(const id of renderPositions.keys())if(!world.players.some(p=>p.id===id))renderPositions.delete(id);
- return {...world,players};
+ const vehicles=world.vehicles.map(v=>{const driver=players.find(p=>p.id===v.driver);return driver?{...v,x:driver.x,y:driver.y}:v;});
+ return {...world,players,vehicles};
 }
 let uiAt=0;
 function ui(now){if(now-uiAt<80)return;uiAt=now;const p=world.players.find(p=>p.id===myId);const g=WEAPONS[selected];$('#gun-name').textContent=g.name.toUpperCase();$('#ammo').textContent=p?.reload>0?'RELOADING…':`${p?.ammo[selected]??g.magazine} / ${g.magazine}`;$('#hp-text').textContent=Math.ceil(p?.hp??100)+' HP';$('#hp-bar').style.width=(p?.hp??100)+'%';$('#dash-status').textContent=p?.dash>0?`DASH / ${p.dash.toFixed(1)}s`:'SPACE / DASH READY';const sec=Math.ceil(world.remaining);$('#round-clock').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
  const board=$('#scoreboard');board.replaceChildren();[...world.players].sort((a,b)=>b.score-a.score||a.deaths-b.deaths).forEach((p,i)=>{const li=document.createElement('li'),rank=document.createElement('span'),swatch=document.createElement('span'),name=document.createElement('span'),score=document.createElement('b');rank.className='rank';rank.textContent=String(i+1).padStart(2,'0');swatch.className='swatch';swatch.style.background=p.color;name.className='name';name.textContent=p.id===myId?'You':p.name+(p.bot?' [BOT]':'');score.textContent=p.score;li.append(rank,swatch,name,score);board.append(li);});
+ const car=world.vehicles.find(v=>v.id===p?.vehicle);if(car){$('#gun-name').textContent='JUNKYARD MOTOR';$('#ammo').textContent=Math.ceil(car.hp)+' / 160 CAR HP';$('#dash-status').textContent='SPACE / BRAKE';}
+ $('#vehicle-status').textContent=vehicleHint(world,p)||'G · Use nearby cars or valve consoles';
+ $('#district-hint').textContent=districtHint(world,p);
+ $('#district-count').textContent=(p?.badges.length||0)+'/6';
+ for(const a of ACTIVITIES){const item=document.getElementById('job-'+a.id),done=p?.badges.includes(a.id);item.classList.toggle('complete',!!done);item.querySelector('b').textContent=done?'✓':'○';}
  const kills=world.events.filter(e=>e.type==='kill');if(kills.length&&playing){const e=kills.at(-1);$('#score-note').textContent=e.killer+' → '+e.victim;}
  for(const e of world.events)if(e.id>lastSound){lastSound=e.id;if(e.type==='shot'&&e.player===myId)beep(e.weapon);}
 }

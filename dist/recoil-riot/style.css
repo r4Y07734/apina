@@ -8,3 +8,7 @@
  header{height:60px}main{padding-top:24px}.heading{margin-bottom:22px}h1{font-size:clamp(45px,4.6vw,66px)}
  .arena-panel:fullscreen .canvas-wrap{height:calc(100dvh - 145px);aspect-ratio:3/2}
 }
+
+.adventure-hud{padding:9px 17px;border-top:1px solid #343341;background:#222633;font:10px monospace;line-height:1.6}.adventure-hud p{margin:0}.adventure-hud #vehicle-status{color:#b5f577}.adventure-hud #district-hint{color:#afa9be;font-size:9px;margin-top:3px}.district-card{margin-top:17px}.district-card ul{list-style:none;margin:12px 0;padding:0}.district-card li{display:flex;gap:9px;padding:5px 0;font-size:10px;color:#aaa4b9}.district-card li b{color:#777087}.district-card li.complete,.district-card li.complete b{color:#b5f577}.district-card>p{font-size:9px;line-height:1.6;color:#9993aa}.arena-panel:fullscreen .canvas-wrap{height:calc(100dvh - 205px)}
+
+@media(min-width:751px){.canvas-wrap{height:clamp(300px,calc(100dvh - 420px),640px)}.arena-panel:fullscreen .canvas-wrap{height:calc(100dvh - 205px)}}

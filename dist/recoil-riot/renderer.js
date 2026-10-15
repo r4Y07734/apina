@@ -2,6 +2,8 @@ import {ARENA} from './maps.js';
 import {WEAPONS} from './weapons.js';
 import {createCamera,followCamera,screenToWorld,VIEW} from './camera.js';
 import {createScenery} from './scenery.js';
+import {drawAdventure} from './adventure-renderer.js';
+import {ACTIVITIES} from './activities.js';
 const sprites={
  monkey:['..bbbbbb..','.bbbbbbbb.','bbttbbttbb','bttttttttb','btwttwtwtb','.tttttttt.','..tddddt..','..bttttb..','...bbbb...'],
  duck:['...yyyy...','..yyyyyy..','..ykyyyo..','..yyyyoooo','....yy....','.yyyyyyy..','yyyyyyyyy.','.yyyyyyy..','..yyyyy...']
@@ -27,7 +29,8 @@ export function createRenderer(canvas){
   }
   c.clearRect(0,0,VIEW.width,VIEW.height);c.save();shake*=.85;c.translate(Math.round((Math.random()-.5)*shake),Math.round((Math.random()-.5)*shake));c.translate(-Math.round(camera.x),-Math.round(camera.y));c.drawImage(floor,0,0);
   for(const pack of world.health)if(world.time>=pack.ready){rect(pack.x-10,pack.y-6,20,15,'#171d2b');rect(pack.x-8,pack.y-8,16,14,'#eee9dd');rect(pack.x-2,pack.y-6,4,10,'#90ca81');rect(pack.x-5,pack.y-3,10,4,'#90ca81');}
-  for(const p of world.players){if(p.hp<=0)continue;c.save();if(p.invuln>0)c.globalAlpha=.55+Math.sin(world.time*20)*.2;
+  drawAdventure(c,world,me);
+  for(const p of world.players){if(p.hp<=0||p.vehicle)continue;c.save();if(p.invuln>0)c.globalAlpha=.55+Math.sin(world.time*20)*.2;
    const moving=Math.hypot(p.vx,p.vy)>15||p.bot||Math.abs(p.input?.x||0)+Math.abs(p.input?.y||0)>0;
    const stride=moving?Math.sin(world.time*16)*2:0;
    rect(p.x-12,p.y+9,24,7,'#1a1d2c');
@@ -52,6 +55,8 @@ export function createRenderer(canvas){
   c.font='bold 9px monospace';c.textAlign='left';c.fillStyle='#afa9bd';c.fillText('JUNKYARD / RADAR',x,y-10);
   for(const z of ARENA.zones)rect(x+z.x*scale,y+z.y*scale,z.w*scale,z.h*scale,z.color);
   for(const b of ARENA.walls)rect(x+b.x*scale,y+b.y*scale,Math.max(2,b.w*scale),Math.max(2,b.h*scale),'#777486');
+  for(const a of ACTIVITIES){for(const p of a.points||[a.goal])if(p)rect(x+p.x*scale-1,y+p.y*scale-1,3,3,a.color);}
+  for(const car of world.vehicles)if(car.hp>0)rect(x+car.x*scale-2,y+car.y*scale-1,5,3,'#ffda7b');
   c.strokeStyle='#b5f57766';c.lineWidth=1;c.strokeRect(Math.round(x+camera.x*scale),Math.round(y+camera.y*scale),VIEW.width*scale,VIEW.height*scale);
   for(const p of world.players)if(p.hp>0){rect(x+p.x*scale-1,y+p.y*scale-1,p.id===me?.id?4:2,p.id===me?.id?'#c5ff8a':p.color);}
   const zone=me&&ARENA.zones.find(z=>me.x>=z.x&&me.x<=z.x+z.w&&me.y>=z.y&&me.y<=z.y+z.h);

@@ -39,7 +39,8 @@ export function createScenery(){
  for(const b of ARENA.walls){
   const {x,y,w,h,kind,color}=b;rect(x+6,y+9,w,h,'#171f2abb');
   rect(x,y,w,h,'#202632');rect(x+2,y+2,w-4,h-4,color);rect(x+2,y+2,w-4,4,'#ffffff25');rect(x,y+h-6,w,6,'#161d2a80');
-  if(kind==='container'){
+  if(kind==='barrier'){for(let xx=x+3;xx<x+w-4;xx+=12)rect(xx,y+3,6,h-6,'#d5ae68');
+  }else if(kind==='container'){
    for(let xx=x+9;xx<x+w-5;xx+=12){rect(xx,y+7,2,h-17,'#161f2b55');rect(xx+2,y+7,1,h-17,'#ffffff18');}
    rect(x+6,y+h-12,w-12,2,'#b5a98f');rect(x+w-16,y+11,7,11,'#b6b4a2');rect(x+w-14,y+13,3,4,'#363e48');
    for(let xx=x+8;xx<x+w-8;xx+=16)rect(xx,y+h-5,8,3,'#d2ad60');

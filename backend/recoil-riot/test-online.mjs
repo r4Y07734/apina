@@ -17,8 +17,21 @@ try{
  const reloaded=b.world.players.find(p=>p.id===a.id);assert.equal(reloaded.reload,0);assert.equal(reloaded.ammo[1],36);
  a.ws.send(JSON.stringify({type:'input',input:{weapon:1,fire:true,angle:0}}));await delay(180);
  assert.ok(b.world.players.find(p=>p.id===a.id).ammo[1]<36,'online firing must resume after reload');
+ // Drive the nearest parked car using the same authoritative input path as the browser.
+ let driver=a.world.players.find(p=>p.id===a.id);
+ let car=[...a.world.vehicles].filter(v=>v.hp>0&&!v.driver).sort((x,y)=>Math.hypot(x.x-driver.x,x.y-driver.y)-Math.hypot(y.x-driver.x,y.y-driver.y))[0];
+ for(let n=0;n<80&&Math.hypot(car.x-driver.x,car.y-driver.y)>62;n++){
+  const dx=car.x-driver.x,dy=car.y-driver.y,length=Math.hypot(dx,dy);a.ws.send(JSON.stringify({type:'input',input:{x:dx/length,y:dy/length,weapon:1}}));await delay(40);driver=a.world.players.find(p=>p.id===a.id);
+ }
+ a.ws.send(JSON.stringify({type:'input',input:{interact:true,weapon:1}}));await delay(160);
+ assert.equal(b.world.players.find(p=>p.id===a.id).vehicle,car.id);assert.equal(b.world.vehicles.find(v=>v.id===car.id).driver,a.id);
+ const carX=b.world.vehicles.find(v=>v.id===car.id).x;
+ for(let n=0;n<10;n++){a.ws.send(JSON.stringify({type:'input',input:{y:-1,weapon:1}}));await delay(40);}
+ assert.ok(b.world.vehicles.find(v=>v.id===car.id).x>carX+5);
+ a.ws.send(JSON.stringify({type:'input',input:{interact:true,weapon:1}}));await delay(160);assert.equal(b.world.players.find(p=>p.id===a.id).vehicle,null);
+ assert.equal(a.world.vehicles.length,6);assert.ok(a.world.activities.ventOffUntil.length===3);
  b.ws.close();await delay(200);assert.equal(a.world.players.filter(p=>p.bot).length,3);
  const humans=[a];for(let n=0;n<7;n++)humans.push(await join('Player '+n));await delay(200);assert.equal(a.world.players.length,8);assert.equal(a.world.players.filter(p=>p.bot).length,0);
  await new Promise((resolve,reject)=>{const ws=new WebSocket(`${base}/room/${room}`,{origin});ws.on('unexpected-response',(_,r)=>{assert.equal(r.statusCode,409);r.resume();resolve();});ws.on('open',()=>{ws.close();reject(new Error('Full room accepted ninth player'));});ws.on('error',()=>{});});
- console.log('PASS: two-client state, authoritative input, shots/ammo, reload then fire, idle movement, bot replacement, eight-player capacity.');
+ console.log('PASS: two-client state, authoritative input, shots/ammo, reload then fire, idle movement, shared car ownership/driving/exit, bot replacement, eight-player capacity.');
 }finally{for(const ws of clients)ws.close();}

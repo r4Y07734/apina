@@ -10,6 +10,9 @@ A laptop-first, top-down pixel arena shooter for 2–8 people. Open `/play/recoi
 | `dist/recoil-riot/maps.js` | Solid cover, cosmetic districts/roads/decals, spawn points, health pickups, dimensions, player colors. |
 | `dist/recoil-riot/simulation.js` | Rules, physics, bots, collision, damage, rounds, input sanitization. Shared by browser and server. |
 | `dist/recoil-riot/navigation.js` | Bot routes around cover, line of sight, and movement decisions. |
+| `dist/recoil-riot/vehicles.js` | Vehicle balance, driving physics, entry/exit, collisions, ramming, damage and respawns. |
+| `dist/recoil-riot/activities.js` | Six district challenges, task positions, rewards, vent hazards and quest hints. |
+| `dist/recoil-riot/adventure-renderer.js` | Car sprites and the visual markers for gates, mushrooms, valves, garage and beacon. |
 | `dist/recoil-riot/camera.js` | Follow smoothing, viewport size, world bounds and mouse-to-world conversion. |
 | `dist/recoil-riot/scenery.js` | Cached pixel map art: containers, cars, tanks, crates, plants, fences, road paint, debris. |
 | `dist/recoil-riot/renderer.js` | Hand-drawn pixel sprites, map tiles, weapon art, particles, camera kick. |
@@ -28,6 +31,23 @@ The arena is 1920 × 1280 world units (four times the original area). Six distri
 The 960 × 640 viewport follows the player, eases during normal movement, snaps after long respawns, and clamps to the arena edges. The minimap shows the layout, combatants and visible viewport. Mouse input converts screen positions through the camera before calculating the aim angle, including online interpolation. Camera changes affect rendering and aiming; server physics remain in world coordinates.
 
 Reload timers clamp to exactly zero on completion. Both manual reload and holding fire through automatic reload have regression coverage for every gun.
+
+## Cars and district challenges
+
+Press **G** near a parked car to drive it; press G again to exit at a safe nearby spot. **W/S** accelerate/reverse, **A/D** steer, and **Space** brakes. Steering becomes stronger as the car gains speed. Exit to use weapons. Cars can ram opponents, take bullet/explosion damage, eject their driver when wrecked, and respawn at their parking spot after 18 seconds when the spot is clear. Disconnected drivers release their car. Vehicle and challenge rules run in the shared authoritative simulation, both offline and online.
+
+| District | Challenge |
+| --- | --- |
+| Salvage Row | Enter the narrow, three-lane salvage maze and reach the golden stash. Foot access only. |
+| Loading Bay | Drive through three numbered gates in order; completion adds 15 seconds of turbo. |
+| Tank Farm | Avoid three pulsing toxic vents. G at each valve shuts its vent off for everyone for 12 seconds. |
+| Scrap Garden | Collect three glowing mushrooms; each restores 12 health. |
+| The Workshop | Stop a car in the striped repair bay for two seconds to restore its health. The bay remains reusable. |
+| Dead End Depot | Hold the beacon on foot for three seconds without rivals within 64 units. |
+
+Each challenge gives a badge, 25 health and full magazines once per player per round. Challenges never add KO points. Badges and quest progress reset with the round and persist through normal respawns. The sidebar tracks all six, in-world markers show the activities, and the radar shows cars and challenge points. Change activity locations and behavior in `activities.js`; the maze's physical walls and parking spots live in `maps.js`. `VEHICLE_RULES` in `vehicles.js` owns driving balance.
+
+Run the vehicle/challenge regressions with `node tests/recoil-riot-adventure.test.mjs` alongside the existing gameplay checks.
 
 ## Local development
 
