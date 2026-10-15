@@ -35,7 +35,7 @@ export function step(w,dt=RULES.tick){
   for(const k of ['cooldown','dash','melee','invuln'])p[k]=Math.max(0,p[k]-dt);
   if(i.weapon!==p.weapon){p.weapon=i.weapon;p.reload=0;}
   const gun=WEAPONS[p.weapon];p.angle=i.angle;
-  if(p.reload>0){p.reload-=dt;if(p.reload<=0)p.ammo[p.weapon]=gun.magazine;}
+  if(p.reload>0){p.reload=Math.max(0,p.reload-dt);if(p.reload===0)p.ammo[p.weapon]=gun.magazine;}
   if(i.reload&&p.ammo[p.weapon]<gun.magazine&&!p.reload)p.reload=gun.reload;
   const len=Math.hypot(i.x,i.y)||1,nx=i.x/Math.max(1,len),ny=i.y/Math.max(1,len);
   if(i.dash&&!p.dash){p.dash=1.3;const a=(nx||ny)?Math.atan2(ny,nx):p.angle;p.vx+=Math.cos(a)*480;p.vy+=Math.sin(a)*480;event(w,{type:'dash',x:p.x,y:p.y,color:p.color});}

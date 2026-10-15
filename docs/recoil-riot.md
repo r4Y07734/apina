@@ -7,9 +7,11 @@ A laptop-first, top-down pixel arena shooter for 2–8 people. Open `/play/recoi
 | File | Responsibility |
 | --- | --- |
 | `dist/recoil-riot/weapons.js` | Names, descriptions, damage, recoil, projectile behavior, magazines, reloads, colors. Shared by browser and server. |
-| `dist/recoil-riot/maps.js` | Cover, spawn points, health pickups, arena dimensions, player colors. |
+| `dist/recoil-riot/maps.js` | Solid cover, cosmetic districts/roads/decals, spawn points, health pickups, dimensions, player colors. |
 | `dist/recoil-riot/simulation.js` | Rules, physics, bots, collision, damage, rounds, input sanitization. Shared by browser and server. |
 | `dist/recoil-riot/navigation.js` | Bot routes around cover, line of sight, and movement decisions. |
+| `dist/recoil-riot/camera.js` | Follow smoothing, viewport size, world bounds and mouse-to-world conversion. |
+| `dist/recoil-riot/scenery.js` | Cached pixel map art: containers, cars, tanks, crates, plants, fences, road paint, debris. |
 | `dist/recoil-riot/renderer.js` | Hand-drawn pixel sprites, map tiles, weapon art, particles, camera kick. |
 | `dist/recoil-riot/app.js` | Controls, lobby, room invites, audio, UI and networking. |
 | `dist/recoil-riot/style.css` | Layout, colors, typography and responsive styling. |
@@ -18,6 +20,14 @@ A laptop-first, top-down pixel arena shooter for 2–8 people. Open `/play/recoi
 | `backend/recoil-riot/worker.js` | Room WebSockets, server ticks, client limits, bot filling. |
 
 The six weapons are a recoil shotgun, banana squirt gun, explosive ketchup, bouncing rubber ducks, confetti, and a boxing glove launcher. Each weapon has a separate magazine so switching cannot refill ammo. Add weapon behavior in `simulation.js` and art in `renderer.js`; update the sidebar copy/icons in `app.js` when adding a new type. No bundler is required for the frontend. Keep weapon and simulation files shared so clients and server agree.
+
+## Expanded junkyard and camera
+
+The arena is 1920 × 1280 world units (four times the original area). Six districts connect through service roads, with containers, wrecked cars, tanks, crates, generators and planters as solid cover. Oil, weeds, pipes, tires, pallets and road markings are cosmetic. Geometry remains in `maps.js`; change prop art in `scenery.js`. Keep spawn/pickup locations outside cover; the regression suite checks clearance and connectivity.
+
+The 960 × 640 viewport follows the player, eases during normal movement, snaps after long respawns, and clamps to the arena edges. The minimap shows the layout, combatants and visible viewport. Mouse input converts screen positions through the camera before calculating the aim angle, including online interpolation. Camera changes affect rendering and aiming; server physics remain in world coordinates.
+
+Reload timers clamp to exactly zero on completion. Both manual reload and holding fire through automatic reload have regression coverage for every gun.
 
 ## Local development
 

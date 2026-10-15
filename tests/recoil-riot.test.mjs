@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createWorld,addPlayer,step,cleanInput,collides,RULES,snapshot} from '../dist/recoil-riot/simulation.js';
 import {WEAPONS} from '../dist/recoil-riot/weapons.js';
+import {ARENA} from '../dist/recoil-riot/maps.js';
+import {createCamera,followCamera,screenToWorld,VIEW} from '../dist/recoil-riot/camera.js';
 import worker from '../backend/recoil-riot/worker.js';
 function solo(){const w=createWorld(),p=addPlayer(w,'a','Alice');Object.assign(p,{x:350,y:190,invuln:0});return {w,p};}
 test('input cannot assign health, damage, or unbounded movement',()=>{assert.deepEqual(cleanInput({x:999,y:-999,angle:Infinity,weapon:999,fire:'yes',hp:999}),{x:1,y:-1,angle:0,weapon:5,fire:false,dash:false,melee:false,reload:false});});
@@ -18,4 +20,47 @@ test('bots navigate cover and make progress in a full practice match',()=>{
  let knockouts=0;for(let n=0;n<1800;n++){step(w);knockouts=Math.max(knockouts,w.players.reduce((sum,p)=>sum+p.score,0));}
  assert.ok(knockouts>=2,'bots must navigate cover and score knockouts within 60 seconds');
  assert.equal(new Set(w.players.map(p=>p.color)).size,4);
+});
+
+test('every weapon can shoot after a manual reload finishes',()=>{
+ for(const [index,gun] of WEAPONS.entries()){
+  const {w,p}=solo();p.input={weapon:index,fire:true};step(w);
+  p.input={weapon:index,reload:true};step(w);p.input={weapon:index};
+  for(let n=0;n<Math.ceil(gun.reload/RULES.tick)+2;n++)step(w);
+  assert.equal(p.reload,0,gun.name+' reload must finish at exactly zero');
+  assert.equal(p.ammo[index],gun.magazine);
+  p.input={weapon:index,fire:true};step(w);
+  assert.equal(p.ammo[index],gun.magazine-1,gun.name+' must fire after reloading');
+ }
+});
+test('holding fire keeps shooting after an empty magazine automatically reloads',()=>{
+ for(const [index,gun] of WEAPONS.entries()){
+  const {w,p}=solo();p.input={weapon:index,fire:true};
+  let shots=0;for(let n=0;n<270;n++){const before=p.ammo[index];step(w);if(p.ammo[index]<before)shots++;}
+  assert.ok(shots>gun.magazine,gun.name+' must shoot beyond the first magazine');
+  assert.ok(p.reload>=0);
+ }
+});
+
+test('expanded junkyard spawns and pickups stay clear and share a connected navigation grid',()=>{
+ for(const p of [...ARENA.spawns,...ARENA.health])assert.equal(collides(p.x,p.y),false,JSON.stringify(p));
+ const seen=new Set(),queue=[],size=32,columns=ARENA.width/size;
+ const start=ARENA.spawns[0],first=Math.floor(start.y/size)*columns+Math.floor(start.x/size);queue.push(first);seen.add(first);
+ for(let i=0;i<queue.length;i++)for(const offset of [-1,1,-columns,columns]){
+  const id=queue[i]+offset,x=(id%columns)*size+16,y=Math.floor(id/columns)*size+16;
+  const px=(queue[i]%columns)*size+16,py=Math.floor(queue[i]/columns)*size+16;
+  if(seen.has(id)||Math.abs(px-x)>size||collides(x,y)||collides((x+px)/2,(y+py)/2))continue;
+  seen.add(id);queue.push(id);
+ }
+ for(const p of [...ARENA.spawns,...ARENA.health])assert.ok(seen.has(Math.floor(p.y/size)*columns+Math.floor(p.x/size)),JSON.stringify(p)+' must be reachable');
+ assert.ok(ARENA.width>=1920&&ARENA.height>=1280);
+});
+test('camera follows, clamps at map edges, and translates mouse aim into world coordinates',()=>{
+ const camera=createCamera();followCamera(camera,{x:960,y:640});
+ assert.equal(camera.x,480);assert.equal(camera.y,320);
+ assert.deepEqual(screenToWorld(camera,600,320),{x:1080,y:640});
+ const before=camera.x;followCamera(camera,{x:1100,y:640},1/30);assert.ok(camera.x>before&&camera.x<1100-VIEW.width/2);
+ followCamera(camera,{x:ARENA.width,y:ARENA.height});assert.ok(camera.x<=ARENA.width-VIEW.width&&camera.y<=ARENA.height-VIEW.height);
+ camera.initialized=false;followCamera(camera,{x:0,y:0});assert.equal(camera.x,0);assert.equal(camera.y,0);
+ camera.initialized=false;followCamera(camera,{x:ARENA.width,y:ARENA.height});assert.equal(camera.x,ARENA.width-VIEW.width);assert.equal(camera.y,ARENA.height-VIEW.height);
 });

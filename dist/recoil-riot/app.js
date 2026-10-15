@@ -3,7 +3,7 @@ import {createWorld,addPlayer,step,RULES} from './simulation.js';
 import {createRenderer} from './renderer.js';
 import {MULTIPLAYER_SERVER} from './config.js';
 const $=s=>document.querySelector(s),canvas=$('#arena'),renderer=createRenderer(canvas);
-const params=new URLSearchParams(location.search),keys=new Set();
+const params=new URLSearchParams(location.search),keys=new Set(),pendingActions=new Set();
 let world=createWorld(),myId='you',selected=0,playing=false,online=false,paused=false,ws=null,room='',last=0,acc=0,lastSend=0,pointer={x:700,y:320,down:false},audio=null,sound=false,lastSound=0;
 let server=MULTIPLAYER_SERVER;
 if(params.has('server')&&['localhost','127.0.0.1'].includes(location.hostname)){try{const u=new URL(params.get('server'));if(['http:','https:'].includes(u.protocol))server=u.origin;}catch{}}
@@ -18,7 +18,7 @@ function select(i){selected=(i+WEAPONS.length)%WEAPONS.length;buttons.forEach((b
 function demo(){lastSound=0;world=createWorld();for(let n=0;n<4;n++){const p=addPlayer(world,'demo'+n,['Lil Bananas','Tax Evasion','Soup Enjoyer','Sir Quacks'][n],true);p.weapon=n;}myId='you';}
 demo();
 function message(text){$('#notice').textContent=text;}
-function setPlaying(value){playing=value;$('#lobby').hidden=value;$('#online-panel').hidden=true;$('#leave').hidden=!value;$('#copy-invite').hidden=!value||!online;keys.clear();pointer.down=false;paused=false;$('#paused').hidden=true;if(value)canvas.focus();}
+function setPlaying(value){playing=value;$('#lobby').hidden=value;$('#online-panel').hidden=true;$('#leave').hidden=!value;$('#copy-invite').hidden=!value||!online;keys.clear();pendingActions.clear();pointer.down=false;paused=false;$('#paused').hidden=true;if(value)canvas.focus();}
 $('#practice').onclick=()=>{disconnect();lastSound=0;world=createWorld();myId='you';addPlayer(world,myId,$('#nickname').value||'You');for(let n=0;n<3;n++){const p=addPlayer(world,'bot'+n,['Tax Evasion','Soup Enjoyer','Sir Quacks'][n],true);p.weapon=[1,3,4][n];}online=false;setPlaying(true);$('#mode').textContent='PRACTICE / 3 BOTS';$('#session-label').textContent='◈ Offline practice · Same rules. Very artificial intelligence.';message('You’re in. Click the arena, use WASD to move, and hold the mouse button to shoot.');};
 $('#online-toggle').onclick=()=>{$('#online-panel').hidden=false;$('#nickname').focus();};
 $('#close-online').onclick=()=>{$('#online-panel').hidden=true;};
@@ -44,27 +44,40 @@ $('#copy-invite').onclick=async()=>{try{await navigator.clipboard.writeText(loca
 $('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('.arena-panel').requestFullscreen();}catch{message('Fullscreen is unavailable in this browser.');}};
 $('#sound').onclick=()=>{sound=!sound;$('#sound').textContent=sound?'Sound on':'Sound off';$('#sound').setAttribute('aria-pressed',String(sound));if(sound){audio??=new AudioContext();audio.resume();}};
 function beep(index){if(!audio||!sound)return;const osc=audio.createOscillator(),gain=audio.createGain();osc.type=index===1?'sine':'square';osc.frequency.setValueAtTime([95,370,70,550,220,130][index],audio.currentTime);osc.frequency.exponentialRampToValueAtTime(40,audio.currentTime+.09);gain.gain.setValueAtTime(.035,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.10);osc.connect(gain).connect(audio.destination);osc.start();osc.stop(audio.currentTime+.11);}
-function clearInput(){keys.clear();pointer.down=false;}
+function clearInput(){keys.clear();pendingActions.clear();pointer.down=false;}
 function pause(value){paused=value;clearInput();$('#paused').hidden=!value;}
 window.addEventListener('keydown',e=>{
  if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
  if(!playing)return;
  const key=e.key.toLowerCase();if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(key))e.preventDefault();
  if(key==='escape'){pause(!paused);return;}if(e.repeat)return;
- keys.add(key);if(/^[1-6]$/.test(key))select(Number(key)-1);if(key==='q')select(selected-1);if(key==='e')select(selected+1);
+ keys.add(key);if(['r','f',' '].includes(key))pendingActions.add(key);if(/^[1-6]$/.test(key))select(Number(key)-1);if(key==='q')select(selected-1);if(key==='e')select(selected+1);
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{clearInput();if(playing)pause(true);});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();if(playing)pause(true);}});
 canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();pointer.x=(e.clientX-r.left)*960/r.width;pointer.y=(e.clientY-r.top)*640/r.height;});
 canvas.addEventListener('pointerdown',e=>{if(!playing)return;e.preventDefault();canvas.focus();if(paused){pause(false);return;}if(e.button===0)pointer.down=true;});window.addEventListener('pointerup',()=>pointer.down=false);canvas.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('wheel',e=>{if(!playing)return;e.preventDefault();select(selected+(e.deltaY>0?1:-1));},{passive:false});
-function input(){const p=world.players.find(p=>p.id===myId);const active=playing&&!paused;return {x:active?(+(keys.has('d')||keys.has('arrowright'))-+(keys.has('a')||keys.has('arrowleft'))):0,y:active?(+(keys.has('s')||keys.has('arrowdown'))-+(keys.has('w')||keys.has('arrowup'))):0,angle:p?Math.atan2(pointer.y-p.y,pointer.x-p.x):0,fire:active&&pointer.down,dash:active&&keys.has(' '),melee:active&&keys.has('f'),reload:active&&keys.has('r'),weapon:selected};}
+function input(){
+ const p=world.players.find(p=>p.id===myId),active=playing&&!paused,target=renderer.screenToWorld(pointer.x,pointer.y);
+ const command={
+  x:active?(+(keys.has('d')||keys.has('arrowright'))-+(keys.has('a')||keys.has('arrowleft'))):0,
+  y:active?(+(keys.has('s')||keys.has('arrowdown'))-+(keys.has('w')||keys.has('arrowup'))):0,
+  angle:p?Math.atan2(target.y-p.y,target.x-p.x):0,fire:active&&pointer.down,
+  dash:active&&(keys.has(' ')||pendingActions.has(' ')),
+  melee:active&&(keys.has('f')||pendingActions.has('f')),
+  reload:active&&(keys.has('r')||pendingActions.has('r')),weapon:selected
+ };
+ // Keep quick key taps until a local tick or online input packet consumes them.
+ pendingActions.clear();return command;
+}
 const renderPositions=new Map();
 function displayWorld(dt){
  const players=world.players.map(p=>{
   const old=renderPositions.get(p.id)||{x:p.x,y:p.y};
   const amount=Math.hypot(old.x-p.x,old.y-p.y)>120?1:1-Math.exp(-26*dt);
   const point={x:old.x+(p.x-old.x)*amount,y:old.y+(p.y-old.y)*amount};renderPositions.set(p.id,point);
-  return {...p,...point,angle:p.id===myId?Math.atan2(pointer.y-point.y,pointer.x-point.x):p.angle};
+  const target=renderer.screenToWorld(pointer.x,pointer.y);
+  return {...p,...point,angle:p.id===myId?Math.atan2(target.y-point.y,target.x-point.x):p.angle};
  });
  for(const id of renderPositions.keys())if(!world.players.some(p=>p.id===id))renderPositions.delete(id);
  return {...world,players};
