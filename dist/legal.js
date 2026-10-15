@@ -10,7 +10,8 @@
       const count = Array.isArray(value) ? value.length : 0;
       status.textContent = `${count} ${count === 1 ? 'game saved' : 'games saved'} in this browser.`;
       const records = JSON.parse(localStorage.getItem('apina-game-records') || '{}') || {};
-      const scores = typeof records === 'object' && !Array.isArray(records) ? Object.keys(records).length : 0;
+      const apex=JSON.parse(localStorage.getItem('apina-apex-records')||'{}');
+      const scores = (typeof records === 'object' && !Array.isArray(records) ? Object.keys(records).length : 0)+(apex&&typeof apex==='object'&&Object.keys(apex).length?1:0);
       const enabled = localStorage.getItem('apina-score-preference') === 'yes';
       if (scoresStatus) scoresStatus.textContent = `${scores} ${scores === 1 ? 'game has' : 'games have'} stored scores. Score storage is ${enabled ? 'enabled' : 'disabled'}.`;
     } catch {
@@ -30,6 +31,7 @@
   scoresButton?.addEventListener('click', () => {
     try {
       localStorage.removeItem('apina-game-records');
+      localStorage.removeItem('apina-apex-records');
       localStorage.removeItem('apina-score-preference');
       update();
       document.getElementById('records-clear-status').textContent = 'Stored scores deleted and score-storage choice withdrawn on this device.';
