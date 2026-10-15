@@ -9,6 +9,7 @@ A laptop-first, top-down pixel arena shooter for 2–8 people. Open `/play/recoi
 | `dist/recoil-riot/weapons.js` | Names, descriptions, damage, recoil, projectile behavior, magazines, reloads, colors. Shared by browser and server. |
 | `dist/recoil-riot/maps.js` | Cover, spawn points, health pickups, arena dimensions, player colors. |
 | `dist/recoil-riot/simulation.js` | Rules, physics, bots, collision, damage, rounds, input sanitization. Shared by browser and server. |
+| `dist/recoil-riot/navigation.js` | Bot routes around cover, line of sight, and movement decisions. |
 | `dist/recoil-riot/renderer.js` | Hand-drawn pixel sprites, map tiles, weapon art, particles, camera kick. |
 | `dist/recoil-riot/app.js` | Controls, lobby, room invites, audio, UI and networking. |
 | `dist/recoil-riot/style.css` | Layout, colors, typography and responsive styling. |

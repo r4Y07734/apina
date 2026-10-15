@@ -12,3 +12,10 @@ test('diagonal movement has the same speed as horizontal movement',()=>{const a=
 test('round finishes at score limit and resets after result screen',()=>{const {w,p}=solo();p.score=RULES.scoreLimit;step(w);assert.equal(w.winner,'Alice');for(let n=0;n<250;n++)step(w);assert.equal(w.winner,null);assert.equal(p.score,0);assert.ok(w.remaining>175);});
 test('all six weapons can fire and snapshots exclude raw client input',()=>{for(let i=0;i<WEAPONS.length;i++){const {w,p}=solo();p.input={weapon:i,angle:0,fire:true};step(w);assert.equal(p.ammo[i],WEAPONS[i].magazine-1);assert.ok(w.bullets.length>0);assert.equal('input' in snapshot(w).players[0],false);}});
 test('server health and room validation',async()=>{assert.equal((await worker.fetch(new Request('https://server/health'),{})).status,200);assert.equal((await worker.fetch(new Request('https://server/room/ABC123',{headers:{Origin:'https://evil.example',Upgrade:'websocket'}}),{})).status,403);assert.equal((await worker.fetch(new Request('https://server/room/ABC123',{headers:{Origin:'https://apina.app'}}),{})).status,426);});
+
+test('bots navigate cover and make progress in a full practice match',()=>{
+ const w=createWorld();for(let n=0;n<4;n++){const p=addPlayer(w,'nav-bot'+n,'Bot '+n,true);p.weapon=[1,3,4,5][n];}
+ let knockouts=0;for(let n=0;n<1800;n++){step(w);knockouts=Math.max(knockouts,w.players.reduce((sum,p)=>sum+p.score,0));}
+ assert.ok(knockouts>=2,'bots must navigate cover and score knockouts within 60 seconds');
+ assert.equal(new Set(w.players.map(p=>p.color)).size,4);
+});

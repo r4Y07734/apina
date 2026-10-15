@@ -1,12 +1,13 @@
 import {WEAPONS} from './weapons.js';
 import {ARENA,COLORS} from './maps.js';
+import {botInput} from './navigation.js';
 export const RULES={tick:1/30,roundSeconds:180,scoreLimit:15,maxPlayers:8,playerRadius:11,speed:170,respawnSeconds:2};
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function createWorld(){return {players:[],bullets:[],events:[],health:ARENA.health.map(p=>({...p,ready:0})),time:0,remaining:RULES.roundSeconds,winner:null,restartAt:0,serial:0};}
 export function addPlayer(w,id,name,bot=false){
  const index=w.players.findIndex(p=>p.id===id);if(index>=0)return w.players[index];
- const p={id,name:String(name||'Player').replace(/[\x00-\x1f]/g,'').slice(0,18),bot,color:COLORS[w.players.length%COLORS.length],x:0,y:0,vx:0,vy:0,hp:100,score:0,deaths:0,angle:0,weapon:0,ammo:WEAPONS.map(v=>v.magazine),reload:0,cooldown:0,dash:0,melee:0,invuln:1.5,dead:0,input:{}};
+ const p={id,name:String(name||'Player').replace(/[\x00-\x1f]/g,'').slice(0,18),bot,color:COLORS.find(color=>!w.players.some(p=>p.color===color))||COLORS[0],x:0,y:0,vx:0,vy:0,hp:100,score:0,deaths:0,angle:0,weapon:0,ammo:WEAPONS.map(v=>v.magazine),reload:0,cooldown:0,dash:0,melee:0,invuln:1.5,dead:0,input:{}};
  w.players.push(p);respawn(w,p);return p;
 }
 function respawn(w,p){
@@ -24,20 +25,13 @@ function hit(w,p,damage,owner,angle,knockback){
  if(!p.hp){p.dead=RULES.respawnSeconds;p.deaths++;const killer=w.players.find(q=>q.id===owner);if(killer&&killer!==p)killer.score++;event(w,{type:'kill',x:p.x,y:p.y,color:p.color,killer:killer?.name||'Chaos',victim:p.name});}
 }
 function explode(w,b){event(w,{type:'boom',x:b.x,y:b.y,color:WEAPONS[b.weapon].color});for(const p of w.players)if(p.id!==b.owner&&dist(p,b)<64+RULES.playerRadius)hit(w,p,b.damage*(1-dist(p,b)/90),b.owner,Math.atan2(p.y-b.y,p.x-b.x),b.knockback);}
-function botInput(w,p){
- const target=w.players.filter(q=>q!==p&&q.hp>0).sort((a,b)=>dist(a,p)-dist(b,p))[0];if(!target)return {};
- const a=Math.atan2(target.y-p.y,target.x-p.x),d=dist(target,p),strafe=Math.sin(w.time*.9+p.id.length)*.85,dir=d>230?1:d<130?-1:0;
- let x=Math.cos(a)*dir-Math.sin(a)*strafe,y=Math.sin(a)*dir+Math.cos(a)*strafe;
- if(collides(p.x+x*28,p.y+y*28)){x=-Math.sin(a)*(Math.sin(w.time*2)>0?1:-1);y=Math.cos(a)*(Math.sin(w.time*2)>0?1:-1);}
- return {x,y,angle:a+Math.sin(w.time*3+p.id.length)*.12,fire:d<520,dash:d<120,melee:d<48,weapon:p.weapon};
-}
 export function step(w,dt=RULES.tick){
  dt=clamp(dt,0,.05);w.time+=dt;
  if(w.winner){if(w.time>=w.restartAt){w.winner=null;w.remaining=RULES.roundSeconds;w.bullets=[];for(const p of w.players){p.score=0;p.deaths=0;respawn(w,p);}}return;}
  w.remaining=Math.max(0,w.remaining-dt);
  for(const p of w.players){
   if(p.dead>0){p.dead-=dt;if(p.dead<=0)respawn(w,p);continue;}
-  const i=cleanInput(p.bot?botInput(w,p):p.input);
+  const i=cleanInput(p.bot?botInput(w,p,collides):p.input);
   for(const k of ['cooldown','dash','melee','invuln'])p[k]=Math.max(0,p[k]-dt);
   if(i.weapon!==p.weapon){p.weapon=i.weapon;p.reload=0;}
   const gun=WEAPONS[p.weapon];p.angle=i.angle;
