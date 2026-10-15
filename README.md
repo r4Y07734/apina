@@ -37,3 +37,14 @@ node --test tests/card-pvp-rules.test.mjs
 ```
 
 Backend tests and deployment checks are documented in the guide. Live multiplayer requires deploying the Worker and setting its URL in `dist/card-pvp/config.js`; the bot works without it.
+
+## Recoil Riot
+
+A top-down multiplayer pixel arena with six silly weapons, shotgun recoil movement, dash, melee, health pickups and bot practice. Play `/play/recoil-riot.html`, create a room and share the invite with up to seven friends.
+
+- [Editing guide, controls, architecture and deployment](docs/recoil-riot.md).
+- Weapon balance: `dist/recoil-riot/weapons.js`.
+- Shared gameplay checks: `node --test tests/recoil-riot.test.mjs`.
+- Online server: `backend/recoil-riot`.
+
+The current production site is the `apinaapp` Cloudflare Worker with static assets, configured in the root `wrangler.toml`. The older Pages instructions above also work for a separate static deployment.

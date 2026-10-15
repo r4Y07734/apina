@@ -1,0 +1,5 @@
+{
+  "name":"apina-recoil-riot-server","version":"1.0.0","private":true,"type":"module",
+  "scripts":{"dev":"node run-wrangler.mjs dev --local --port 8788","deploy":"node run-wrangler.mjs deploy","check":"node run-wrangler.mjs deploy --dry-run --outdir .build","test":"node --test ../../tests/recoil-riot.test.mjs"},
+  "devDependencies":{"wrangler":"4.149.0","ws":"8.22.0"}
+}
