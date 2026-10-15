@@ -117,7 +117,11 @@ test('expired turns switch players, preserve the match, and schedule the next de
   const actor=room.room.game.turn;
   room.room.disconnectedAt = [null, null];
   room.room.turnDeadline = Date.now() - 1;
+  const incoming=room.room.game.players[1-actor];
+  incoming.discard.push(...incoming.hand.splice(1));
+  const deckBefore=incoming.deck.length;
   await room.enforceLimits();
+  assert.equal(incoming.deck.length,deckBefore-4);
   assert.equal(room.room.game.status, 'playing');
   assert.equal(room.room.game.winner, null);
   assert.equal(room.room.game.turn,1-actor);

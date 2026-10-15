@@ -234,8 +234,9 @@ function startTurn(state, actor) {
   if (setWinner(state)) return;
   const energyGained = Math.min(player.maxEnergy - player.energy, RULES.energyPerTurn);
   player.energy += energyGained;
-  const drew = draw(state, actor);
-  log(state, `${player.name}'s turn. +${energyGained} energy${drew ? ' · drew a card' : ''}.`, 'turn', actor);
+  let drawn = 0;
+  while (player.hand.length < RULES.maxHand && draw(state, actor)) drawn++;
+  log(state, `${player.name}'s turn. +${energyGained} energy${drawn ? ` · drew ${drawn} card${drawn === 1 ? '' : 's'}` : ''}.`, 'turn', actor);
 }
 
 /** Apply one authorized action. Invalid actions leave state byte-for-byte unchanged. */

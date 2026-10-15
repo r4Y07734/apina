@@ -249,7 +249,7 @@ test('a later heal on the same card can recover from zero before the winner is d
   assert.equal(game.state.winner, 0);
 });
 
-test('turn starts grant capped energy, draw one card, and advance full-round count', () => {
+test('turn starts grant capped energy, refill the hand, and advance full-round count', () => {
   const state = makeGame(shippedCards);
   for (const player of state.players) player.discard.push(player.hand.pop());
   state.players[1].energy = 9;
@@ -302,8 +302,8 @@ test('an empty deck securely reshuffles discard after restoring a serialized gam
   end(state, shippedCards);
   end(restored, shippedCards);
   for (const game of [state, restored]) {
-    assert.equal(game.players[1].hand.length, 1);
-    assert.equal(game.players[1].deck.length, 2);
+    assert.equal(game.players[1].hand.length, 3);
+    assert.equal(game.players[1].deck.length, 0);
     assert.deepEqual(game.players[1].discard, []);
     assert.deepEqual([...game.players[1].deck, ...game.players[1].hand].sort(), ['card-01', 'card-02', 'card-03']);
   }
@@ -489,4 +489,26 @@ test('chance percentages validate and normalize without rewriting other card fie
   for(const chance of [0,12.5,100])validateCards(fixture([{type:'damage',target:'opponent',amount:2,chance}]).cards);
   const game={cards:cloneCards()};game.cards[0].effects=[{type:'heal',target:'self',amount:2,chance:'12.5'}];
   const normalized=normalizeCards(game.cards);assert.equal(normalized[0].effects[0].chance,12.5);assert.equal(game.cards[0].effects[0].chance,'12.5');
+});
+
+
+test('every incoming hand size refills to five without refilling the outgoing hand',()=>{
+  for(const actor of [0,1])for(let size=0;size<=5;size++){
+    const state=makeGame(shippedCards);state.turn=1-actor;
+    const player=state.players[actor];player.discard.push(...player.hand.splice(size));
+    const outgoing=[...state.players[1-actor].hand],deckSize=player.deck.length;
+    end(state,shippedCards);
+    assert.equal(player.hand.length,5);assert.equal(player.deck.length,deckSize-(5-size));
+    assert.deepEqual(state.players[1-actor].hand,outgoing);
+  }
+});
+
+test('refilling crosses a deck/discard boundary and stops when no cards remain',()=>{
+  const state=makeGame(shippedCards),player=state.players[1];
+  player.hand=[];player.deck=['card-01'];player.discard=['card-02','card-03','card-04','card-05','card-06'];
+  end(state,shippedCards);
+  assert.equal(player.hand.length,5);assert.equal(player.deck.length,1);assert.equal(player.discard.length,0);
+  assert.equal(new Set([...player.hand,...player.deck]).size,6);
+  player.hand=[];player.deck=[];player.discard=[];end(state,shippedCards);end(state,shippedCards);
+  assert.equal(player.hand.length,0);
 });
